@@ -8,26 +8,16 @@ using namespace std;
 
 enum Id {header,credits,animation};
 
-int binaryToDecimal(int n)
+unsigned long long int binaryToDecimal(char* binary, int length)
 {
-    int num = n;
-    int dec_value = 0;
-
-    // Initializing base value to 1, i.e 2^0
-    int base = 1;
-
-    int temp = num;
-    while (temp) {
-        int last_digit = temp % 10;
-        temp = temp / 10;
-
-        dec_value += last_digit * base;
-
-        base = base * 2;
+    unsigned long long int decimal = 0;
+    for(int i=length-1; 0 <=  i; --i) {
+        decimal = decimal << 8;
+        decimal += (int)binary[i];
     }
-
-    return dec_value;
+    return decimal;
 }
+
 
 class Pixel{
 private:
@@ -37,7 +27,11 @@ private:
 
 public:
     //constructor
-    Pixel(){}
+    Pixel(unsigned int red, unsigned int green, unsigned int blue){
+        Red = red;
+        Green = green;
+        Blue = blue;
+    }
 
     unsigned int getRed() const {
         return Red;
@@ -85,7 +79,19 @@ private:
 public:
 
     //constructor
-    Ciff(){}
+    Ciff(){
+        Magic = "CIFF";
+        Header_size = 32;
+        Content_size = 23;
+        Width = 800;
+        Height = 600;
+        for(int w = 0; w < Width; ++w){
+            for(int h = 0; h < Height; ++h){
+                Pixel pixel = Pixel(w*200%256, h*300%256, w*h*450%256);
+                Pixels.push_back(pixel);
+            }
+        }
+    }
 
     //getter and setter
     const string &getMagic() const {
@@ -152,6 +158,21 @@ public:
         Pixels = pixels;
     }
 
+    void createPPM() {
+        ofstream myfile;
+        myfile.open("test.ppm");
+        myfile << "P3" << endl;
+        myfile << Width << endl;
+        myfile << Height << endl;
+        myfile << 255 << endl;
+
+        for(Pixel pixel : Pixels ){
+            myfile << pixel.getRed() << " " << pixel.getGreen() << " " << pixel.getBlue() << endl;
+        }
+        myfile.close();
+
+    }
+
     //destructor
     ~Ciff(){}
 };
@@ -160,7 +181,7 @@ class Caff{
 private:
 
     //ID
-    Id Id;
+    Id id;
 
     //header
     string Magic;
@@ -187,11 +208,11 @@ public:
 
     //getter and setter
     enum Id getId() const {
-        return Id;
+        return id;
     }
 
     void setId(enum Id id) {
-        Id = id;
+        this->id = id;
     }
 
     const string &getMagic() const {
@@ -296,7 +317,7 @@ public:
         char id[1];
         char length[8];
 
-        std::ifstream is ("C:\\Users\\szoti\\CLionProjects\\untitled\\ss.caff", std::ifstream::binary);
+        std::ifstream is ("ss.caff", std::ifstream::binary);
         if (is) {
             is.read(id, sizeof(id));
             is.read(length, sizeof(length));
@@ -383,9 +404,8 @@ public:
 
 int main() {
 
-    Caff caff;
-    caff.read_from_file("1.caff");
-
+    Ciff ciff;
+    ciff.createPPM();
     return 0;
 }
 
