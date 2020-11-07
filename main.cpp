@@ -7,9 +7,21 @@
 
 using namespace std;
 
-enum Id {header,credits,animation};
+enum Id {
+    header, credits, animation
+};
 
-class Pixel{
+//unsigned long long int binaryToDecimal(char *binary, int length) {
+//    unsigned long long int decimal = 0;
+//    for (int i = length - 1; 0 <= i; --i) {
+//        decimal = decimal << 8;
+//        decimal += (int) binary[i];
+//    }
+//    return decimal;
+//}
+
+
+class Pixel {
 private:
     unsigned int Red;
     unsigned int Green;
@@ -17,7 +29,11 @@ private:
 
 public:
     //constructor
-    Pixel(){}
+    Pixel(unsigned int red, unsigned int green, unsigned int blue) {
+        Red = red;
+        Green = green;
+        Blue = blue;
+    }
 
     unsigned int getRed() const {
         return Red;
@@ -44,10 +60,10 @@ public:
     }
 
     //destructor
-    ~Pixel(){}
+    ~Pixel() {}
 };
 
-class Ciff{
+class Ciff {
 private:
 
     //header
@@ -65,7 +81,19 @@ private:
 public:
 
     //constructor
-    Ciff(){}
+    Ciff() {
+        Magic = "CIFF";
+        Header_size = 32;
+        Content_size = 23;
+        Width = 800;
+        Height = 600;
+        for (int w = 0; w < Width; ++w) {
+            for (int h = 0; h < Height; ++h) {
+                Pixel pixel = Pixel(w * 200 % 256, h * 300 % 256, w * h * 450 % 256);
+                Pixels.push_back(pixel);
+            }
+        }
+    }
 
     //getter and setter
     const string &getMagic() const {
@@ -132,15 +160,30 @@ public:
         Pixels = pixels;
     }
 
+    void createPPM() {
+        ofstream myfile;
+        myfile.open("test.ppm");
+        myfile << "P3" << endl;
+        myfile << Width << endl;
+        myfile << Height << endl;
+        myfile << 255 << endl;
+
+        for (Pixel pixel : Pixels) {
+            myfile << pixel.getRed() << " " << pixel.getGreen() << " " << pixel.getBlue() << endl;
+        }
+        myfile.close();
+
+    }
+
     //destructor
-    ~Ciff(){}
+    ~Ciff() {}
 };
 
-class Caff{
+class Caff {
 private:
 
     //ID
-    Id Id;
+    Id id;
 
     //header
     string Magic;
@@ -167,15 +210,15 @@ private:
 public:
 
     //constructor
-    Caff(){}
+    Caff() {}
 
     //getter and setter
     enum Id getId() const {
-        return Id;
+        return id;
     }
 
     void setId(enum Id id) {
-        Id = id;
+        this->id = id;
     }
 
     const string &getMagic() const {
@@ -274,162 +317,42 @@ public:
         Caff::ciff = ciff;
     }
 
-    unsigned long long int binaryToDecimal(char* binary, int length)
-    {
+    unsigned long long int binaryToDecimal(char *binary, int length) {
         unsigned long long int decimal = 0;
-        for(int i=length-1; 0 <=  i; --i) {
+        for (int i = length - 1; 0 <= i; --i) {
             decimal = decimal << 8;
-            decimal += (unsigned char)binary[i];
+            decimal += (unsigned char) binary[i];
         }
         return decimal;
     }
 
-    //read data
-    int read_from_file(string file){
-
-
-
-        std::ifstream is ("C:\\Users\\Geri\\CLionProjects\\lawless-sb\\ss.caff", std::ifstream::binary);
-
-        if (is) {
-            char id[1];
-            char length[8];
-
-            int lastID = 0;
-
-            while( !is.eof()) {
-
-                is.read(id, sizeof(id));
-                is.read(length, sizeof(length));
-
-                int idx = (int) id[0];
-
-                unsigned long long int decimal_length = binaryToDecimal(length, sizeof(length));
-
-
-                switch (idx) {
-                    case 1: {
-                        //header
-                        std::cout<<"Header"<<endl;
-                        if(lastID != 0){
-                            cout<<"Wrong block order before Header";
-                            // finish execution
-                            break;
-                        }
-                        if(!header_read) {
-                            char* header = new char[decimal_length];
-                            is.read(header, decimal_length);
-                            read_header(header, decimal_length);
-                            header_read = true;
-                            lastID = 1;
-                            delete [] header;
-                        } else {
-                           printf("Header already presented!\n");
-                        }
-
-                        break;
-                    }
-
-                    case 2: {
-                        //credits
-                       std::cout << "Credits" << std::endl;
-                       if(lastID != 1){
-                           cout<<"Wrong block order before Credits";
-                           break;
-                       }
-                        if(!credits_read ) {
-                            char* credits = new char[decimal_length];
-                            is.read(credits, decimal_length);
-                            read_credits(credits, decimal_length);
-                            credits_read = true;
-                            lastID = 2;
-                            delete [] credits;
-                        } else {
-                            printf("Credits already presented!\n");
-                        }
-
-                        break;
-                    }
-
-                    case 3: {
-                        if(lastID != 2 && lastID != 3){
-                            cout<<"Wrong block order before Animations ";
-                            break;
-                        }
-                        std::cout << "Animations" << std::endl;
-
-                        // Read the whole animation block
-                        if(!animations_read) {
-                            char* animations = new char[decimal_length];
-                            is.read(animations, decimal_length);
-                            read_animations(animations, decimal_length);
-                            lastID = 3;
-                            delete [] animations;
-                        } else {
-                            printf("Animations already presented!\n");
-                        }
-                        break;
-                    }
-                    default: {
-                        break;
-                    }
-                }
-            }
-
-            //}
-
-            /*// get length of file:
-            is.seekg (0, is.end);
-            int length = is.tellg();
-            is.seekg (0, is.beg);
-
-            // allocate memory:
-            char * buffer = new char [length];
-
-            // read data as a block:
-            is.read (buffer,length);
-
-            is.close();
-
-            // print content:
-            std::cout.write (buffer,length);*/
-
-        }
-
-        else{
-            cout<<"haha";
-        }
-
-        return 0;
-    }
-
-    void read_header(const char* chars, size_t length ){
+    void read_header(const char *chars, size_t length) {
         string magic;
         char h_length[8];
         char num_anim[8];
 
-        for(int i = 0; i < length; i++){
-            if( i < 4) {
-               magic.append(1, chars[i]);
+        for (int i = 0; i < length; i++) {
+            if (i < 4) {
+                magic.append(1, chars[i]);
             }
-            if(i>=4 && i <12){
-                h_length[i-4] = chars[i];
+            if (i >= 4 && i < 12) {
+                h_length[i - 4] = chars[i];
             }
 
-            if(i>=12 && i < length){
-                num_anim[i-12] = chars[i];
+            if (i >= 12 && i < length) {
+                num_anim[i - 12] = chars[i];
             }
         }
 
         setMagic(magic);
         setHeaderSize(binaryToDecimal(h_length, sizeof(h_length)));
         setNumAnim(binaryToDecimal(num_anim, sizeof(num_anim)));
-        std::cout<<Magic<<endl;
-        std::cout<<Header_size<<endl;
-        std::cout<<Num_anim<<endl;
+        std::cout << Magic << endl;
+        std::cout << Header_size << endl;
+        std::cout << Num_anim << endl;
     }
 
-    void read_credits(char* chars, size_t length ) {
+    void read_credits(char *chars, size_t length) {
         char Y[2];
         char creator_length[8];
         string creator;
@@ -440,41 +363,28 @@ public:
         setDay(chars[3]);
         setHour(chars[4]);
         setMinute(chars[5]);
-        setYear((short)binaryToDecimal(Y, 2));
+        setYear((short) binaryToDecimal(Y, 2));
 
-        for(int i = 6; i < 14; i++){
-            creator_length[i-6] = chars[i];
+        for (int i = 6; i < 14; i++) {
+            creator_length[i - 6] = chars[i];
         }
 
-        int c_length = (int)binaryToDecimal(creator_length, sizeof(creator_length));
+        int c_length = (int) binaryToDecimal(creator_length, sizeof(creator_length));
 
-        for(int i = 14; i < length; i++){
-            creator.append(1, (char)chars[i]);
+        for (int i = 14; i < length; i++) {
+            creator.append(1, (char) chars[i]);
         }
 
-        if(creator.length() != c_length){
-            std::cout<<"Nem akkora mint kéne";
+        if (creator.length() != c_length) {
+            std::cout << "Nem akkora mint kéne";
         }
 
         setCreator(creator);
-        std::cout << Year << " " << Month <<" "<< Day <<" "<<Hour<<":"<<Minute<<endl;
-        std::cout << Creator <<std::endl;
+        std::cout << Year << " " << Month << " " << Day << " " << Hour << ":" << Minute << endl;
+        std::cout << Creator << std::endl;
     }
 
-    // Get Ciff from the read byte array
-    void read_animations(char* chars, size_t length ) {
-        char duration[8];
-        for(int j = 0; j < sizeof(duration); j++){
-              duration[j] = *chars;
-              chars++;
-        }
-
-        parseCiff(chars);
-
-    }
-
-    // Get CIFF data from byte array
-    void parseCiff(char* chars){
+    void parseCiff(char *chars) {
         string magic;
         char h_size[8];
         char content_size[8];
@@ -486,39 +396,39 @@ public:
         string caption;
         vector<string> tags;
 
-        for(int i = 0; i < 4; i++){
+        for (int i = 0; i < 4; i++) {
             magic.append(1, *(chars));
             chars++;
             header_at++;
         }
 
-        std::cout<<magic<<endl;
+        std::cout << magic << endl;
 
-        for(int i = 0; i < 8; i++){
+        for (int i = 0; i < 8; i++) {
             h_size[i] = *(chars);
             chars++;
             header_at++;
         }
 
-        for(int i = 0; i < 8; i++){
+        for (int i = 0; i < 8; i++) {
             content_size[i] = *chars;
             chars++;
             header_at++;
         }
 
-        for(int i = 0; i < 8; i++){
+        for (int i = 0; i < 8; i++) {
             width[i] = *chars;
             chars++;
             header_at++;
         }
 
-        for(int i = 0; i < 8; i++){
+        for (int i = 0; i < 8; i++) {
             height[i] = *chars;
             chars++;
             header_at++;
         }
 
-        while((*chars) != '\n'){
+        while ((*chars) != '\n') {
             caption.append(1, *chars);
             chars++;
             header_at++;
@@ -527,7 +437,7 @@ public:
         chars++;
         header_at++;
 
-        while(header_at < binaryToDecimal(h_size, 8)) {
+        while (header_at < binaryToDecimal(h_size, 8)) {
             string temp;
             while ((*chars) != '\0') {
                 temp.append(1, *chars);
@@ -548,31 +458,164 @@ public:
         l_ciff.setHeight(binaryToDecimal(height, 8));
         l_ciff.setCaption(caption);
         l_ciff.setTags(tags);
-        cout<<"Header size: "<<binaryToDecimal(h_size, 8)<<endl;
-        cout<<"Content Size: "<<binaryToDecimal(content_size, 8)<<endl;
-        cout<<"Width: "<<binaryToDecimal(width, 8)<<endl;
-        cout<<"Height: "<<binaryToDecimal(height, 8)<<endl;
-        cout<<"Caption: "<<caption<<endl;
+        cout << "Header size: " << binaryToDecimal(h_size, 8) << endl;
+        cout << "Content Size: " << binaryToDecimal(content_size, 8) << endl;
+        cout << "Width: " << binaryToDecimal(width, 8) << endl;
+        cout << "Height: " << binaryToDecimal(height, 8) << endl;
+        cout << "Caption: " << caption << endl;
 
-        for(const string& s : tags){
-            cout<<s<<endl;
+        for (const string &s : tags) {
+            cout << s << endl;
         }
 
 
     }
+
+    // Get Ciff from the read byte array
+    void read_animations(char *chars, size_t length) {
+        char duration[8];
+        for (int j = 0; j < sizeof(duration); j++) {
+            duration[j] = *chars;
+            chars++;
+        }
+
+        parseCiff(chars);
+
+    }
+
+    //read data
+    int read_from_file(string file) {
+
+
+        std::ifstream is("C:\\Users\\Geri\\CLionProjects\\lawless-sb\\ss.caff", std::ifstream::binary);
+
+        if (is) {
+            char id[1];
+            char length[8];
+
+            std::ifstream is("ss.caff", std::ifstream::binary);
+            if (is) {
+                is.read(id, sizeof(id));
+                is.read(length, sizeof(length));
+                int lastID = 0;
+
+                while (!is.eof()) {
+
+                    is.read(id, sizeof(id));
+                    is.read(length, sizeof(length));
+
+                    int idx = (int) id[0];
+
+                    unsigned long long int decimal_length = binaryToDecimal(length, sizeof(length));
+
+
+                    switch (idx) {
+                        case 1: {
+                            //header
+                            std::cout << "Header" << endl;
+                            if (lastID != 0) {
+                                cout << "Wrong block order before Header";
+                                // finish execution
+                                break;
+                            }
+                            if (!header_read) {
+                                char *header = new char[decimal_length];
+                                is.read(header, decimal_length);
+                                read_header(header, decimal_length);
+                                header_read = true;
+                                lastID = 1;
+                                delete[] header;
+                            } else {
+                                printf("Header already presented!\n");
+                            }
+
+                            break;
+                        }
+
+                        case 2: {
+                            //credits
+                            std::cout << "Credits" << std::endl;
+                            if (lastID != 1) {
+                                cout << "Wrong block order before Credits";
+                                break;
+                            }
+                            if (!credits_read) {
+                                char *credits = new char[decimal_length];
+                                is.read(credits, decimal_length);
+                                read_credits(credits, decimal_length);
+                                credits_read = true;
+                                lastID = 2;
+                                delete[] credits;
+                            } else {
+                                printf("Credits already presented!\n");
+                            }
+
+                            break;
+                        }
+
+                        case 3: {
+                            if (lastID != 2 && lastID != 3) {
+                                cout << "Wrong block order before Animations ";
+                                break;
+                            }
+                            std::cout << "Animations" << std::endl;
+
+                            // Read the whole animation block
+                            if (!animations_read) {
+                                char *animations = new char[decimal_length];
+                                is.read(animations, decimal_length);
+                                read_animations(animations, decimal_length);
+                                lastID = 3;
+                                delete[] animations;
+                            } else {
+                                printf("Animations already presented!\n");
+                            }
+                            break;
+                        }
+                        default: {
+                            break;
+                        }
+                    }
+                }
+
+                //}
+
+                /*// get length of file:
+                is.seekg (0, is.end);
+                int length = is.tellg();
+                is.seekg (0, is.beg);
+
+                // allocate memory:
+                char * buffer = new char [length];
+
+                // read data as a block:
+                is.read (buffer,length);
+
+                is.close();
+
+                // print content:
+                std::cout.write (buffer,length);*/
+
+            } else {
+                cout << "haha";
+            }
+
+            return 0;
+        }
+
+    };
+
     //write data
 
     //destructor
-    ~Caff(){}
+    ~Caff() {}
 };
+    int main() {
 
-int main() {
-
-    Caff caff;
-    caff.read_from_file("1.caff");
-
-    return 0;
-}
+        Ciff ciff;
+        ciff.createPPM();
+        return 0;
+    }
 
 // fájl beolvasása, és berakja osztályba CAFF, CIFF; bájtok szerinti sorrendben attribútom feltöltés, CIFF-ből képgenerálás, kell egy szöveges fájl, ami visszaadja a CAff és Ciff tartalmát
 
