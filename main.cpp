@@ -13,7 +13,7 @@ unsigned long long int binaryToDecimal(char* binary, int length)
     unsigned long long int decimal = 0;
     for(int i=length-1; 0 <=  i; --i) {
         decimal = decimal << 8;
-        decimal += (int)binary[i];
+        decimal += (unsigned char)binary[i];
     }
     return decimal;
 }
@@ -80,17 +80,6 @@ public:
 
     //constructor
     Ciff(){
-        Magic = "CIFF";
-        Header_size = 32;
-        Content_size = 23;
-        Width = 800;
-        Height = 600;
-        for(int w = 0; w < Width; ++w){
-            for(int h = 0; h < Height; ++h){
-                Pixel pixel = Pixel(w*200%256, h*300%256, w*h*450%256);
-                Pixels.push_back(pixel);
-            }
-        }
     }
 
     //getter and setter
@@ -171,6 +160,17 @@ public:
         }
         myfile.close();
 
+    }
+
+    void readContent(char *chars ) {
+        for(int i = 0; i < Width * Height; ++i) {
+            unsigned int rgb[3];
+            for(int j = 0; j < 3; ++j) {
+                rgb[j] = (unsigned char )*chars;
+                chars++;
+            }
+            Pixels.push_back(Pixel(rgb[0], rgb[1], rgb[2]));
+        }
     }
 
     //destructor
@@ -403,8 +403,11 @@ public:
 };
 
 int main() {
-
+    char pixels [12] = {0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255};
     Ciff ciff;
+    ciff.setWidth(2);
+    ciff.setHeight(2);
+    ciff.readContent(pixels);
     ciff.createPPM();
     return 0;
 }
