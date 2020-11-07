@@ -3,31 +3,11 @@
 #include <fstream>
 #include <algorithm>
 #include <cstring>
+#include <string>
 
 using namespace std;
 
 enum Id {header,credits,animation};
-
-int binaryToDecimal(int n)
-{
-    int num = n;
-    int dec_value = 0;
-
-    // Initializing base value to 1, i.e 2^0
-    int base = 1;
-
-    int temp = num;
-    while (temp) {
-        int last_digit = temp % 10;
-        temp = temp / 10;
-
-        dec_value += last_digit * base;
-
-        base = base * 2;
-    }
-
-    return dec_value;
-}
 
 class Pixel{
 private:
@@ -167,6 +147,8 @@ private:
     long long int Header_size;
     long long int Num_anim;
 
+    bool header_read = false;
+
     //credits
     short int Year;
     unsigned int Month;
@@ -175,10 +157,12 @@ private:
     unsigned int Minute;
     long long int Creator_len;
     string Creator;
+    bool credits_read = false;
 
     // animation
     long long int Duration;
     Ciff ciff;
+    bool animations_read;
 
 public:
 
@@ -290,63 +274,109 @@ public:
         Caff::ciff = ciff;
     }
 
+    unsigned long long int binaryToDecimal(char* binary, int length)
+    {
+        unsigned long long int decimal = 0;
+        for(int i=length-1; 0 <=  i; --i) {
+            decimal = decimal << 8;
+            decimal += (int)binary[i];
+        }
+        return decimal;
+    }
+
     //read data
     int read_from_file(string file){
 
-        char id[1];
-        char length[8];
 
-        std::ifstream is ("C:\\Users\\szoti\\CLionProjects\\untitled\\ss.caff", std::ifstream::binary);
+
+        std::ifstream is ("C:\\Users\\Geri\\CLionProjects\\lawless-sb\\ss.caff", std::ifstream::binary);
+
         if (is) {
-            is.read(id, sizeof(id));
-            is.read(length, sizeof(length));
+            char id[1];
+            char length[8];
 
-            //while(is.read(temp, sizeof(temp))) {
+            int lastID = 0;
+
+            while( !is.eof()) {
+
+                is.read(id, sizeof(id));
+                is.read(length, sizeof(length));
 
                 int idx = (int) id[0];
-                int decimal_length = 20;
 
-            //binary array to decimal number :O
-            // ezt normálisan meg kell írni
-            printf("%d", decimal_length);
+                unsigned long long int decimal_length = binaryToDecimal(length, sizeof(length));
+
+                //binary array to decimal number :O
+                // ezt normálisan meg kell írni
+                // printf("%d", decimal_length);
 
 
                 switch (idx) {
                     case 1: {
                         //header
-                        (printf("\negyes\n"));
-                        int header_size = decimal_length;
-                        char header[20];
-                        is.read(header, sizeof(header));
-                        for (int i = 0; i < sizeof(header); i++) {
-                            printf("%i", header[i]);
+                        std::cout<<"Header"<<endl;
+                        if(lastID != 0){
+                            cout<<"Wrong block order before Header";
+                            // finish execution
+                            break;
                         }
-                        printf("\n");
+                        if(!header_read) {
+                            char* header = new char[decimal_length];
+                            is.read(header, decimal_length);
+                            read_header(header, decimal_length);
+                            header_read = true;
+                            lastID = 1;
+                            delete [] header;
+                        } else {
+                           printf("Header already presented!\n");
+                        }
 
                         break;
                     }
 
                     case 2: {
                         //credits
-                        int credits_size = (int) length[1];
-                        //printf("%d", credits_size);
-                        char credits[credits_size];
-                        is.read(credits, sizeof(credits));
-
-                        for (int i = 0; i <= sizeof(credits); i++) {
-                            //printf("%c", credits[i]);
+                        std::cout << "Credits" << std::endl;
+                       //printf("%d", credits_size);
+                       if(lastID != 1){
+                           cout<<"Wrong block order before Credits";
+                           break;
+                       }
+                        if(!credits_read ) {
+                            char* credits = new char[decimal_length];
+                            is.read(credits, decimal_length);
+                            read_credits(credits, decimal_length);
+                            credits_read = true;
+                            lastID = 2;
+                            delete [] credits;
+                        } else {
+                            printf("Credits already presented!\n");
                         }
 
                         break;
                     }
 
                     case 3: {
+                        if(lastID != 2 && lastID != 3){
+                            cout<<"Wrong block order before Animations ";
+                            break;
+                        }
+                        if(!animations_read) {
+                            char* animations = new char[decimal_length];
+                            is.read(animations, decimal_length);
+                            read_animations(animations, decimal_length);
+                            lastID = 3;
+                            delete [] animations;
+                        } else {
+                            printf("Animations already presented!\n");
+                        }
                         break;
                     }
                     default: {
                         break;
                     }
                 }
+            }
 
             //}
 
@@ -375,6 +405,73 @@ public:
         return 0;
     }
 
+    void read_header(const char* chars, size_t length ){
+        string magic;
+        char h_length[8];
+        char num_anim[8];
+
+        for(int i = 0; i < length; i++){
+            if( i < 4) {
+               magic.append(1, chars[i]);
+            }
+            if(i>=4 && i <12){
+                h_length[i-4] = chars[i];
+            }
+
+            if(i>=12 && i < length){
+                num_anim[i-12] = chars[i];
+            }
+        }
+
+        setMagic(magic);
+        setHeaderSize(binaryToDecimal(h_length, sizeof(h_length)));
+        setNumAnim(binaryToDecimal(num_anim, sizeof(num_anim)));
+        std::cout<<Magic<<endl;
+        std::cout<<Header_size<<endl;
+        std::cout<<Num_anim<<endl;
+    }
+
+    void read_credits(char* chars, size_t length ) {
+        char Y[2];
+        char creator_length[8];
+        string creator;
+
+        Y[0] = chars[0];
+        Y[1] = chars[1];
+        setMonth(chars[2]);
+        setDay(chars[3]);
+        setHour(chars[4]);
+        setMinute(chars[5]);
+        setYear((short)binaryToDecimal(Y, 2));
+
+        for(int i = 6; i < 14; i++){
+            creator_length[i-6] = chars[i];
+        }
+
+        int c_length = (int)binaryToDecimal(creator_length, sizeof(creator_length));
+
+        for(int i = 14; i < length; i++){
+            creator.append(1, (char)chars[i]);
+        }
+
+        if(creator.length() != c_length){
+            std::cout<<"Nem akkora mint kéne";
+        }
+
+        setCreator(creator);
+        std::cout << Year << " " << Month <<" "<< Day <<" "<<Hour<<":"<<Minute<<endl;
+        std::cout << Creator <<std::endl;
+    }
+
+    void read_animations(char* chars, size_t length ) {
+
+        for(int i = 0; i < getNumAnim(); i++){
+            char duration[8];
+
+
+        }
+
+    }
     //write data
 
     //destructor
