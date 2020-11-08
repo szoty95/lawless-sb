@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/szoti/CLionProjects/untitled/main.cpp
+C:/Users/szoti/CLionProjects/untitled/lawless-sb/main.cpp
 iostream
 -
 vector
@@ -16,5 +16,7 @@ fstream
 algorithm
 -
 cstring
+-
+string
 -
 
