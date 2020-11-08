@@ -138,9 +138,9 @@ public:
         Pixels = pixels;
     }
 
-    void createPPM() {
+    void createPPM(char *filename) {
         ofstream myfile;
-        myfile.open("test.ppm");
+        myfile.open(strcat(filename,".ppm"));
         myfile << "P3" << endl;
         myfile << Width << endl;
         myfile << Height << endl;
@@ -326,7 +326,7 @@ public:
     }
 
     //read data
-    int read_from_file(char *file){
+    int read_from_file(char *file, char *filename){
 
         std::ifstream is (file, std::ifstream::binary);
 
@@ -401,7 +401,7 @@ public:
                         if(!animations_read) {
                             char* animations = new char[decimal_length];
                             is.read(animations, decimal_length);
-                            read_animations(animations, decimal_length);
+                            read_animations(animations, decimal_length, filename);
                             animations_read = true;
                             lastID = 3;
                             delete [] animations;
@@ -498,7 +498,7 @@ public:
     }
 
     // Get Ciff from the read byte array
-    void read_animations(char* chars, size_t length ) {
+    void read_animations(char* chars, size_t length , char *filename) {
         char duration[8];
         for(int j = 0; j < sizeof(duration); j++){
             duration[j] = *chars;
@@ -507,12 +507,12 @@ public:
 
         cout << chars << endl;
 
-        parseCiff(chars);
+        parseCiff(chars, filename);
 
     }
 
     // Get CIFF data from byte array
-    void parseCiff(char* chars){
+    void parseCiff(char* chars, char *filename){
         string magic;
         char h_size[8];
         char content_size[8];
@@ -597,7 +597,7 @@ public:
         l_ciff.setCaption(caption);
         l_ciff.setTags(tags);
         l_ciff.readContent(pixel);
-        l_ciff.createPPM();
+        l_ciff.createPPM(filename);
         cout<<"Header size: "<<binaryToDecimal(h_size, 8)<<endl;
         cout<<"Content Size: "<<binaryToDecimal(content_size, 8)<<endl;
         cout<<"Width: "<<binaryToDecimal(width, 8)<<endl;
@@ -616,10 +616,13 @@ public:
     ~Caff(){}
 };
 
-int main() {
+int main(int argc, char* argv[]) {
 
+    cout<< argv[0] <<endl;
+    cout<< argv[1] <<endl;
+    cout<< argv[2] <<endl;
     Caff caff;
-    caff.read_from_file("C:\\Users\\szoti\\CLionProjects\\untitled\\lawless-sb\\ss.caff");
+    caff.read_from_file(argv[1], argv[2]);
 
     return 0;
 }
