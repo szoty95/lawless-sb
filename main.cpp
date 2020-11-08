@@ -162,7 +162,7 @@ private:
     // animation
     long long int Duration;
     Ciff ciff;
-    bool animations_read;
+    bool animations_read = false;
 
 public:
 
@@ -279,7 +279,7 @@ public:
         unsigned long long int decimal = 0;
         for(int i=length-1; 0 <=  i; --i) {
             decimal = decimal << 8;
-            decimal += (int)binary[i];
+            decimal += (unsigned char)binary[i];
         }
         return decimal;
     }
@@ -305,10 +305,6 @@ public:
                 int idx = (int) id[0];
 
                 unsigned long long int decimal_length = binaryToDecimal(length, sizeof(length));
-
-                //binary array to decimal number :O
-                // ezt normálisan meg kell írni
-                // printf("%d", decimal_length);
 
 
                 switch (idx) {
@@ -336,8 +332,7 @@ public:
 
                     case 2: {
                         //credits
-                        std::cout << "Credits" << std::endl;
-                       //printf("%d", credits_size);
+                       std::cout << "Credits" << std::endl;
                        if(lastID != 1){
                            cout<<"Wrong block order before Credits";
                            break;
@@ -361,6 +356,9 @@ public:
                             cout<<"Wrong block order before Animations ";
                             break;
                         }
+                        std::cout << "Animations" << std::endl;
+
+                        // Read the whole animation block
                         if(!animations_read) {
                             char* animations = new char[decimal_length];
                             is.read(animations, decimal_length);
@@ -463,13 +461,103 @@ public:
         std::cout << Creator <<std::endl;
     }
 
+    // Get Ciff from the read byte array
     void read_animations(char* chars, size_t length ) {
+        char duration[8];
+        for(int j = 0; j < sizeof(duration); j++){
+              duration[j] = *chars;
+              chars++;
+        }
 
-        for(int i = 0; i < getNumAnim(); i++){
-            char duration[8];
+        parseCiff(chars);
 
+    }
+
+    // Get CIFF data from byte array
+    void parseCiff(char* chars){
+        string magic;
+        char h_size[8];
+        char content_size[8];
+        char width[8];
+        char height[8];
+
+        int header_at = 0;
+
+        string caption;
+        vector<string> tags;
+
+        for(int i = 0; i < 4; i++){
+            magic.append(1, *(chars));
+            chars++;
+            header_at++;
+        }
+
+        std::cout<<magic<<endl;
+
+        for(int i = 0; i < 8; i++){
+            h_size[i] = *(chars);
+            chars++;
+            header_at++;
+        }
+
+        for(int i = 0; i < 8; i++){
+            content_size[i] = *chars;
+            chars++;
+            header_at++;
+        }
+
+        for(int i = 0; i < 8; i++){
+            width[i] = *chars;
+            chars++;
+            header_at++;
+        }
+
+        for(int i = 0; i < 8; i++){
+            height[i] = *chars;
+            chars++;
+            header_at++;
+        }
+
+        while((*chars) != '\n'){
+            caption.append(1, *chars);
+            chars++;
+            header_at++;
+        }
+        // step over \n
+        chars++;
+        header_at++;
+
+        while(header_at < binaryToDecimal(h_size, 8)) {
+            string temp;
+            while ((*chars) != '\0') {
+                temp.append(1, *chars);
+                chars++;
+                header_at++;
+            }
+            // step over \0
+            chars++;
+            header_at++;
+            tags.push_back(temp);
 
         }
+
+        Ciff l_ciff;
+        l_ciff.setHeaderSize(binaryToDecimal(h_size, 8));
+        l_ciff.setContentSize(binaryToDecimal(content_size, 8));
+        l_ciff.setWidth(binaryToDecimal(width, 8));
+        l_ciff.setHeight(binaryToDecimal(height, 8));
+        l_ciff.setCaption(caption);
+        l_ciff.setTags(tags);
+        cout<<"Header size: "<<binaryToDecimal(h_size, 8)<<endl;
+        cout<<"Content Size: "<<binaryToDecimal(content_size, 8)<<endl;
+        cout<<"Width: "<<binaryToDecimal(width, 8)<<endl;
+        cout<<"Height: "<<binaryToDecimal(height, 8)<<endl;
+        cout<<"Caption: "<<caption<<endl;
+
+        for(const string& s : tags){
+            cout<<s<<endl;
+        }
+
 
     }
     //write data
@@ -487,3 +575,8 @@ int main() {
 }
 
 // fájl beolvasása, és berakja osztályba CAFF, CIFF; bájtok szerinti sorrendben attribútom feltöltés, CIFF-ből képgenerálás, kell egy szöveges fájl, ami visszaadja a CAff és Ciff tartalmát
+
+// TODO: CIFF Contentjének beolvasása (kiszedés a bájt tömbből), Headerje megvan
+// TODO: Végén van még valamiért van a fájlban pár bájt a fájlból és tovább megy így errorral áll le, mert még akar olvasni, de beolvassa a szükséges cuccokat
+// TODO: Most még nem hívja meg a konvertáló függvényt
+// TODO: Ha el akarjuk tárolni az összes CIFF-et meg kell oldani, egyelőre egyesével beolvassa és ennyi, nem rakja be sehova.
