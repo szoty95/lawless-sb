@@ -7,13 +7,18 @@
 //----------------------
 // ReSharper disable InconsistentNaming
 
-export interface IClient {
+export interface IAuthClient {
     /**
      * Login the user
      * @param body (optional)
      * @return successful operation
      */
     login(body: LoginReq | null | undefined): Promise<LoginResp>;
+    /**
+     * Get the user
+     * @return successful operation
+     */
+    me(): Promise<UserResp>;
     /**
      * Register a user
      * @param body (optional)
@@ -22,7 +27,7 @@ export interface IClient {
     register(body: RegisterReq | null | undefined): Promise<RegisterResp>;
 }
 
-export class Client implements IClient {
+export class AuthClient implements IAuthClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -77,6 +82,45 @@ export class Client implements IClient {
     }
 
     /**
+     * Get the user
+     * @return successful operation
+     */
+    me(signal?: AbortSignal | undefined): Promise<UserResp> {
+        let url_ = this.baseUrl + "/api/auth/me";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMe(_response);
+        });
+    }
+
+    protected processMe(response: Response): Promise<UserResp> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = UserResp.fromJS(resultData200);
+                return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UserResp>(<any>null);
+    }
+
+    /**
      * Register a user
      * @param body (optional)
      * @return successful operation
@@ -119,6 +163,154 @@ export class Client implements IClient {
         }
         return Promise.resolve<RegisterResp>(<any>null);
     }
+}
+
+export interface ICaffClient {
+    /**
+     * Create and process caff
+     * @param body (optional)
+     * @return successful operation
+     */
+    create(body: CreateCaffReq | null | undefined): Promise<CreateCaffResp>;
+}
+
+export class CaffClient implements ICaffClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * Create and process caff
+     * @param body (optional)
+     * @return successful operation
+     */
+    create(body: CreateCaffReq | null | undefined, signal?: AbortSignal | undefined): Promise<CreateCaffResp> {
+        let url_ = this.baseUrl + "/api/caff/create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreate(_response);
+        });
+    }
+
+    protected processCreate(response: Response): Promise<CreateCaffResp> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = CreateCaffResp.fromJS(resultData200);
+                return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CreateCaffResp>(<any>null);
+    }
+}
+
+export class CreateCaffReq implements ICreateCaffReq {
+    name?: string | undefined;
+    description?: string | undefined;
+    price?: number | undefined;
+    caffFile?: any | undefined;
+
+    constructor(data?: ICreateCaffReq) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.price = _data["price"];
+            this.caffFile = _data["caffFile"];
+        }
+    }
+
+    static fromJS(data: any): CreateCaffReq {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateCaffReq();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["price"] = this.price;
+        data["caffFile"] = this.caffFile;
+        return data;
+    }
+}
+
+export interface ICreateCaffReq {
+    name?: string | undefined;
+    description?: string | undefined;
+    price?: number | undefined;
+    caffFile?: any | undefined;
+}
+
+export class CreateCaffResp implements ICreateCaffResp {
+    id?: number | undefined;
+
+    constructor(data?: ICreateCaffResp) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): CreateCaffResp {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateCaffResp();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        return data;
+    }
+}
+
+export interface ICreateCaffResp {
+    id?: number | undefined;
 }
 
 export class LoginReq implements ILoginReq {
@@ -168,6 +360,7 @@ export interface ILoginReq {
 export class LoginResp implements ILoginResp {
     token?: string | undefined;
     userPersonalData?: UserPersonalData | undefined;
+    roles?: Role[] | undefined;
 
     constructor(data?: ILoginResp) {
         if (data) {
@@ -182,6 +375,11 @@ export class LoginResp implements ILoginResp {
         if (_data) {
             this.token = _data["token"];
             this.userPersonalData = _data["userPersonalData"] ? UserPersonalData.fromJS(_data["userPersonalData"]) : <any>undefined;
+            if (Array.isArray(_data["roles"])) {
+                this.roles = [] as any;
+                for (let item of _data["roles"])
+                    this.roles!.push(Role.fromJS(item));
+            }
         }
     }
 
@@ -196,6 +394,11 @@ export class LoginResp implements ILoginResp {
         data = typeof data === 'object' ? data : {};
         data["token"] = this.token;
         data["userPersonalData"] = this.userPersonalData ? this.userPersonalData.toJSON() : <any>undefined;
+        if (Array.isArray(this.roles)) {
+            data["roles"] = [];
+            for (let item of this.roles)
+                data["roles"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -203,6 +406,7 @@ export class LoginResp implements ILoginResp {
 export interface ILoginResp {
     token?: string | undefined;
     userPersonalData?: UserPersonalData | undefined;
+    roles?: Role[] | undefined;
 }
 
 export class RegisterReq implements IRegisterReq {
@@ -281,6 +485,42 @@ export interface IRegisterResp {
     value?: string | undefined;
 }
 
+export class Role implements IRole {
+    name?: RoleName | undefined;
+
+    constructor(data?: IRole) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): Role {
+        data = typeof data === 'object' ? data : {};
+        let result = new Role();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface IRole {
+    name?: RoleName | undefined;
+}
+
 export class UserPersonalData implements IUserPersonalData {
     username?: string | undefined;
     email?: string | undefined;
@@ -327,6 +567,59 @@ export interface IUserPersonalData {
     email?: string | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
+}
+
+export class UserResp implements IUserResp {
+    userPersonalData?: UserPersonalData | undefined;
+    roles?: Role[] | undefined;
+
+    constructor(data?: IUserResp) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userPersonalData = _data["userPersonalData"] ? UserPersonalData.fromJS(_data["userPersonalData"]) : <any>undefined;
+            if (Array.isArray(_data["roles"])) {
+                this.roles = [] as any;
+                for (let item of _data["roles"])
+                    this.roles!.push(Role.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): UserResp {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserResp();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userPersonalData"] = this.userPersonalData ? this.userPersonalData.toJSON() : <any>undefined;
+        if (Array.isArray(this.roles)) {
+            data["roles"] = [];
+            for (let item of this.roles)
+                data["roles"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IUserResp {
+    userPersonalData?: UserPersonalData | undefined;
+    roles?: Role[] | undefined;
+}
+
+export enum RoleName {
+    ROLE_USER = "ROLE_USER",
+    ROLE_ADMIN = "ROLE_ADMIN",
 }
 
 export class LawlessException extends Error {
