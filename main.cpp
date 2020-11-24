@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <cstring>
 #include <string>
+#include <list>
+#include <stdio.h>
 
 using namespace std;
 
@@ -138,27 +140,37 @@ public:
         Pixels = pixels;
     }
 
-    void createPPM(char *filename) {
+    void createPPM(char *filename, char *log) {
         ofstream myfile;
-        myfile.open(strcat(filename,".ppm"));
-        myfile << "P3" << endl;
-        myfile << Width << endl;
-        myfile << Height << endl;
-        myfile << 255 << endl;
-        cout << Pixels.size() << endl;
+        /// new addition for multiple ciff files
+            cout<<strlen(filename)<<endl;
+
+            myfile.open(strcat(filename, ".ppm"));
+            myfile << "P3" << endl;
+            myfile << Width << endl;
+            myfile << Height << endl;
+            myfile << 255 << endl;
+            cout << Pixels.size() << endl;
 //        int i = 0;
 //        for (Pixel pixel : Pixels) {
 //            myfile << pixel.getRed() << " " << pixel.getGreen() << " " << pixel.getBlue() << endl;
 //            cout << i << endl;
 //            i++;
 //        }
-        for (int i = 0; i < Pixels.size(); i++) {
-            myfile << Pixels[i].getRed() << " " << Pixels[i].getGreen() << " " << Pixels[i].getBlue() << endl;
+            for (int i = 0; i < Pixels.size(); i++) {
+                myfile << Pixels[i].getRed() << " " << Pixels[i].getGreen() << " " << Pixels[i].getBlue() << endl;
 //            cout << i << endl;
 //            i++;
-        }
-        myfile.close();
+            }
+            myfile.close();
 
+            myfile.open(strcat(log,".txt"));
+            myfile << Caption <<endl;
+            myfile << Width <<endl;
+            myfile << Height <<endl;
+            for(int j=0; j<Tags.size(); j++){
+                myfile<< Tags.data()[j] <<endl;
+            }
     }
 
     void readContent(char *chars ) {
@@ -202,7 +214,7 @@ private:
 
     // animation
     long long int Duration;
-    Ciff ciff;
+    list<Ciff> ciffs;
     bool animations_read = false;
 
 public:
@@ -307,12 +319,8 @@ public:
         Duration = duration;
     }
 
-    const Ciff &getCiff() const {
-        return ciff;
-    }
-
-    void setCiff(const Ciff &ciff) {
-        Caff::ciff = ciff;
+    const list<Ciff> &getCiff() const {
+        return ciffs;
     }
 
     unsigned long long int binaryToDecimal(char* binary, int length)
@@ -326,7 +334,7 @@ public:
     }
 
     //read data
-    int read_from_file(char *file, char *filename){
+    int read_from_file(char *file, char *filename, char *log){
 
         std::ifstream is (file, std::ifstream::binary);
 
@@ -350,21 +358,21 @@ public:
                     case 1: {
                         //header
                         std::cout<<"Header"<<endl;
-                        if(lastID != 0){
-                            cout<<"Wrong block order before Header";
-                            // finish execution
-                            break;
-                        }
-                        if(!header_read) {
+//                        if(lastID != 0){
+//                            cout<<"Wrong block order before Header";
+//                            // finish execution
+//                            break;
+//                        }
+                        //if(!header_read) {
                             char* header = new char[decimal_length];
                             is.read(header, decimal_length);
                             read_header(header, decimal_length);
                             header_read = true;
                             lastID = 1;
                             delete [] header;
-                        } else {
-                            printf("Header already presented!\n");
-                        }
+//                        } else {
+//                            printf("Header already presented!\n");
+//                        }
 
                         break;
                     }
@@ -372,42 +380,42 @@ public:
                     case 2: {
                         //credits
                         std::cout << "Credits" << std::endl;
-                        if(lastID != 1){
-                            cout<<"Wrong block order before Credits";
-                            break;
-                        }
-                        if(!credits_read ) {
+//                        if(lastID != 1){
+//                            cout<<"Wrong block order before Credits";
+//                            break;
+//                        }
+                        //if(!credits_read ) {
                             char* credits = new char[decimal_length];
                             is.read(credits, decimal_length);
                             read_credits(credits, decimal_length);
                             credits_read = true;
                             lastID = 2;
                             delete [] credits;
-                        } else {
-                            printf("Credits already presented!\n");
-                        }
+                        //} else {
+                         //   printf("Credits already presented!\n");
+                       // }
 
                         break;
                     }
 
                     case 3: {
-                        if(lastID != 2 && lastID != 3){
-                            cout<<"Wrong block order before Animations ";
-                            break;
-                        }
+//                        if(lastID != 2 && lastID != 3){
+//                            cout<<"Wrong block order before Animations ";
+//                            break;
+//                        }
                         std::cout << "Animations" << std::endl;
 
                         // Read the whole animation block
-                        if(!animations_read) {
+                        //if(!animations_read) {
                             char* animations = new char[decimal_length];
                             is.read(animations, decimal_length);
-                            read_animations(animations, decimal_length, filename);
+                            read_animations(animations, decimal_length, filename, log);
                             animations_read = true;
                             lastID = 3;
                             delete [] animations;
-                        } else {
-                            printf("Animations already presented!\n");
-                        }
+                        //} else {
+                         //   printf("Animations already presented!\n");
+                        //}
                         break;
                     }
                     default: {
@@ -463,6 +471,7 @@ public:
         std::cout<<Magic<<endl;
         std::cout<<Header_size<<endl;
         std::cout<<Num_anim<<endl;
+
     }
 
     void read_credits(char* chars, size_t length ) {
@@ -498,7 +507,7 @@ public:
     }
 
     // Get Ciff from the read byte array
-    void read_animations(char* chars, size_t length , char *filename) {
+    void read_animations(char* chars, size_t length , char *filename, char *log) {
         char duration[8];
         for(int j = 0; j < sizeof(duration); j++){
             duration[j] = *chars;
@@ -507,12 +516,12 @@ public:
 
         cout << chars << endl;
 
-        parseCiff(chars, filename);
+        parseCiff(chars, filename, log);
 
     }
 
     // Get CIFF data from byte array
-    void parseCiff(char* chars, char *filename){
+    void parseCiff(char* chars, char *filename, char *log){
         string magic;
         char h_size[8];
         char content_size[8];
@@ -597,13 +606,17 @@ public:
         l_ciff.setCaption(caption);
         l_ciff.setTags(tags);
         l_ciff.readContent(pixel);
-        l_ciff.createPPM(filename);
+
         cout<<"Header size: "<<binaryToDecimal(h_size, 8)<<endl;
         cout<<"Content Size: "<<binaryToDecimal(content_size, 8)<<endl;
         cout<<"Width: "<<binaryToDecimal(width, 8)<<endl;
         cout<<"Height: "<<binaryToDecimal(height, 8)<<endl;
         cout<<"Caption: "<<caption<<endl;
 
+        l_ciff.createPPM(filename, log);
+
+        /// new addition: for multiple ciff files
+        ciffs.push_back(l_ciff);
 //        for(const string& s : tags){
 //            cout<<s<<endl;
 //        }
@@ -622,7 +635,7 @@ int main(int argc, char* argv[]) {
     cout<< argv[1] <<endl;
     cout<< argv[2] <<endl;
     Caff caff;
-    caff.read_from_file(argv[1], argv[2]);
+    caff.read_from_file(argv[1], argv[2], argv[3]);
 
     return 0;
 }
