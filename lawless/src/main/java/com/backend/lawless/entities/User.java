@@ -25,6 +25,8 @@ public class User {
 
     private byte[] picture;
 
+    //CAFF files
+
     @ManyToMany
     @JoinTable(name = "users_roles",
             joinColumns = {
