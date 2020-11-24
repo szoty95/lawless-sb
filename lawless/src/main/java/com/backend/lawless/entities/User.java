@@ -37,6 +37,9 @@ public class User {
             })
     private List<Role> roles;
 
+    @OneToMany
+    private List<Order> orders;
+
     public User(String username, String firstName, String lastName, String email, String password) {
         this.username = username;
         this.firstName = firstName;

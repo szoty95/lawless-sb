@@ -16,15 +16,16 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private Long userId;
+
     private String message;
     private Date timeStamp;
 
-
     // connections to other tables
-    @ManyToOne
-    Caff[] caffs;
-
-    @ManyToOne
-    User[] users;
+//    @ManyToOne
+//    Caff[] caffs;
+//
+//    @ManyToOne
+//    User[] users;
 
 }

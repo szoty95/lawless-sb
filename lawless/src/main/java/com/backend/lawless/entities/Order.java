@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -18,11 +19,17 @@ public class Order {
     private Long id;
 
     private double price;
+    private boolean paid;
     private Date timeStamp;
 
     //connections to other tables
     @ManyToMany
-    private Caff caff;
-    @ManyToOne
-    private User user;
+    @JoinTable(name = "orders_caffs",
+            joinColumns = {
+                    @JoinColumn(name = "order_id", referencedColumnName = "id", nullable = false, updatable = false)
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "caff_id", referencedColumnName = "id", nullable = false, updatable = false)
+            })
+    private List<Caff> caff;
 }

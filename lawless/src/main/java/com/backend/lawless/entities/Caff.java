@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.File;
+import java.util.List;
 
 @Entity
 @Data
@@ -13,7 +14,7 @@ import java.io.File;
         })
 public class Caff {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private double price;
@@ -22,7 +23,10 @@ public class Caff {
 
     //connection to other tables
     @OneToMany
-    Ciff[] ciffs;
+    private List<Ciff> ciffs;
+
+    @OneToMany()
+    private List<Comment> comments;
 
 
 }
