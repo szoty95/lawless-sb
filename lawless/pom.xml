@@ -117,29 +117,28 @@
 			</plugin>
 
 
-			<plugin>
-				<groupId>io.swagger</groupId>
-				<artifactId>swagger-codegen-maven-plugin</artifactId>
-				<version>2.4.13</version>
-				<executions>
-					<execution>
-						<phase>compile</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/swagger-ui/swagger.json</inputSpec>
-							<language>typescript-fetch</language>
-							<configOptions>
-								<nodeVersion>12</nodeVersion>
-<!--								<ngVersion>9</ngVersion>-->
-								<sourceFolder>lawless-frontend</sourceFolder>
-							</configOptions>
-							<output>${project.basedir}/lawless-frontend/src/swagger</output>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+<!--			<plugin>-->
+<!--				<groupId>io.swagger</groupId>-->
+<!--				<artifactId>swagger-codegen-maven-plugin</artifactId>-->
+<!--				<version>2.4.13</version>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<phase>compile</phase>-->
+<!--						<goals>-->
+<!--							<goal>generate</goal>-->
+<!--						</goals>-->
+<!--						<configuration>-->
+<!--							<inputSpec>${project.basedir}/src/main/resources/swagger-ui/swagger.json</inputSpec>-->
+<!--							<language>typescript-fetch</language>-->
+<!--							<configOptions>-->
+<!--								<nodeVersion>12</nodeVersion>-->
+<!--								<sourceFolder>lawless-frontend</sourceFolder>-->
+<!--							</configOptions>-->
+<!--							<output>${project.basedir}/lawless-frontend/src/swagger</output>-->
+<!--						</configuration>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
 
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
