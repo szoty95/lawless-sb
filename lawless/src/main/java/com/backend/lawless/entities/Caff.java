@@ -18,6 +18,8 @@ public class Caff {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long userId;
+
     private String name;
 
     private String description;

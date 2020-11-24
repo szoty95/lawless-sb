@@ -101,7 +101,8 @@ public class AuthServiceImpl implements AuthService {
                 new UserPersonalData(user.getUsername(),
                         user.getEmail(),
                         user.getFirstName(),
-                        user.getLastName()));
+                        user.getLastName()),
+                ModelMapper.beToDto(user.getRoles()));
     }
 
     @Override
