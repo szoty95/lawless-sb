@@ -7,6 +7,7 @@ import com.backend.lawless.dtos.requests.LoginRequest;
 import com.backend.lawless.dtos.requests.RegisterRequest;
 import com.backend.lawless.dtos.responses.LoginResponse;
 import com.backend.lawless.dtos.responses.RegisterResponse;
+import com.backend.lawless.dtos.responses.UserResponse;
 import com.backend.lawless.entities.ERole;
 import com.backend.lawless.entities.Role;
 import com.backend.lawless.entities.User;
@@ -19,6 +20,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -99,5 +101,19 @@ public class AuthServiceImpl implements AuthService {
                         user.getEmail(),
                         user.getFirstName(),
                         user.getLastName()));
+    }
+
+    @Override
+    public UserResponse getUser(UserDetails userDetails) throws LawlessException {
+        if (userRepository.existsByUsername(userDetails.getUsername())) {
+            User user = userRepository.findByUsername(userDetails.getUsername());
+            return new UserResponse(new UserPersonalData(
+                    user.getUsername(),
+                    user.getEmail(),
+                    user.getFirstName(),
+                    user.getLastName()));
+        } else {
+            throw new LawlessException("The requested user is not in the database");
+        }
     }
 }
