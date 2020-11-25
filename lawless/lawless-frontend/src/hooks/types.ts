@@ -5,11 +5,11 @@ export interface ResponseData<T> {
 }
 
 export interface RequestArgs<T = any, R = any> {
-  request: (params: RequestParams<T>) => Promise<ResponseData<R>> | undefined;
-  initialData?: R;
+  request: (body: RequestParams<T>) => Promise<R> | undefined;
+  initialData?: R | undefined;
   initialParams?: RequestParams<T>;
 }
 
 export type RequestParams<T = any> = T | null | undefined;
 
-export type Refetch = (params?: RequestParams) => void;
+export type Refetch<T> = (params?: RequestParams<T>) => void;

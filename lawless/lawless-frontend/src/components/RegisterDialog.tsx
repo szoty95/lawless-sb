@@ -9,15 +9,8 @@ import { useFormik } from "formik";
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import * as yup from "yup";
-import {
-  Client,
-  IClient,
-  IRegisterReq,
-  IUserPersonalData,
-  LoginReq,
-  RegisterReq,
-  UserPersonalData,
-} from "../swagger";
+import { useRegister } from "../hooks/useRegister";
+import { RegisterReq, UserPersonalData } from "../swagger";
 
 interface RegisterDialogProps {
   open: boolean;
@@ -43,32 +36,25 @@ const schema = yup.object({
 });
 
 const RegisterDialog: React.FC<RegisterDialogProps> = ({ open, setOpen }) => {
+  const [result, register] = useRegister();
   useEffect(() => {
-    const client: IClient = new Client("http://localhost:8080");
     const personalData: UserPersonalData = new UserPersonalData({
-      username: "xddddasd",
-      email: "asd@xdddddasd.hu",
-      firstName: "xdddasd",
+      username: "xdaasdd",
+      email: "asd@xasdasdddd.hu",
+      firstName: "asdasd",
       lastName: "xdddasd",
     });
     const req: RegisterReq = new RegisterReq({
       userPersonalData: personalData,
       password: "12345678",
     });
-    client
-      .register(req)
-      .then((resp) => console.log(resp))
-      .catch((err) => {
-        console.log(err.response);
-      })
-      .finally(() => console.log("yuhuuu"));
-  }, []);
-  /*   const loginReq: LoginReq = new LoginReq({
-    username: 'asd',
-    email: '',
-    password: '12345678'
-  });
-  client.login(loginReq).then((resp) => console.log(resp)).finally(() => console.log('logged in')); */
+    register(req);
+  }, [register]);
+
+  useEffect(() => {
+    console.log(result);
+  }, [result]);
+
   const formik = useFormik({
     initialValues: {
       userName: "",

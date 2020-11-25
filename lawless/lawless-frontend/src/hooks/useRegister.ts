@@ -1,7 +1,11 @@
+import { RegisterReq, RegisterResp } from "../swagger";
 import { useClientContext } from "./useClientContext";
+import useRequest from "./useRequest";
 
 export const useRegister = () => {
   const { client } = useClientContext();
 
-  return client?.register;
+  return useRequest<RegisterReq, RegisterResp>({
+    request: client.auth.register,
+  });
 };
