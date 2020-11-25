@@ -10,9 +10,8 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-@ApiModel(value = "LoginResp")
-public class LoginResponse {
-    private String token;
+@ApiModel(value = "UserResp")
+public class UserResponse {
     private UserPersonalData userPersonalData;
     private List<RoleDto> roles;
 }

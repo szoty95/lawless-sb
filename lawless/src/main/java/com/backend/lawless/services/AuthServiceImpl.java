@@ -7,10 +7,12 @@ import com.backend.lawless.dtos.requests.LoginRequest;
 import com.backend.lawless.dtos.requests.RegisterRequest;
 import com.backend.lawless.dtos.responses.LoginResponse;
 import com.backend.lawless.dtos.responses.RegisterResponse;
+import com.backend.lawless.dtos.responses.UserResponse;
 import com.backend.lawless.entities.ERole;
 import com.backend.lawless.entities.Role;
 import com.backend.lawless.entities.User;
 import com.backend.lawless.exceptions.LawlessException;
+import com.backend.lawless.mapping.ModelMapper;
 import com.backend.lawless.security.jwt.JwtUtils;
 import com.backend.lawless.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -98,6 +101,22 @@ public class AuthServiceImpl implements AuthService {
                 new UserPersonalData(user.getUsername(),
                         user.getEmail(),
                         user.getFirstName(),
-                        user.getLastName()));
+                        user.getLastName()),
+                ModelMapper.beToDto(user.getRoles()));
+    }
+
+    @Override
+    public UserResponse getUser(UserDetails userDetails) throws LawlessException {
+        if (userRepository.existsByUsername(userDetails.getUsername())) {
+            User user = userRepository.findByUsername(userDetails.getUsername());
+            return new UserResponse(new UserPersonalData(
+                    user.getUsername(),
+                    user.getEmail(),
+                    user.getFirstName(),
+                    user.getLastName()),
+                    ModelMapper.beToDto(user.getRoles()));
+        } else {
+            throw new LawlessException("The requested user is not in the database");
+        }
     }
 }

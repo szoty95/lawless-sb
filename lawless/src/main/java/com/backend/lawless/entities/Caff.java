@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -16,6 +17,14 @@ public class Caff {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private Long userId;
+
+    private String name;
+
+    private String description;
+
+    private Date uploaded;
 
     private double price;
     //Caff file
