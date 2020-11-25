@@ -6,10 +6,18 @@ import {
   TextField,
 } from "@material-ui/core";
 import { useFormik } from "formik";
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import * as yup from "yup";
-import {Client, IClient, IRegisterReq, IUserPersonalData, LoginReq, RegisterReq, UserPersonalData} from "../swagger";
+import {
+  Client,
+  IClient,
+  IRegisterReq,
+  IUserPersonalData,
+  LoginReq,
+  RegisterReq,
+  UserPersonalData,
+} from "../swagger";
 
 interface RegisterDialogProps {
   open: boolean;
@@ -35,24 +43,32 @@ const schema = yup.object({
 });
 
 const RegisterDialog: React.FC<RegisterDialogProps> = ({ open, setOpen }) => {
-  const client: IClient = new Client('http://localhost:8080');
-  // const personalData: UserPersonalData = new UserPersonalData({
-  //   username: 'asd',
-  //   email: 'asd@asd.hu',
-  //   firstName: 'asd',
-  //   lastName: 'ast'
-  // });
-  // const req: RegisterReq =  new RegisterReq({
-  //       userPersonalData: personalData,
-  //       password: '12345678'
-  //     });
-  // client.register(req).then((resp) => console.log(resp)).finally(() => console.log('yuhuuu'));
-  const loginReq: LoginReq = new LoginReq({
+  useEffect(() => {
+    const client: IClient = new Client("http://localhost:8080");
+    const personalData: UserPersonalData = new UserPersonalData({
+      username: "xddddasd",
+      email: "asd@xdddddasd.hu",
+      firstName: "xdddasd",
+      lastName: "xdddasd",
+    });
+    const req: RegisterReq = new RegisterReq({
+      userPersonalData: personalData,
+      password: "12345678",
+    });
+    client
+      .register(req)
+      .then((resp) => console.log(resp))
+      .catch((err) => {
+        console.log(err.response);
+      })
+      .finally(() => console.log("yuhuuu"));
+  }, []);
+  /*   const loginReq: LoginReq = new LoginReq({
     username: 'asd',
     email: '',
     password: '12345678'
   });
-  client.login(loginReq).then((resp) => console.log(resp)).finally(() => console.log('logged in'));
+  client.login(loginReq).then((resp) => console.log(resp)).finally(() => console.log('logged in')); */
   const formik = useFormik({
     initialValues: {
       userName: "",

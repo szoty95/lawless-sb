@@ -1,4 +1,3 @@
-import { LoginReq } from "../swagger";
 import { useClientContext } from "./useClientContext";
 
 export const useRegister = () => {

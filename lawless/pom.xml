@@ -117,7 +117,8 @@
 			</plugin>
 
 
-			<plugin>
+			<!-- 
+				<plugin>
 				<groupId>io.swagger</groupId>
 				<artifactId>swagger-codegen-maven-plugin</artifactId>
 				<version>2.4.13</version>
@@ -132,14 +133,14 @@
 							<language>typescript-fetch</language>
 							<configOptions>
 								<nodeVersion>12</nodeVersion>
-<!--								<ngVersion>9</ngVersion>-->
+											<ngVersion>9</ngVersion>
 								<sourceFolder>lawless-frontend</sourceFolder>
 							</configOptions>
 							<output>${project.basedir}/lawless-frontend/src/swagger</output>
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin> -->
 
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
