@@ -9,7 +9,7 @@ function useRequest<T = any, R = any>({
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [fetching, setFetching] = useState(false);
-  const [requestParams, setRequestParams] = useState<T | null>(null);
+  const [requestParams, setRequestParams] = useState<T | undefined>(undefined);
 
   const refetch = useCallback((newParams?) => {
     setRequestParams(newParams ?? {});
@@ -26,7 +26,7 @@ function useRequest<T = any, R = any>({
 
         console.log(result);
         if (result) {
-          setData(result);
+          setData(result.data);
         }
       } catch (error) {
         console.log(error);

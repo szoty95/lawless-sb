@@ -64,7 +64,13 @@ const UploadCaffDialog: React.FC = () => {
     }
   };
 
-  const [result, createCaff] = useCreateCaff();
+  /*   const [result, createCaff] = useCreateCaff(); */
+
+  const result = {
+    isLoading: false,
+    isError: false,
+    data: undefined,
+  };
 
   const uploadFile = () => {
     if (file && isValidFile) {
@@ -78,7 +84,7 @@ const UploadCaffDialog: React.FC = () => {
         description: formValues.description,
         caffFile: file,
       });
-      createCaff(req);
+      // createCaff(req);
 
       setFormValues({
         title: "",
