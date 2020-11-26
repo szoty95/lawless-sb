@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { AppBar, AppBarProps, Toolbar, Typography } from "@material-ui/core";
+import UploadCaffDialog from "../components/UploadCaffDialog";
 
 export type PageProps = AppBarProps & {
   title: string;
@@ -23,6 +24,7 @@ const Page: React.FC<PageProps> = ({ children, title, ...rest }) => {
       <AppBar position="static" {...rest}>
         <Toolbar>
           <Typography variant="h6">{title}</Typography>
+          <UploadCaffDialog />
         </Toolbar>
       </AppBar>
       <MainContent>{children}</MainContent>

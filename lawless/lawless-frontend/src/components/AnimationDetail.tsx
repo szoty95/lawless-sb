@@ -2,8 +2,6 @@ import { Button, Chip, Grid, Typography } from "@material-ui/core";
 import Skeleton from "@material-ui/lab/Skeleton";
 import React from "react";
 
-interface Props {}
-
 const AnimationDetail: React.FC = () => {
   return (
     <Grid container direction="column">

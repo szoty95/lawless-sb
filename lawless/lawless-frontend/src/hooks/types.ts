@@ -5,7 +5,7 @@ export interface ResponseData<T> {
 }
 
 export interface RequestArgs<T = any, R = any> {
-  request: (body: RequestParams<T>) => Promise<R> | undefined;
+  request: (body?: RequestParams<T>) => Promise<R> | undefined;
   initialData?: R | undefined;
   initialParams?: RequestParams<T>;
 }
