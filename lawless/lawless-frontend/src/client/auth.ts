@@ -45,7 +45,7 @@ export function auth(config: AxiosRequestConfig): AuthClient {
     data?: undefined,
     authToken?: string
   ): Promise<AxiosResponse<UserResp>> => {
-    return axios.post<UserResp>("/me", data, {
+    return axios.get<UserResp>("/me", {
       headers: { Authorization: `Bearer ${authToken}` },
     });
   };

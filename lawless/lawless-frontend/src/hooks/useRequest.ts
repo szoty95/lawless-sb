@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
-import { Refetch, RequestArgs, ResponseData } from "./types";
+import { Refetch, RequestArgs, RequestParams, ResponseData } from "./types";
 
 function useRequest<T = any, R = any>({
   request,
-  initialData,
 }: RequestArgs<T, R>): [ResponseData<R>, Refetch<T>] {
   const [data, setData] = useState<R | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [fetching, setFetching] = useState(false);
-  const [requestParams, setRequestParams] = useState<T | undefined>(undefined);
+  const [requestParams, setRequestParams] = useState<
+    RequestParams<T> | undefined
+  >(undefined);
 
   const refetch = useCallback((newParams?) => {
     setRequestParams(newParams ?? {});
@@ -22,14 +23,15 @@ function useRequest<T = any, R = any>({
       setIsLoading(true);
 
       try {
-        const result = await request(requestParams);
+        const result = await request(
+          requestParams?.data,
+          requestParams?.authToken
+        );
 
-        console.log(result);
         if (result) {
           setData(result.data);
         }
       } catch (error) {
-        console.log(error);
         setIsError(true);
       }
       setFetching(false);
@@ -37,7 +39,6 @@ function useRequest<T = any, R = any>({
     };
 
     if (fetching && !isLoading) {
-      console.log(fetching);
       fetchData();
     }
   }, [request, fetching, isLoading, requestParams]);

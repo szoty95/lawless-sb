@@ -14,7 +14,7 @@ export interface RequestArgs<T = any, R = any> {
 
 export type RequestParams<T = any> = {
   data?: T;
-  authToken: string;
+  authToken?: string;
 };
 
-export type Refetch<T> = (data?: T, authToken?: string) => void;
+export type Refetch<T> = (params: RequestParams<T>) => void;
