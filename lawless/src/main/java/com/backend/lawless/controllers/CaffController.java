@@ -3,6 +3,7 @@ package com.backend.lawless.controllers;
 import com.backend.lawless.dtos.requests.CreateCaffRequest;
 import com.backend.lawless.dtos.requests.DeleteCaffRequest;
 import com.backend.lawless.dtos.requests.DetailsCaffRequest;
+import com.backend.lawless.dtos.requests.UpdateCaffRequest;
 import com.backend.lawless.dtos.responses.CreateCaffResponse;
 import com.backend.lawless.dtos.responses.DeleteCaffResponse;
 import com.backend.lawless.dtos.responses.DetailsCaffResponse;
@@ -48,20 +49,40 @@ public class CaffController {
     @PostMapping(value = "/update")
     @ApiOperation(value = "Update caff ", response = UpdateCaffResponse.class, nickname = "update")
     public ResponseEntity<?> update(@AuthenticationPrincipal UserDetails userDetails,
-                                    @RequestParam("file") MultipartFile caffFile,
-                                    @RequestParam("name") String name,
-                                    @RequestParam("description") String description,
-                                    @RequestParam("price") double price) {
+                                    @RequestParam("caffid") String caffId,
+                                    @RequestParam(value = "name",required = false) String name,
+                                    @RequestParam(value = "description", required = false) String description,
+                                    @RequestParam(value = "price", required = false) Double price,
+                                    @RequestBody(required = false) byte[] caffFile) {
 
-        return null;
+        try {
+            UpdateCaffRequest updateCaffRequest = new UpdateCaffRequest();
+            updateCaffRequest.setCaffId(caffId);
+            if (caffFile != null) {
+                updateCaffRequest.setCaffFile(caffFile);
+            }
+            if (name != null) {
+                updateCaffRequest.setName(name);
+            }
+            if (description != null) {
+                updateCaffRequest.setDescription(description);
+            }
+            if (price != null) {
+                updateCaffRequest.setPrice(price);
+            }
+
+            return ResponseEntity.ok(caffService.update(userDetails, updateCaffRequest));
+        } catch (LawlessException  e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(e);
+        }
     }
 
     @PostMapping(value = "/delete")
     @ApiOperation(value = "Delete caff ", response = DeleteCaffResponse.class, nickname = "delete")
     public ResponseEntity<?> delete(@AuthenticationPrincipal UserDetails userDetails,
                                     @RequestParam DeleteCaffRequest deleteCaffRequest) {
-    //localhost:8080/api/caff/delete?deleteCaffRequest=7
-
         try {
             return ResponseEntity.ok(
                     caffService.delete(userDetails,deleteCaffRequest));
