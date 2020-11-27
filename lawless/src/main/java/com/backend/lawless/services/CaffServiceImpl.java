@@ -46,10 +46,11 @@ public class CaffServiceImpl implements CaffService {
         caff.setUploaded(new Date());
         caff.setPrice(request.getPrice());
         try {
-//        caff.setCaffFile(readBytesOfFile(request.getCaffFile()));
+        caff.setCaffFile(request.getCaffFile());
         } catch (Exception e) {
             throw new LawlessException(e.getMessage());
         }
+        // TODO delete when parser is called finally
         readParsedFiles(caff);
         caffRepository.save(caff);
         // TODO call parser with caff id
@@ -105,7 +106,7 @@ public class CaffServiceImpl implements CaffService {
         // TODO END
         try {
             // TODO delete when file upload is completed;
-            caff.setCaffFile(readBytesOfFile(caffFile));
+//            caff.setCaffFile(readBytesOfFile(caffFile));
             // TODO END
             File myObj = new File("src/main/resources/caff-test/logdata.txt");
             Scanner myReader = new Scanner(myObj);
