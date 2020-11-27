@@ -11,6 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -23,10 +26,14 @@ public class CaffController {
 
     @PostMapping(value = "/create")
     @ApiOperation(value = "Create and process caff ", response = CreateCaffResponse.class, nickname = "create")
-    public ResponseEntity<?> create(@AuthenticationPrincipal UserDetails userDetails, @RequestBody CreateCaffRequest createCaffRequest) {
+    public ResponseEntity<?> create(@AuthenticationPrincipal UserDetails userDetails,
+                                    @RequestParam("file") MultipartFile caffFile,
+                                    @RequestParam("name") String name,
+                                    @RequestParam("description") String description,
+                                    @RequestParam("price") double price) {
         try {
-            return ResponseEntity.ok(caffService.create(userDetails, createCaffRequest));
-        } catch (LawlessException e) {
+            return ResponseEntity.ok(caffService.create(userDetails, new CreateCaffRequest(name, description, price, caffFile.getBytes())));
+        } catch (LawlessException | IOException e) {
             return ResponseEntity
                     .badRequest()
                     .body(e);

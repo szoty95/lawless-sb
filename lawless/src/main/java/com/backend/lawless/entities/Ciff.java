@@ -24,7 +24,7 @@ public class Ciff {
     private int height;
 
     //    //connecting to other tables
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "ciffs_tags",
             joinColumns = {
                     @JoinColumn(name = "ciff_id", referencedColumnName = "id", nullable = false, updatable = false)

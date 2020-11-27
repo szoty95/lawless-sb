@@ -13,5 +13,5 @@ public class CreateCaffRequest {
     private String name;
     private String description;
     private double price;
-    private File caffFile;
+    private byte[] caffFile;
 }

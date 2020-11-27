@@ -31,7 +31,7 @@ public class Caff {
     private byte[] caffFile;
 
     //connection to other tables
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Ciff> ciffs;
 
     @OneToMany()
