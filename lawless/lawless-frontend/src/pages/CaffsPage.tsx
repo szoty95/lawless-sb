@@ -1,5 +1,5 @@
-import React from "react";
-import { Box } from "@material-ui/core";
+import React, { useState } from "react";
+import { Box, TextField } from "@material-ui/core";
 import CaffCard from "../components/CaffCard";
 
 import Page from "./Page";
@@ -13,13 +13,13 @@ const testData = [
 
   {
     id: 2,
-    title: "asd",
-    createdBy: "Alma Korte",
+    title: "flavio",
+    createdBy: "orte",
   },
 
   {
     id: 3,
-    title: "asd",
+    title: "cincin",
     createdBy: "Alma Korte",
   },
 
@@ -32,19 +32,19 @@ const testData = [
   {
     id: 5,
     title: "asd",
-    createdBy: "Alma Korte",
+    createdBy: "béta",
   },
 
   {
     id: 6,
-    title: "asd",
-    createdBy: "Alma Korte",
+    title: "cékla",
+    createdBy: "barack Korte",
   },
 
   {
     id: 7,
-    title: "asd",
-    createdBy: "Alma Korte",
+    title: "iphone",
+    createdBy: "uuid la",
   },
 
   {
@@ -55,41 +55,52 @@ const testData = [
 
   {
     id: 9,
-    title: "asd",
-    createdBy: "Alma Korte",
+    title: "baka",
+    createdBy: "bakas Korte",
   },
 
   {
     id: 10,
-    title: "asd",
-    createdBy: "Alma Korte",
+    title: "bala",
+    createdBy: "la Korte",
   },
 
   {
     id: 11,
-    title: "asd",
+    title: "is",
     createdBy: "Alma Korte",
   },
 
   {
     id: 12,
-    title: "asd",
-    createdBy: "Alma Korte",
+    title: "baba",
+    createdBy: "baba",
   },
 ];
 
 const CaffsPage: React.FC = () => {
+  const [filter, setFilter] = useState('');
+  const filterdCaffs = testData.filter(
+    data => data.createdBy.toLowerCase().includes(filter.toLowerCase())
+    || data.title.toLowerCase().includes(filter.toLowerCase())
+  );
+
   return (
     <Page title="">
-      <Box display="flex" justifyContent="center" flexWrap="wrap">
-        {testData.map((card) => (
-          <CaffCard
+      <Box display="flex" alignItems="center" flexDirection="column" flex={1}>
+        <Box marginTop={4}>
+          <TextField value={filter} onChange={(e) => setFilter(e.target.value)} label='Keresés' variant="outlined"/>
+        </Box>
+        <Box display="flex" justifyContent="center" flexWrap="wrap">
+          {filterdCaffs.map((card) => (
+            <CaffCard
             key={card.id}
             id={card.id}
             title={card.title}
             createdBy={card.createdBy}
-          />
-        ))}
+            />
+            ))}
+        </Box>
       </Box>
     </Page>
   );
