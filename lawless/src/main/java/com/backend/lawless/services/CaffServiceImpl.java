@@ -33,6 +33,19 @@ public class CaffServiceImpl implements CaffService {
     @Autowired
     CaffRepository caffRepository;
 
+    private User getUserSafely(UserDetails userDetails) {
+        if (userRepository.existsByUsername(userDetails.getUsername())) {
+            return userRepository.findByUsername(userDetails.getUsername());
+        }
+        return null;
+    }
+    private Caff getCaffSafely(Long caffId) {
+        if (caffRepository.findById(caffId).isPresent()) {
+            return caffRepository.findById(caffId).get();
+        }
+        return null;
+    }
+
     @Override
     public CreateCaffResponse create(UserDetails userDetails, CreateCaffRequest request) throws LawlessException {
         User user = userRepository.findByUsername(userDetails.getUsername());
@@ -59,11 +72,10 @@ public class CaffServiceImpl implements CaffService {
 
     @Override
     public UpdateCaffResponse update(UserDetails userDetails, UpdateCaffRequest request) throws LawlessException {
-        User user = userRepository.findByUsername(userDetails.getUsername());
-        Caff caff = new Caff();
-        if (caffRepository.findById(request.getId()).isPresent()) {
-            caff = caffRepository.findById(request.getId()).get();
-        }
+        User user = getUserSafely(userDetails);
+
+        Caff caff = getCaffSafely(request.getCaffId());
+
         if (user.getRoles().stream().anyMatch(role -> role.getName() == ERole.ROLE_ADMIN)
                 || caff.getUserId().equals(user.getId())) {
             // TODO DO update
@@ -73,29 +85,36 @@ public class CaffServiceImpl implements CaffService {
 
     @Override
     public DeleteCaffResponse delete(UserDetails userDetails, DeleteCaffRequest request) throws LawlessException {
+        User user = getUserSafely(userDetails);
+        Caff caff = getCaffSafely(Long.valueOf(request.getCaffId()));
 
-            User user = new User();
-            if (userRepository.existsByUsername(userDetails.getUsername())) {
-                user = userRepository.findByUsername(userDetails.getUsername());
-            }
-            Caff caff = new Caff();
-            if (caffRepository.findById(Long.valueOf(request.getCaffId())).isPresent()) {
-                caff = caffRepository.findById(Long.valueOf(request.getCaffId())).get();
-            }
-
-            // Delete if admin, or user uploaded caff
+            // Delete if admin, or current user uploaded caff
+        try {
             if (user.getRoles().stream().anyMatch(role -> role.getName() == ERole.ROLE_ADMIN)
                     || user.getId().equals(caff.getUserId())) {
                 caffRepository.deleteById(Long.valueOf(request.getCaffId()));
                 return new DeleteCaffResponse("Delete successful!");
             }
+        }catch (Exception e){
+            throw new LawlessException("Delete failed!");
+        }
+
         throw new LawlessException("Delete failed!");
     }
 
-
     @Override
     public DetailsCaffResponse details(DetailsCaffRequest request) throws LawlessException {
-        return null;
+
+       try{
+            Caff caff = getCaffSafely(Long.valueOf(request.getCaffId()));
+
+            return new DetailsCaffResponse(caff.getId(),caff.getUserId(),caff.getName(),
+                    caff.getDescription(),caff.getUploaded(),caff.getPrice(),caff.getComments());
+
+        }catch (Exception e){
+           throw new LawlessException("Not Found!");
+       }
+
     }
 
     private byte[] readBytesOfFile(File file) throws IOException {

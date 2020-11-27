@@ -2,6 +2,7 @@ package com.backend.lawless.controllers;
 
 import com.backend.lawless.dtos.requests.CreateCaffRequest;
 import com.backend.lawless.dtos.requests.DeleteCaffRequest;
+import com.backend.lawless.dtos.requests.DetailsCaffRequest;
 import com.backend.lawless.dtos.responses.CreateCaffResponse;
 import com.backend.lawless.dtos.responses.DeleteCaffResponse;
 import com.backend.lawless.dtos.responses.DetailsCaffResponse;
@@ -71,15 +72,17 @@ public class CaffController {
         }
     }
 
-    @PostMapping(value = "/details")
+    @GetMapping(value = "/details")
     @ApiOperation(value = "Details caff ", response = DetailsCaffResponse.class, nickname = "details")
-    public ResponseEntity<?> details(@AuthenticationPrincipal UserDetails userDetails,
-                                    @RequestParam("file") MultipartFile caffFile,
-                                    @RequestParam("name") String name,
-                                    @RequestParam("description") String description,
-                                    @RequestParam("price") double price) {
-
-        return null;
+    public ResponseEntity<?> details(@RequestParam DetailsCaffRequest detailsCaffRequest) {
+        try {
+            return ResponseEntity.ok(
+                    caffService.details(detailsCaffRequest));
+        } catch (LawlessException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(e);
+        }
     }
 
 }

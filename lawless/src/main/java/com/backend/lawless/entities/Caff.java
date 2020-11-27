@@ -1,5 +1,6 @@
 package com.backend.lawless.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -28,6 +29,7 @@ public class Caff {
 
     private double price;
     //Caff file
+
     private byte[] caffFile;
 
     //connection to other tables
