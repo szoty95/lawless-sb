@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import { AppBar, AppBarProps, Toolbar, Typography } from "@material-ui/core";
+import { AppBarProps} from "@material-ui/core";
+
+import Header from "../components/Header";
 
 export type PageProps = AppBarProps & {
   title: string;
@@ -20,11 +22,7 @@ const MainContent = styled.div`
 const Page: React.FC<PageProps> = ({ children, title, ...rest }) => {
   return (
     <PageContainer>
-      <AppBar position="static" {...rest}>
-        <Toolbar>
-          <Typography variant="h6">{title}</Typography>
-        </Toolbar>
-      </AppBar>
+      <Header />
       <MainContent>{children}</MainContent>
     </PageContainer>
   );
