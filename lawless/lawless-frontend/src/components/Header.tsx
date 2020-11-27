@@ -10,6 +10,7 @@ const useStyles = makeStyles({
 
   logo: {
     fontFamily: "'Salsa', cursive",
+    cursor: "pointer",
   },
 
   button: {
