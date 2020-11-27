@@ -2,19 +2,19 @@ package com.backend.lawless.services;
 
 import com.backend.lawless.daos.CaffRepository;
 import com.backend.lawless.daos.UserRepository;
-import com.backend.lawless.dtos.requests.CaffDetailsRequest;
+import com.backend.lawless.dtos.requests.DetailsCaffRequest;
 import com.backend.lawless.dtos.requests.CreateCaffRequest;
 import com.backend.lawless.dtos.requests.DeleteCaffRequest;
 import com.backend.lawless.dtos.requests.UpdateCaffRequest;
-import com.backend.lawless.dtos.responses.CaffDetailsResponse;
-import com.backend.lawless.dtos.responses.CreateCaffResponse;
-import com.backend.lawless.dtos.responses.DeleteCaffResponse;
-import com.backend.lawless.dtos.responses.UpdateCaffResponse;
+import com.backend.lawless.dtos.responses.*;
 import com.backend.lawless.entities.*;
 import com.backend.lawless.exceptions.LawlessException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -73,11 +73,28 @@ public class CaffServiceImpl implements CaffService {
 
     @Override
     public DeleteCaffResponse delete(UserDetails userDetails, DeleteCaffRequest request) throws LawlessException {
-        return null;
+
+            User user = new User();
+            if (userRepository.existsByUsername(userDetails.getUsername())) {
+                user = userRepository.findByUsername(userDetails.getUsername());
+            }
+            Caff caff = new Caff();
+            if (caffRepository.findById(Long.valueOf(request.getCaffId())).isPresent()) {
+                caff = caffRepository.findById(Long.valueOf(request.getCaffId())).get();
+            }
+
+            // Delete if admin, or user uploaded caff
+            if (user.getRoles().stream().anyMatch(role -> role.getName() == ERole.ROLE_ADMIN)
+                    || user.getId().equals(caff.getUserId())) {
+                caffRepository.deleteById(Long.valueOf(request.getCaffId()));
+                return new DeleteCaffResponse("Delete successful!");
+            }
+        throw new LawlessException("Delete failed!");
     }
 
+
     @Override
-    public CaffDetailsResponse details(CaffDetailsRequest request) throws LawlessException {
+    public DetailsCaffResponse details(DetailsCaffRequest request) throws LawlessException {
         return null;
     }
 

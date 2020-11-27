@@ -1,7 +1,11 @@
 package com.backend.lawless.controllers;
 
 import com.backend.lawless.dtos.requests.CreateCaffRequest;
+import com.backend.lawless.dtos.requests.DeleteCaffRequest;
 import com.backend.lawless.dtos.responses.CreateCaffResponse;
+import com.backend.lawless.dtos.responses.DeleteCaffResponse;
+import com.backend.lawless.dtos.responses.DetailsCaffResponse;
+import com.backend.lawless.dtos.responses.UpdateCaffResponse;
 import com.backend.lawless.exceptions.LawlessException;
 import com.backend.lawless.services.CaffServiceImpl;
 import io.swagger.annotations.Api;
@@ -39,4 +43,43 @@ public class CaffController {
                     .body(e);
         }
     }
+
+    @PostMapping(value = "/update")
+    @ApiOperation(value = "Update caff ", response = UpdateCaffResponse.class, nickname = "update")
+    public ResponseEntity<?> update(@AuthenticationPrincipal UserDetails userDetails,
+                                    @RequestParam("file") MultipartFile caffFile,
+                                    @RequestParam("name") String name,
+                                    @RequestParam("description") String description,
+                                    @RequestParam("price") double price) {
+
+        return null;
+    }
+
+    @PostMapping(value = "/delete")
+    @ApiOperation(value = "Delete caff ", response = DeleteCaffResponse.class, nickname = "delete")
+    public ResponseEntity<?> delete(@AuthenticationPrincipal UserDetails userDetails,
+                                    @RequestParam DeleteCaffRequest deleteCaffRequest) {
+    //localhost:8080/api/caff/delete?deleteCaffRequest=7
+
+        try {
+            return ResponseEntity.ok(
+                    caffService.delete(userDetails,deleteCaffRequest));
+        } catch (LawlessException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(e);
+        }
+    }
+
+    @PostMapping(value = "/details")
+    @ApiOperation(value = "Details caff ", response = DetailsCaffResponse.class, nickname = "details")
+    public ResponseEntity<?> details(@AuthenticationPrincipal UserDetails userDetails,
+                                    @RequestParam("file") MultipartFile caffFile,
+                                    @RequestParam("name") String name,
+                                    @RequestParam("description") String description,
+                                    @RequestParam("price") double price) {
+
+        return null;
+    }
+
 }
