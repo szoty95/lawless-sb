@@ -13,7 +13,7 @@ import {
 } from "@material-ui/core";
 import FileUpload from "./FileUpload";
 import { useCreateCaff } from "../hooks/useCreateCaff";
-import { CreateCaffReq } from "../swagger";
+import { useAuthToken } from "../hooks/useAuthToken";
 
 const ACCEPTED_FILE_TYPES = ["caff"];
 
@@ -39,6 +39,7 @@ const UploadCaffDialog: React.FC = () => {
   const [formValues, setFormValues] = useState({
     title: "",
     description: "",
+    price: 0,
   });
 
   const handleChange = (name: string) => (
@@ -64,31 +65,23 @@ const UploadCaffDialog: React.FC = () => {
     }
   };
 
-  /*   const [result, createCaff] = useCreateCaff(); */
-
-  const result = {
-    isLoading: false,
-    isError: false,
-    data: undefined,
-  };
+  const [result, createCaff] = useCreateCaff();
+  const { authToken } = useAuthToken();
 
   const uploadFile = () => {
     if (file && isValidFile) {
-      /*       const formData = new FormData();
-      formData.append("image_file", file);
+      const formData = new FormData();
+      formData.append("file", file);
       formData.append("title", formValues.title);
-      formData.append("description", formValues.description); */
+      formData.append("price", formValues.price.toString());
+      formData.append("description", formValues.description);
 
-      const req = new CreateCaffReq({
-        name: formValues.title,
-        description: formValues.description,
-        caffFile: file,
-      });
-      // createCaff(req);
+      createCaff({ data: formData, authToken: authToken as string });
 
       setFormValues({
         title: "",
         description: "",
+        price: 0,
       });
       setFile(null);
     }
@@ -124,6 +117,18 @@ const UploadCaffDialog: React.FC = () => {
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
+                      required
+                      fullWidth
+                      type="number"
+                      label="Price"
+                      value={formValues.price}
+                      onChange={handleChange("price")}
+                      margin="normal"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      required
                       multiline
                       fullWidth
                       rowsMax="4"
