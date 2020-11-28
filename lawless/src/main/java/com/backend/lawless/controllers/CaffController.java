@@ -33,7 +33,7 @@ public class CaffController {
     @PostMapping(value = "/create")
     @ApiOperation(value = "Create and process caff ", response = CreateCaffResponse.class, nickname = "create")
     public ResponseEntity<?> create(@AuthenticationPrincipal UserDetails userDetails,
-                                    @RequestParam MultipartFile caffFile,
+                                    @RequestBody MultipartFile caffFile,
                                     @RequestParam("name") String name,
                                     @RequestParam("description") String description,
                                     @RequestParam("price") double price) {
@@ -53,7 +53,7 @@ public class CaffController {
                                     @RequestParam(value = "name",required = false) String name,
                                     @RequestParam(value = "description", required = false) String description,
                                     @RequestParam(value = "price", required = false) Double price,
-                                    @RequestParam(required = false) MultipartFile caffFile) {
+                                    @RequestBody(required = false) MultipartFile caffFile) {
 
         try {
             UpdateCaffRequest updateCaffRequest = new UpdateCaffRequest();
