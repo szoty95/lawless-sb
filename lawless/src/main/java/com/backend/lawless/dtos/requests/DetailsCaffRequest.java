@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-@ApiModel(value = "DeleteCaffReq")
-public class DeleteCaffRequest {
+@ApiModel(value = "DetailsCaffReq")
+public class DetailsCaffRequest {
 	private String caffId;
 }

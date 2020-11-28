@@ -217,7 +217,42 @@ export interface ICaffClient {
    * @param body (optional)
    * @return successful operation
    */
-  create(body: CreateCaffReq | null | undefined): Promise<CreateCaffResp>;
+  create(
+    body: MultipartFile | null | undefined,
+    name: string,
+    description: string,
+    price: number
+  ): Promise<CreateCaffResp>;
+  /**
+   * Delete caff
+   * @return successful operation
+   */
+  delete(unnamed: any): Promise<DeleteCaffResp>;
+  /**
+   * Details caff
+   * @return successful operation
+   */
+  details(unnamed: any): Promise<DetailsCaffResp>;
+  /**
+   * Details all caff
+   * @return successful operation
+   */
+  detailsAll(): Promise<DetailsAllCaffResp>;
+  /**
+   * Update caff
+   * @param name (optional)
+   * @param description (optional)
+   * @param price (optional)
+   * @param body (optional)
+   * @return successful operation
+   */
+  update(
+    caffid: string,
+    name: string | null | undefined,
+    description: string | null | undefined,
+    price: number | null | undefined,
+    body: MultipartFile | null | undefined
+  ): Promise<UpdateCaffResp>;
 }
 
 export class CaffClient implements ICaffClient {
@@ -242,11 +277,29 @@ export class CaffClient implements ICaffClient {
    * @param body (optional)
    * @return successful operation
    */
-  create = (
-    body: CreateCaffReq | null | undefined,
+  create(
+    body: MultipartFile | null | undefined,
+    name: string,
+    description: string,
+    price: number,
     signal?: AbortSignal | undefined
-  ): Promise<CreateCaffResp> => {
-    let url_ = this.baseUrl + "/api/caff/create";
+  ): Promise<CreateCaffResp> {
+    let url_ = this.baseUrl + "/api/caff/create?";
+    if (name === undefined || name === null)
+      throw new Error(
+        "The parameter 'name' must be defined and cannot be null."
+      );
+    else url_ += "name=" + encodeURIComponent("" + name) + "&";
+    if (description === undefined || description === null)
+      throw new Error(
+        "The parameter 'description' must be defined and cannot be null."
+      );
+    else url_ += "description=" + encodeURIComponent("" + description) + "&";
+    if (price === undefined || price === null)
+      throw new Error(
+        "The parameter 'price' must be defined and cannot be null."
+      );
+    else url_ += "price=" + encodeURIComponent("" + price) + "&";
     url_ = url_.replace(/[?&]$/, "");
 
     const content_ = JSON.stringify(body);
@@ -264,7 +317,7 @@ export class CaffClient implements ICaffClient {
     return this.http.fetch(url_, options_).then((_response: Response) => {
       return this.processCreate(_response);
     });
-  };
+  }
 
   protected processCreate(response: Response): Promise<CreateCaffResp> {
     const status = response.status;
@@ -294,15 +347,257 @@ export class CaffClient implements ICaffClient {
     }
     return Promise.resolve<CreateCaffResp>(<any>null);
   }
+
+  /**
+   * Delete caff
+   * @return successful operation
+   */
+  delete(
+    unnamed: any,
+    signal?: AbortSignal | undefined
+  ): Promise<DeleteCaffResp> {
+    let url_ = this.baseUrl + "/api/caff/delete?";
+    if (unnamed === undefined || unnamed === null)
+      throw new Error(
+        "The parameter 'unnamed' must be defined and cannot be null."
+      );
+    else url_ += "=" + encodeURIComponent("" + unnamed) + "&";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_ = <RequestInit>{
+      method: "POST",
+      signal,
+      headers: {
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processDelete(_response);
+    });
+  }
+
+  protected processDelete(response: Response): Promise<DeleteCaffResp> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = DeleteCaffResp.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<DeleteCaffResp>(<any>null);
+  }
+
+  /**
+   * Details caff
+   * @return successful operation
+   */
+  details(
+    unnamed: any,
+    signal?: AbortSignal | undefined
+  ): Promise<DetailsCaffResp> {
+    let url_ = this.baseUrl + "/api/caff/details?";
+    if (unnamed === undefined || unnamed === null)
+      throw new Error(
+        "The parameter 'unnamed' must be defined and cannot be null."
+      );
+    else url_ += "=" + encodeURIComponent("" + unnamed) + "&";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_ = <RequestInit>{
+      method: "GET",
+      signal,
+      headers: {
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processDetails(_response);
+    });
+  }
+
+  protected processDetails(response: Response): Promise<DetailsCaffResp> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = DetailsCaffResp.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<DetailsCaffResp>(<any>null);
+  }
+
+  /**
+   * Details all caff
+   * @return successful operation
+   */
+  detailsAll(signal?: AbortSignal | undefined): Promise<DetailsAllCaffResp> {
+    let url_ = this.baseUrl + "/api/caff/detailsAll";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_ = <RequestInit>{
+      method: "GET",
+      signal,
+      headers: {
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processDetailsAll(_response);
+    });
+  }
+
+  protected processDetailsAll(response: Response): Promise<DetailsAllCaffResp> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = DetailsAllCaffResp.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<DetailsAllCaffResp>(<any>null);
+  }
+
+  /**
+   * Update caff
+   * @param name (optional)
+   * @param description (optional)
+   * @param price (optional)
+   * @param body (optional)
+   * @return successful operation
+   */
+  update(
+    caffid: string,
+    name: string | null | undefined,
+    description: string | null | undefined,
+    price: number | null | undefined,
+    body: MultipartFile | null | undefined,
+    signal?: AbortSignal | undefined
+  ): Promise<UpdateCaffResp> {
+    let url_ = this.baseUrl + "/api/caff/update?";
+    if (caffid === undefined || caffid === null)
+      throw new Error(
+        "The parameter 'caffid' must be defined and cannot be null."
+      );
+    else url_ += "caffid=" + encodeURIComponent("" + caffid) + "&";
+    if (name !== undefined && name !== null)
+      url_ += "name=" + encodeURIComponent("" + name) + "&";
+    if (description !== undefined && description !== null)
+      url_ += "description=" + encodeURIComponent("" + description) + "&";
+    if (price !== undefined && price !== null)
+      url_ += "price=" + encodeURIComponent("" + price) + "&";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_ = <RequestInit>{
+      body: content_,
+      method: "POST",
+      signal,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processUpdate(_response);
+    });
+  }
+
+  protected processUpdate(response: Response): Promise<UpdateCaffResp> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = UpdateCaffResp.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<UpdateCaffResp>(<any>null);
+  }
 }
 
-export class CreateCaffReq implements ICreateCaffReq {
-  name?: string | undefined;
-  description?: string | undefined;
-  price?: number | undefined;
-  caffFile?: any | undefined;
+export class Comment implements IComment {
+  id?: number | undefined;
+  userId?: number | undefined;
+  message?: string | undefined;
+  timeStamp?: Date | undefined;
 
-  constructor(data?: ICreateCaffReq) {
+  constructor(data?: IComment) {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property))
@@ -313,35 +608,39 @@ export class CreateCaffReq implements ICreateCaffReq {
 
   init(_data?: any) {
     if (_data) {
-      this.name = _data["name"];
-      this.description = _data["description"];
-      this.price = _data["price"];
-      this.caffFile = _data["caffFile"];
+      this.id = _data["id"];
+      this.userId = _data["userId"];
+      this.message = _data["message"];
+      this.timeStamp = _data["timeStamp"]
+        ? new Date(_data["timeStamp"].toString())
+        : <any>undefined;
     }
   }
 
-  static fromJS(data: any): CreateCaffReq {
+  static fromJS(data: any): Comment {
     data = typeof data === "object" ? data : {};
-    let result = new CreateCaffReq();
+    let result = new Comment();
     result.init(data);
     return result;
   }
 
   toJSON(data?: any) {
     data = typeof data === "object" ? data : {};
-    data["name"] = this.name;
-    data["description"] = this.description;
-    data["price"] = this.price;
-    data["caffFile"] = this.caffFile;
+    data["id"] = this.id;
+    data["userId"] = this.userId;
+    data["message"] = this.message;
+    data["timeStamp"] = this.timeStamp
+      ? this.timeStamp.toISOString()
+      : <any>undefined;
     return data;
   }
 }
 
-export interface ICreateCaffReq {
-  name?: string | undefined;
-  description?: string | undefined;
-  price?: number | undefined;
-  caffFile?: any | undefined;
+export interface IComment {
+  id?: number | undefined;
+  userId?: number | undefined;
+  message?: string | undefined;
+  timeStamp?: Date | undefined;
 }
 
 export class CreateCaffResp implements ICreateCaffResp {
@@ -379,6 +678,188 @@ export class CreateCaffResp implements ICreateCaffResp {
 export interface ICreateCaffResp {
   id?: number | undefined;
 }
+
+export class DeleteCaffResp implements IDeleteCaffResp {
+  response?: string | undefined;
+
+  constructor(data?: IDeleteCaffResp) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.response = _data["response"];
+    }
+  }
+
+  static fromJS(data: any): DeleteCaffResp {
+    data = typeof data === "object" ? data : {};
+    let result = new DeleteCaffResp();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["response"] = this.response;
+    return data;
+  }
+}
+
+export interface IDeleteCaffResp {
+  response?: string | undefined;
+}
+
+export class DetailsAllCaffResp implements IDetailsAllCaffResp {
+  detailsAllCaffResponse?: DetailsCaffResp[] | undefined;
+
+  constructor(data?: IDetailsAllCaffResp) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      if (Array.isArray(_data["detailsAllCaffResponse"])) {
+        this.detailsAllCaffResponse = [] as any;
+        for (let item of _data["detailsAllCaffResponse"])
+          this.detailsAllCaffResponse!.push(DetailsCaffResp.fromJS(item));
+      }
+    }
+  }
+
+  static fromJS(data: any): DetailsAllCaffResp {
+    data = typeof data === "object" ? data : {};
+    let result = new DetailsAllCaffResp();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    if (Array.isArray(this.detailsAllCaffResponse)) {
+      data["detailsAllCaffResponse"] = [];
+      for (let item of this.detailsAllCaffResponse)
+        data["detailsAllCaffResponse"].push(item.toJSON());
+    }
+    return data;
+  }
+}
+
+export interface IDetailsAllCaffResp {
+  detailsAllCaffResponse?: DetailsCaffResp[] | undefined;
+}
+
+export class DetailsCaffResp implements IDetailsCaffResp {
+  id?: number | undefined;
+  userId?: number | undefined;
+  name?: string | undefined;
+  description?: string | undefined;
+  uploaded?: Date | undefined;
+  price?: number | undefined;
+  comments?: Comment[] | undefined;
+  previewPictureUrl?: string | undefined;
+
+  constructor(data?: IDetailsCaffResp) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.id = _data["id"];
+      this.userId = _data["userId"];
+      this.name = _data["name"];
+      this.description = _data["description"];
+      this.uploaded = _data["uploaded"]
+        ? new Date(_data["uploaded"].toString())
+        : <any>undefined;
+      this.price = _data["price"];
+      if (Array.isArray(_data["comments"])) {
+        this.comments = [] as any;
+        for (let item of _data["comments"])
+          this.comments!.push(Comment.fromJS(item));
+      }
+      this.previewPictureUrl = _data["previewPictureUrl"];
+    }
+  }
+
+  static fromJS(data: any): DetailsCaffResp {
+    data = typeof data === "object" ? data : {};
+    let result = new DetailsCaffResp();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["id"] = this.id;
+    data["userId"] = this.userId;
+    data["name"] = this.name;
+    data["description"] = this.description;
+    data["uploaded"] = this.uploaded
+      ? this.uploaded.toISOString()
+      : <any>undefined;
+    data["price"] = this.price;
+    if (Array.isArray(this.comments)) {
+      data["comments"] = [];
+      for (let item of this.comments) data["comments"].push(item.toJSON());
+    }
+    data["previewPictureUrl"] = this.previewPictureUrl;
+    return data;
+  }
+}
+
+export interface IDetailsCaffResp {
+  id?: number | undefined;
+  userId?: number | undefined;
+  name?: string | undefined;
+  description?: string | undefined;
+  uploaded?: Date | undefined;
+  price?: number | undefined;
+  comments?: Comment[] | undefined;
+  previewPictureUrl?: string | undefined;
+}
+
+export class InputStream implements IInputStream {
+  constructor(data?: IInputStream) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {}
+
+  static fromJS(data: any): InputStream {
+    data = typeof data === "object" ? data : {};
+    let result = new InputStream();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    return data;
+  }
+}
+
+export interface IInputStream {}
 
 export class LoginReq implements ILoginReq {
   username?: string | undefined;
@@ -476,6 +957,76 @@ export interface ILoginResp {
   token?: string | undefined;
   userPersonalData?: UserPersonalData | undefined;
   roles?: Role[] | undefined;
+}
+
+export class MultipartFile implements IMultipartFile {
+  name?: string | undefined;
+  bytes?: string[] | undefined;
+  empty?: boolean | undefined;
+  size?: number | undefined;
+  inputStream?: InputStream | undefined;
+  contentType?: string | undefined;
+  originalFilename?: string | undefined;
+
+  constructor(data?: IMultipartFile) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.name = _data["name"];
+      if (Array.isArray(_data["bytes"])) {
+        this.bytes = [] as any;
+        for (let item of _data["bytes"]) this.bytes!.push(item);
+      }
+      this.empty = _data["empty"];
+      this.size = _data["size"];
+      this.inputStream = _data["inputStream"]
+        ? InputStream.fromJS(_data["inputStream"])
+        : <any>undefined;
+      this.contentType = _data["contentType"];
+      this.originalFilename = _data["originalFilename"];
+    }
+  }
+
+  static fromJS(data: any): MultipartFile {
+    data = typeof data === "object" ? data : {};
+    let result = new MultipartFile();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["name"] = this.name;
+    if (Array.isArray(this.bytes)) {
+      data["bytes"] = [];
+      for (let item of this.bytes) data["bytes"].push(item);
+    }
+    data["empty"] = this.empty;
+    data["size"] = this.size;
+    data["inputStream"] = this.inputStream
+      ? this.inputStream.toJSON()
+      : <any>undefined;
+    data["contentType"] = this.contentType;
+    data["originalFilename"] = this.originalFilename;
+    return data;
+  }
+}
+
+export interface IMultipartFile {
+  name?: string | undefined;
+  bytes?: string[] | undefined;
+  empty?: boolean | undefined;
+  size?: number | undefined;
+  inputStream?: InputStream | undefined;
+  contentType?: string | undefined;
+  originalFilename?: string | undefined;
 }
 
 export class RegisterReq implements IRegisterReq {
@@ -592,6 +1143,42 @@ export class Role implements IRole {
 
 export interface IRole {
   name?: RoleName | undefined;
+}
+
+export class UpdateCaffResp implements IUpdateCaffResp {
+  response?: string | undefined;
+
+  constructor(data?: IUpdateCaffResp) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.response = _data["response"];
+    }
+  }
+
+  static fromJS(data: any): UpdateCaffResp {
+    data = typeof data === "object" ? data : {};
+    let result = new UpdateCaffResp();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["response"] = this.response;
+    return data;
+  }
+}
+
+export interface IUpdateCaffResp {
+  response?: string | undefined;
 }
 
 export class UserPersonalData implements IUserPersonalData {

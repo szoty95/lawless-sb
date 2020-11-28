@@ -2,19 +2,17 @@ package com.backend.lawless.services;
 
 import com.backend.lawless.daos.CaffRepository;
 import com.backend.lawless.daos.UserRepository;
-import com.backend.lawless.dtos.requests.CaffDetailsRequest;
-import com.backend.lawless.dtos.requests.CreateCaffRequest;
-import com.backend.lawless.dtos.requests.DeleteCaffRequest;
-import com.backend.lawless.dtos.requests.UpdateCaffRequest;
-import com.backend.lawless.dtos.responses.CaffDetailsResponse;
-import com.backend.lawless.dtos.responses.CreateCaffResponse;
-import com.backend.lawless.dtos.responses.DeleteCaffResponse;
-import com.backend.lawless.dtos.responses.UpdateCaffResponse;
+import com.backend.lawless.dtos.requests.*;
+import com.backend.lawless.dtos.responses.*;
 import com.backend.lawless.entities.*;
 import com.backend.lawless.exceptions.LawlessException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,12 +31,23 @@ public class CaffServiceImpl implements CaffService {
     @Autowired
     CaffRepository caffRepository;
 
+    private User getUserSafely(UserDetails userDetails) throws LawlessException {
+        if (userRepository.existsByUsername(userDetails.getUsername())) {
+            return userRepository.findByUsername(userDetails.getUsername());
+        }
+        throw new LawlessException("Cant find user");
+    }
+    private Caff getCaffSafely(Long caffId) throws LawlessException {
+        if (caffRepository.findById(caffId).isPresent()) {
+            return caffRepository.findById(caffId).get();
+        }
+        throw new LawlessException("Cant find caff");
+    }
+
     @Override
     public CreateCaffResponse create(UserDetails userDetails, CreateCaffRequest request) throws LawlessException {
-        User user = userRepository.findByUsername(userDetails.getUsername());
-        if (user == null) {
-            throw new LawlessException("Cannot find user!");
-        }
+        User user = getUserSafely(userDetails);
+
         Caff caff = new Caff();
         caff.setUserId(user.getId());
         caff.setName(request.getName());
@@ -50,35 +59,98 @@ public class CaffServiceImpl implements CaffService {
         } catch (Exception e) {
             throw new LawlessException(e.getMessage());
         }
+
         // TODO delete when parser is called finally
+
         readParsedFiles(caff);
         caffRepository.save(caff);
+        
         // TODO call parser with caff id
         return new CreateCaffResponse(caff.getId());
     }
 
     @Override
-    public UpdateCaffResponse update(UserDetails userDetails, UpdateCaffRequest request) throws LawlessException {
-        User user = userRepository.findByUsername(userDetails.getUsername());
-        Caff caff = new Caff();
-        if (caffRepository.findById(request.getId()).isPresent()) {
-            caff = caffRepository.findById(request.getId()).get();
+    public UpdateCaffResponse update(UserDetails userDetails, UpdateCaffRequest request)
+            throws LawlessException {
+        User user = getUserSafely(userDetails);
+        Caff caff = getCaffSafely(Long.valueOf(request.getCaffId()));
+
+        // update if admin, or current user requested caff update
+        try {
+            if (user.getRoles().stream().anyMatch(role -> role.getName() == ERole.ROLE_ADMIN)
+                    || user.getId().equals(caff.getUserId())) {
+
+                if (request.getCaffFile() != null) {
+                    caff.setCaffFile(request.getCaffFile());
+                }
+                if (request.getName() != null) {
+                    caff.setName(request.getName());
+                }
+                if (request.getDescription() != null) {
+                    caff.setDescription(request.getDescription());
+                }
+                if (request.getPrice() != null) {
+                    caff.setPrice(request.getPrice());
+                }
+
+                caffRepository.save(caff);
+
+                return new UpdateCaffResponse("Update successful!");
+            }
+        } catch (Exception e) {
+            throw new LawlessException("Update failed!");
         }
-        if (user.getRoles().stream().anyMatch(role -> role.getName() == ERole.ROLE_ADMIN)
-                || caff.getUserId().equals(user.getId())) {
-            // TODO DO update
-        }
-        return null;
+
+        throw new LawlessException("Update failed!");
     }
 
     @Override
     public DeleteCaffResponse delete(UserDetails userDetails, DeleteCaffRequest request) throws LawlessException {
-        return null;
+        User user = getUserSafely(userDetails);
+        Caff caff = getCaffSafely(Long.valueOf(request.getCaffId()));
+
+            // Delete if admin, or current user uploaded caff
+        try {
+            if (user.getRoles().stream().anyMatch(role -> role.getName() == ERole.ROLE_ADMIN)
+                    || user.getId().equals(caff.getUserId())) {
+                caff.setCiffs(null);
+
+                caffRepository.deleteById(Long.valueOf(request.getCaffId()));
+                return new DeleteCaffResponse("Delete successful!");
+            }
+        }catch (Exception e){
+            throw new LawlessException("Delete failed!");
+        }
+
+        throw new LawlessException("Delete failed!");
     }
 
     @Override
-    public CaffDetailsResponse details(CaffDetailsRequest request) throws LawlessException {
-        return null;
+    public DetailsCaffResponse details(DetailsCaffRequest request) throws LawlessException {
+        try {
+            Caff caff = getCaffSafely(Long.valueOf(request.getCaffId()));
+
+            return new DetailsCaffResponse(caff);
+
+        } catch (Exception e) {
+            throw new LawlessException("Not Found!");
+        }
+    }
+
+    @Override
+    public DetailsAllCaffResponse detailsAll() throws LawlessException {
+        try {
+            List<Caff> caffs = caffRepository.findAll();
+            List<DetailsCaffResponse> caffResponses = new ArrayList<DetailsCaffResponse>();
+
+            for (Caff caffItem:caffs) {
+                caffResponses.add(new DetailsCaffResponse(caffItem));
+            }
+
+          return new DetailsAllCaffResponse(caffResponses);
+        } catch (Exception e) {
+            throw new LawlessException("Not Found!");
+        }
     }
 
     private byte[] readBytesOfFile(File file) throws IOException {
@@ -140,4 +212,6 @@ public class CaffServiceImpl implements CaffService {
             throw new LawlessException(e.getMessage());
         }
     }
+
+
 }
