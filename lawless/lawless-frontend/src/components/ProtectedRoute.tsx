@@ -1,7 +1,7 @@
 import React from 'react';
 import type { RouteProps } from 'react-router-dom';
 import { Redirect, Route } from 'react-router-dom';
-import { useUserContext } from '../hooks/useUserContext';
+import useUserContext from '../hooks/useUserContext';
 
 type Props = RouteProps & {
   guard?: boolean;
