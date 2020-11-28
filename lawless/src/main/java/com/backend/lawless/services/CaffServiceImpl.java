@@ -50,7 +50,7 @@ public class CaffServiceImpl implements CaffService {
     }
 
     @Override
-    public CreateCaffResponse create(UserDetails userDetails, CreateCaffRequest request) throws LawlessException {
+    public CreateCaffResponse create(UserDetails userDetails, CreateCaffRequest request) throws LawlessException, IOException {
         User user = getUserSafely(userDetails);
 
         Caff caff = new Caff();
@@ -65,14 +65,43 @@ public class CaffServiceImpl implements CaffService {
             throw new LawlessException(e.getMessage());
         }
 
-        // TODO delete when parser is called finally
+
         saveCafftoLocal(request.getCaffFile());
-        parseCaff(caff);
-        readParsedFiles(caff);
+        parseCaff(caff, request.getCaffFile());
+        readParsedFiles(caff); //todo comment out after parseCaff works
         caffRepository.save(caff);
-        
-        // TODO call parser with caff id
+        deleteParsedFiles();
+
         return new CreateCaffResponse(caff.getId());
+    }
+
+    private void deleteParsedFiles() {
+
+        String rootDirectory=System.getProperty("user.dir");
+        String caffParserDirectory=rootDirectory+"\\src\\main\\resources\\caffParser";
+        String caffParserRelativeRoute = caffParserDirectory+"\\caffparser.exe";
+
+
+        String command = "cmd /c \" cd " + caffParserDirectory + " && for /f %F in ('dir /b /a-d ^| findstr /vile \".exe\"') do del \"%F\""  +"\" ";
+
+        System.out.println(command);
+        try {
+            Process process = Runtime.getRuntime().exec(command);
+
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+            process.waitFor();
+
+            reader.close();
+
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -86,9 +115,9 @@ public class CaffServiceImpl implements CaffService {
             if (user.getRoles().stream().anyMatch(role -> role.getName() == ERole.ROLE_ADMIN)
                     || user.getId().equals(caff.getUserId())) {
 
-                if (request.getCaffFile() != null) {
-                    caff.setCaffFile(request.getCaffFile());
-                }
+             //   if (request.getCaffFile() != null) {
+             //       caff.setCaffFile(request.getCaffFile());
+             //   }
                 if (request.getName() != null) {
                     caff.setName(request.getName());
                 }
@@ -218,12 +247,14 @@ public class CaffServiceImpl implements CaffService {
 
     }
     //WINDOWS dependency
-    private void parseCaff(Caff caff) throws LawlessException {
+    private void parseCaff(Caff caff, MultipartFile multipartFileCaff) throws LawlessException, IOException {
 
         String rootDirectory=System.getProperty("user.dir");
         String caffParserDirectory=rootDirectory+"\\src\\main\\resources\\caffParser";
         String caffParserRelativeRoute = caffParserDirectory+"\\caffparser.exe";
-        String caffParserArgs = "2.caff output2 ciffData2";
+        String caffParserArgs = multipartFileCaff.getOriginalFilename() + " " +
+                multipartFileCaff.getOriginalFilename() +"_prev " +
+                multipartFileCaff.getOriginalFilename() + "_ciff";
 
         String command = "cmd /c \" cd " + caffParserDirectory + " && caffparser.exe " + caffParserArgs +"\" ";
 
@@ -237,12 +268,38 @@ public class CaffServiceImpl implements CaffService {
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
             }
+            process.waitFor();
 
             reader.close();
 
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+
+        //TODO Parse output files.....
+        Path ciffFilePath = Paths.get(caffParserDirectory, multipartFileCaff.getOriginalFilename()+"_ciff.txt");
+
+        Scanner myReader = new Scanner(ciffFilePath);
+        List<String> logData = new ArrayList<String>();
+        while (myReader.hasNextLine()) {
+            logData.add(myReader.nextLine());
+        }
+        myReader.close();
+        // TODO This is baaaad and only for testing purposes
+        Ciff ciff1 = new Ciff();
+        File ciffPrew1 = new File(caffParserDirectory+"\\"+multipartFileCaff.getOriginalFilename() +"_prev.ppm.ppm");
+
+        ciff1.setCiffFilePreview(readBytesOfFile(ciffPrew1));
+        ciff1.setCaption(logData.get(0));
+        ciff1.setWidth(Integer.parseInt(logData.get(1)));
+        ciff1.setHeight(Integer.parseInt(logData.get(2)));
+        ciff1.setTags(new ArrayList<>());
+        ciff1.getTags().add(new Tag(logData.get(3)));
+        ciff1.getTags().add(new Tag(logData.get(4)));
+        ciff1.getTags().add(new Tag(logData.get(5)));
+
+        caff.setCiffs(new ArrayList<>());
+        caff.getCiffs().add(ciff1);
 
     }
 

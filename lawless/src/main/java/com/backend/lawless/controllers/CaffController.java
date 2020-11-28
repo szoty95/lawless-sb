@@ -33,7 +33,7 @@ public class CaffController {
                                     @RequestParam("price") double price) {
         try {
             return ResponseEntity.ok(caffService.create(userDetails, new CreateCaffRequest(name, description, price, caffFile)));
-        } catch (LawlessException e) {
+        } catch (LawlessException | IOException e) {
             return ResponseEntity
                     .badRequest()
                     .body(e);
@@ -46,15 +46,16 @@ public class CaffController {
                                     @RequestParam("caffid") String caffId,
                                     @RequestParam(value = "name",required = false) String name,
                                     @RequestParam(value = "description", required = false) String description,
-                                    @RequestParam(value = "price", required = false) Double price,
-                                    @RequestBody(required = false) MultipartFile caffFile) {
+                                    @RequestParam(value = "price", required = false) Double price
+     //                               ,@RequestBody(required = false) MultipartFile caffFile
+                                    ){
 
         try {
             UpdateCaffRequest updateCaffRequest = new UpdateCaffRequest();
             updateCaffRequest.setCaffId(caffId);
-            if (caffFile != null) {
-                updateCaffRequest.setCaffFile(caffFile.getBytes());
-            }
+          //  if (caffFile != null) {
+          //      updateCaffRequest.setCaffFile(caffFile.getBytes());
+          //  }
             if (name != null) {
                 updateCaffRequest.setName(name);
             }
@@ -66,7 +67,7 @@ public class CaffController {
             }
 
             return ResponseEntity.ok(caffService.update(userDetails, updateCaffRequest));
-        } catch (LawlessException | IOException e) {
+        } catch (LawlessException e) {
             return ResponseEntity
                     .badRequest()
                     .body(e);
