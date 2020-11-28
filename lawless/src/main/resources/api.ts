@@ -10,7 +10,7 @@
 export interface IAuthClient {
     /**
      * Login the user
-     * @param body (optional)
+     * @param body (optional) 
      * @return successful operation
      */
     login(body: LoginReq | null | undefined): Promise<LoginResp>;
@@ -21,7 +21,7 @@ export interface IAuthClient {
     me(): Promise<UserResp>;
     /**
      * Register a user
-     * @param body (optional)
+     * @param body (optional) 
      * @return successful operation
      */
     register(body: RegisterReq | null | undefined): Promise<RegisterResp>;
@@ -39,7 +39,7 @@ export class AuthClient implements IAuthClient {
 
     /**
      * Login the user
-     * @param body (optional)
+     * @param body (optional) 
      * @return successful operation
      */
     login(body: LoginReq | null | undefined, signal?: AbortSignal | undefined): Promise<LoginResp> {
@@ -68,14 +68,14 @@ export class AuthClient implements IAuthClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = LoginResp.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = LoginResp.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<LoginResp>(<any>null);
@@ -107,14 +107,14 @@ export class AuthClient implements IAuthClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = UserResp.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UserResp.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<UserResp>(<any>null);
@@ -122,7 +122,7 @@ export class AuthClient implements IAuthClient {
 
     /**
      * Register a user
-     * @param body (optional)
+     * @param body (optional) 
      * @return successful operation
      */
     register(body: RegisterReq | null | undefined, signal?: AbortSignal | undefined): Promise<RegisterResp> {
@@ -151,14 +151,14 @@ export class AuthClient implements IAuthClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = RegisterResp.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RegisterResp.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<RegisterResp>(<any>null);
@@ -168,7 +168,7 @@ export class AuthClient implements IAuthClient {
 export interface ICaffClient {
     /**
      * Create and process caff
-     * @param body (optional)
+     * @param body (optional) 
      * @return successful operation
      */
     create(body: MultipartFile | null | undefined, name: string, description: string, price: number): Promise<CreateCaffResp>;
@@ -189,10 +189,10 @@ export interface ICaffClient {
     detailsAll(): Promise<DetailsAllCaffResp>;
     /**
      * Update caff
-     * @param name (optional)
-     * @param description (optional)
-     * @param price (optional)
-     * @param body (optional)
+     * @param name (optional) 
+     * @param description (optional) 
+     * @param price (optional) 
+     * @param body (optional) 
      * @return successful operation
      */
     update(caffid: string, name: string | null | undefined, description: string | null | undefined, price: number | null | undefined, body: MultipartFile | null | undefined): Promise<UpdateCaffResp>;
@@ -210,7 +210,7 @@ export class CaffClient implements ICaffClient {
 
     /**
      * Create and process caff
-     * @param body (optional)
+     * @param body (optional) 
      * @return successful operation
      */
     create(body: MultipartFile | null | undefined, name: string, description: string, price: number, signal?: AbortSignal | undefined): Promise<CreateCaffResp> {
@@ -251,14 +251,14 @@ export class CaffClient implements ICaffClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = CreateCaffResp.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CreateCaffResp.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<CreateCaffResp>(<any>null);
@@ -294,14 +294,14 @@ export class CaffClient implements ICaffClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = DeleteCaffResp.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DeleteCaffResp.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<DeleteCaffResp>(<any>null);
@@ -337,14 +337,14 @@ export class CaffClient implements ICaffClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = DetailsCaffResp.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DetailsCaffResp.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<DetailsCaffResp>(<any>null);
@@ -376,14 +376,14 @@ export class CaffClient implements ICaffClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = DetailsAllCaffResp.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DetailsAllCaffResp.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<DetailsAllCaffResp>(<any>null);
@@ -391,10 +391,10 @@ export class CaffClient implements ICaffClient {
 
     /**
      * Update caff
-     * @param name (optional)
-     * @param description (optional)
-     * @param price (optional)
-     * @param body (optional)
+     * @param name (optional) 
+     * @param description (optional) 
+     * @param price (optional) 
+     * @param body (optional) 
      * @return successful operation
      */
     update(caffid: string, name: string | null | undefined, description: string | null | undefined, price: number | null | undefined, body: MultipartFile | null | undefined, signal?: AbortSignal | undefined): Promise<UpdateCaffResp> {
@@ -433,14 +433,14 @@ export class CaffClient implements ICaffClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = UpdateCaffResp.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UpdateCaffResp.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<UpdateCaffResp>(<any>null);
@@ -484,7 +484,7 @@ export class Comment implements IComment {
         data["userId"] = this.userId;
         data["message"] = this.message;
         data["timeStamp"] = this.timeStamp ? this.timeStamp.toISOString() : <any>undefined;
-        return data;
+        return data; 
     }
 }
 
@@ -523,7 +523,7 @@ export class CreateCaffResp implements ICreateCaffResp {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
-        return data;
+        return data; 
     }
 }
 
@@ -559,7 +559,7 @@ export class DeleteCaffResp implements IDeleteCaffResp {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["response"] = this.response;
-        return data;
+        return data; 
     }
 }
 
@@ -603,7 +603,7 @@ export class DetailsAllCaffResp implements IDetailsAllCaffResp {
             for (let item of this.detailsAllCaffResponse)
                 data["detailsAllCaffResponse"].push(item.toJSON());
         }
-        return data;
+        return data; 
     }
 }
 
@@ -668,7 +668,7 @@ export class DetailsCaffResp implements IDetailsCaffResp {
                 data["comments"].push(item.toJSON());
         }
         data["previewPictureUrl"] = this.previewPictureUrl;
-        return data;
+        return data; 
     }
 }
 
@@ -706,7 +706,7 @@ export class InputStream implements IInputStream {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        return data;
+        return data; 
     }
 }
 
@@ -747,7 +747,7 @@ export class LoginReq implements ILoginReq {
         data["username"] = this.username;
         data["email"] = this.email;
         data["password"] = this.password;
-        return data;
+        return data; 
     }
 }
 
@@ -799,7 +799,7 @@ export class LoginResp implements ILoginResp {
             for (let item of this.roles)
                 data["roles"].push(item.toJSON());
         }
-        return data;
+        return data; 
     }
 }
 
@@ -863,7 +863,7 @@ export class MultipartFile implements IMultipartFile {
         data["inputStream"] = this.inputStream ? this.inputStream.toJSON() : <any>undefined;
         data["contentType"] = this.contentType;
         data["originalFilename"] = this.originalFilename;
-        return data;
+        return data; 
     }
 }
 
@@ -908,7 +908,7 @@ export class RegisterReq implements IRegisterReq {
         data = typeof data === 'object' ? data : {};
         data["userPersonalData"] = this.userPersonalData ? this.userPersonalData.toJSON() : <any>undefined;
         data["password"] = this.password;
-        return data;
+        return data; 
     }
 }
 
@@ -945,7 +945,7 @@ export class RegisterResp implements IRegisterResp {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["value"] = this.value;
-        return data;
+        return data; 
     }
 }
 
@@ -981,7 +981,7 @@ export class Role implements IRole {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["name"] = this.name;
-        return data;
+        return data; 
     }
 }
 
@@ -1017,7 +1017,7 @@ export class UpdateCaffResp implements IUpdateCaffResp {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["response"] = this.response;
-        return data;
+        return data; 
     }
 }
 
@@ -1062,7 +1062,7 @@ export class UserPersonalData implements IUserPersonalData {
         data["email"] = this.email;
         data["firstName"] = this.firstName;
         data["lastName"] = this.lastName;
-        return data;
+        return data; 
     }
 }
 
@@ -1112,7 +1112,7 @@ export class UserResp implements IUserResp {
             for (let item of this.roles)
                 data["roles"].push(item.toJSON());
         }
-        return data;
+        return data; 
     }
 }
 
