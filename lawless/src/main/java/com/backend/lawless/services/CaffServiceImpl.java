@@ -2,10 +2,7 @@ package com.backend.lawless.services;
 
 import com.backend.lawless.daos.CaffRepository;
 import com.backend.lawless.daos.UserRepository;
-import com.backend.lawless.dtos.requests.DetailsCaffRequest;
-import com.backend.lawless.dtos.requests.CreateCaffRequest;
-import com.backend.lawless.dtos.requests.DeleteCaffRequest;
-import com.backend.lawless.dtos.requests.UpdateCaffRequest;
+import com.backend.lawless.dtos.requests.*;
 import com.backend.lawless.dtos.responses.*;
 import com.backend.lawless.entities.*;
 import com.backend.lawless.exceptions.LawlessException;
@@ -133,9 +130,24 @@ public class CaffServiceImpl implements CaffService {
         try {
             Caff caff = getCaffSafely(Long.valueOf(request.getCaffId()));
 
-            return new DetailsCaffResponse(caff.getId(), caff.getUserId(), caff.getName(),
-                    caff.getDescription(), caff.getUploaded(), caff.getPrice(), caff.getComments());
+            return new DetailsCaffResponse(caff);
 
+        } catch (Exception e) {
+            throw new LawlessException("Not Found!");
+        }
+    }
+
+    @Override
+    public DetailsAllCaffResponse detailsAll() throws LawlessException {
+        try {
+            List<Caff> caffs = caffRepository.findAll();
+            List<DetailsCaffResponse> caffResponses = new ArrayList<DetailsCaffResponse>();
+
+            for (Caff caffItem:caffs) {
+                caffResponses.add(new DetailsCaffResponse(caffItem));
+            }
+
+          return new DetailsAllCaffResponse(caffResponses);
         } catch (Exception e) {
             throw new LawlessException("Not Found!");
         }

@@ -1,13 +1,7 @@
 package com.backend.lawless.controllers;
 
-import com.backend.lawless.dtos.requests.CreateCaffRequest;
-import com.backend.lawless.dtos.requests.DeleteCaffRequest;
-import com.backend.lawless.dtos.requests.DetailsCaffRequest;
-import com.backend.lawless.dtos.requests.UpdateCaffRequest;
-import com.backend.lawless.dtos.responses.CreateCaffResponse;
-import com.backend.lawless.dtos.responses.DeleteCaffResponse;
-import com.backend.lawless.dtos.responses.DetailsCaffResponse;
-import com.backend.lawless.dtos.responses.UpdateCaffResponse;
+import com.backend.lawless.dtos.requests.*;
+import com.backend.lawless.dtos.responses.*;
 import com.backend.lawless.exceptions.LawlessException;
 import com.backend.lawless.services.CaffServiceImpl;
 import io.swagger.annotations.Api;
@@ -99,6 +93,19 @@ public class CaffController {
         try {
             return ResponseEntity.ok(
                     caffService.details(detailsCaffRequest));
+        } catch (LawlessException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(e);
+        }
+    }
+
+    @GetMapping(value = "/detailsAll")
+    @ApiOperation(value = "Details all caff ", response = DetailsAllCaffResponse.class, nickname = "detailsAll")
+    public ResponseEntity<?> detailsAll() {
+        try {
+            return ResponseEntity.ok(
+                    caffService.detailsAll());
         } catch (LawlessException e) {
             return ResponseEntity
                     .badRequest()
