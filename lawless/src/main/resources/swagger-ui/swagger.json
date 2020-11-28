@@ -222,8 +222,6 @@
     }
   },
   "definitions" : {
-<<<<<<< HEAD
-=======
     "Comment" : {
       "type" : "object",
       "properties" : {
@@ -244,7 +242,6 @@
         }
       }
     },
->>>>>>> 32c9652157a2f7f876799684db3b75548bd5f4ec
     "CreateCaffResp" : {
       "type" : "object",
       "properties" : {
@@ -306,6 +303,9 @@
         },
         "previewPictureUrl" : {
           "type" : "string"
+        },
+        "userPersonalData" : {
+          "$ref" : "#/definitions/UserPersonalData"
         }
       }
     },
@@ -423,6 +423,9 @@
           "type" : "string"
         },
         "lastName" : {
+          "type" : "string"
+        },
+        "userId" : {
           "type" : "string"
         }
       }

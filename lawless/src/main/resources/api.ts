@@ -620,6 +620,7 @@ export class DetailsCaffResp implements IDetailsCaffResp {
     price?: number | undefined;
     comments?: Comment[] | undefined;
     previewPictureUrl?: string | undefined;
+    userPersonalData?: UserPersonalData | undefined;
 
     constructor(data?: IDetailsCaffResp) {
         if (data) {
@@ -644,6 +645,7 @@ export class DetailsCaffResp implements IDetailsCaffResp {
                     this.comments!.push(Comment.fromJS(item));
             }
             this.previewPictureUrl = _data["previewPictureUrl"];
+            this.userPersonalData = _data["userPersonalData"] ? UserPersonalData.fromJS(_data["userPersonalData"]) : <any>undefined;
         }
     }
 
@@ -668,6 +670,7 @@ export class DetailsCaffResp implements IDetailsCaffResp {
                 data["comments"].push(item.toJSON());
         }
         data["previewPictureUrl"] = this.previewPictureUrl;
+        data["userPersonalData"] = this.userPersonalData ? this.userPersonalData.toJSON() : <any>undefined;
         return data; 
     }
 }
@@ -681,6 +684,7 @@ export interface IDetailsCaffResp {
     price?: number | undefined;
     comments?: Comment[] | undefined;
     previewPictureUrl?: string | undefined;
+    userPersonalData?: UserPersonalData | undefined;
 }
 
 export class InputStream implements IInputStream {
@@ -1030,6 +1034,7 @@ export class UserPersonalData implements IUserPersonalData {
     email?: string | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
+    userId?: string | undefined;
 
     constructor(data?: IUserPersonalData) {
         if (data) {
@@ -1046,6 +1051,7 @@ export class UserPersonalData implements IUserPersonalData {
             this.email = _data["email"];
             this.firstName = _data["firstName"];
             this.lastName = _data["lastName"];
+            this.userId = _data["userId"];
         }
     }
 
@@ -1062,6 +1068,7 @@ export class UserPersonalData implements IUserPersonalData {
         data["email"] = this.email;
         data["firstName"] = this.firstName;
         data["lastName"] = this.lastName;
+        data["userId"] = this.userId;
         return data; 
     }
 }
@@ -1071,6 +1078,7 @@ export interface IUserPersonalData {
     email?: string | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
+    userId?: string | undefined;
 }
 
 export class UserResp implements IUserResp {
