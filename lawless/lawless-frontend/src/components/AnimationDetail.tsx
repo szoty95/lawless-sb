@@ -12,6 +12,8 @@ type AnimationDetailProps = {
 
 const AnimationDetail: React.FC<AnimationDetailProps> = ({ animation }) => {
   const { user } = useUserContext();
+  console.log(user?.userId);
+  console.log(animation.userId);
   return (
     <Grid container direction="column">
       <Typography variant="h5">{animation.name}</Typography>
@@ -22,7 +24,9 @@ const AnimationDetail: React.FC<AnimationDetailProps> = ({ animation }) => {
         <Grid item xs={12} sm={6} container direction="column" spacing={2}>
           <Grid item container justify="space-between" alignItems="center">
             <Grid item>
-              <Typography variant="h6">{animation.userId}</Typography>
+              <Typography variant="h6">
+                {animation.userPersonalData?.firstName}
+              </Typography>
               <Typography variant="subtitle1">{animation.uploaded}</Typography>
             </Grid>
             {user &&
