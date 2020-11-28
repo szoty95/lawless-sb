@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import FileUpload from './FileUpload';
-import { useCreateCaff } from '../hooks/useCreateCaff';
+import useCreateCaff from '../hooks/useCreateCaff';
 import { useAuthToken } from '../hooks/useAuthToken';
 
 const ACCEPTED_FILE_TYPES = ['caff'];

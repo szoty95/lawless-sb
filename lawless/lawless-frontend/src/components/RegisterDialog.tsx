@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import React from 'react';
 import styled from 'styled-components';
 import * as yup from 'yup';
-import { useRegister } from '../hooks/useRegister';
+import useRegister from '../hooks/useRegister';
 import { RegisterReq, UserPersonalData } from '../swagger';
 
 interface RegisterDialogProps {
