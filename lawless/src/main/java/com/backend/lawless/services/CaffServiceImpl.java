@@ -62,9 +62,12 @@ public class CaffServiceImpl implements CaffService {
         } catch (Exception e) {
             throw new LawlessException(e.getMessage());
         }
+
         // TODO delete when parser is called finally
+
         readParsedFiles(caff);
         caffRepository.save(caff);
+        
         // TODO call parser with caff id
         return new CreateCaffResponse(caff.getId());
     }
@@ -113,6 +116,8 @@ public class CaffServiceImpl implements CaffService {
         try {
             if (user.getRoles().stream().anyMatch(role -> role.getName() == ERole.ROLE_ADMIN)
                     || user.getId().equals(caff.getUserId())) {
+                caff.setCiffs(null);
+                
                 caffRepository.deleteById(Long.valueOf(request.getCaffId()));
                 return new DeleteCaffResponse("Delete successful!");
             }

@@ -33,13 +33,13 @@ public class CaffController {
     @PostMapping(value = "/create")
     @ApiOperation(value = "Create and process caff ", response = CreateCaffResponse.class, nickname = "create")
     public ResponseEntity<?> create(@AuthenticationPrincipal UserDetails userDetails,
-                                    @RequestParam("file") MultipartFile caffFile,
+                                    @RequestBody byte[] caffFile,
                                     @RequestParam("name") String name,
                                     @RequestParam("description") String description,
                                     @RequestParam("price") double price) {
         try {
-            return ResponseEntity.ok(caffService.create(userDetails, new CreateCaffRequest(name, description, price, caffFile.getBytes())));
-        } catch (LawlessException | IOException e) {
+            return ResponseEntity.ok(caffService.create(userDetails, new CreateCaffRequest(name, description, price, caffFile)));
+        } catch (LawlessException  e) {
             return ResponseEntity
                     .badRequest()
                     .body(e);
