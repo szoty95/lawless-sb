@@ -28,10 +28,12 @@ public class CaffController {
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(value = "Create and process caff ", response = CreateCaffResponse.class, nickname = "create")
     public ResponseEntity<?> create(@AuthenticationPrincipal UserDetails userDetails,
-                                    @RequestPart(value = "caffFile", required = true) MultipartFile caffFile,
-                                    @RequestPart(value = "metadata", required = true) CreateCaffRequest metadata) {
+                                    @RequestParam("file") MultipartFile caffFile,
+                                    @RequestParam("name") String name,
+                                    @RequestParam("description") String description,
+                                    @RequestParam("price") double price) {
         try {
-            return ResponseEntity.ok(caffService.create(userDetails, metadata, caffFile));
+            return ResponseEntity.ok(caffService.create(userDetails, new CreateCaffRequest(name, description, price), caffFile));
         } catch (LawlessException | IOException e) {
             return ResponseEntity
                     .badRequest()
@@ -45,7 +47,7 @@ public class CaffController {
                                     @RequestBody String caffId,
                                     @RequestBody String name,
                                     @RequestBody String description,
-                                    @RequestBody Double price
+                                    @RequestBody double price
      //                               ,@RequestBody(required = false) MultipartFile caffFile
                                     ){
 
@@ -61,9 +63,9 @@ public class CaffController {
             if (description != null) {
                 updateCaffRequest.setDescription(description);
             }
-            if (price != null) {
+//            if (price != null) {
                 updateCaffRequest.setPrice(price);
-            }
+//            }
 
             return ResponseEntity.ok(caffService.update(userDetails, updateCaffRequest));
         } catch (LawlessException e) {
