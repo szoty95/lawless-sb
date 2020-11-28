@@ -80,6 +80,32 @@
 			<version>2.9.2</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.twelvemonkeys.imageio</groupId>
+			<artifactId>imageio-jpeg</artifactId>
+			<version>3.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.twelvemonkeys.imageio</groupId>
+			<artifactId>imageio-tiff</artifactId>
+			<version>3.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.twelvemonkeys.imageio</groupId>
+			<artifactId>imageio-pnm</artifactId>
+			<version>3.6.1</version>
+		</dependency>
+
+		<!--
+        Optional dependency. Needed only if you deploy `ImageIO` plugins as part of a web app.
+        Make sure you add the `IIOProviderContextListener` to your `web.xml`, see above.
+        -->
+		<dependency>
+			<groupId>com.twelvemonkeys.servlet</groupId>
+			<artifactId>servlet</artifactId>
+			<version>3.6.1</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

@@ -7,6 +7,7 @@ import com.backend.lawless.services.CaffServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,15 +25,15 @@ public class CaffController {
     @Autowired
     CaffServiceImpl caffService;
 
-    @PostMapping(value = "/create")
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(value = "Create and process caff ", response = CreateCaffResponse.class, nickname = "create")
     public ResponseEntity<?> create(@AuthenticationPrincipal UserDetails userDetails,
-                                    @RequestBody MultipartFile caffFile,
-                                    @RequestBody String name,
-                                    @RequestBody String description,
-                                    @RequestBody double price) {
+                                    @RequestParam("file") MultipartFile caffFile,
+                                    @RequestParam("name") String name,
+                                    @RequestParam("description") String description,
+                                    @RequestParam("price") double price) {
         try {
-            return ResponseEntity.ok(caffService.create(userDetails, new CreateCaffRequest(name, description, price, caffFile)));
+            return ResponseEntity.ok(caffService.create(userDetails, new CreateCaffRequest(name, description, price), caffFile));
         } catch (LawlessException | IOException e) {
             return ResponseEntity
                     .badRequest()
@@ -46,7 +47,7 @@ public class CaffController {
                                     @RequestBody String caffId,
                                     @RequestBody String name,
                                     @RequestBody String description,
-                                    @RequestBody Double price
+                                    @RequestBody double price
      //                               ,@RequestBody(required = false) MultipartFile caffFile
                                     ){
 
@@ -62,9 +63,9 @@ public class CaffController {
             if (description != null) {
                 updateCaffRequest.setDescription(description);
             }
-            if (price != null) {
+//            if (price != null) {
                 updateCaffRequest.setPrice(price);
-            }
+//            }
 
             return ResponseEntity.ok(caffService.update(userDetails, updateCaffRequest));
         } catch (LawlessException e) {

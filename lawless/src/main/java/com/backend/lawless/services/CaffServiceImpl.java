@@ -7,25 +7,18 @@ import com.backend.lawless.dtos.requests.*;
 import com.backend.lawless.dtos.responses.*;
 import com.backend.lawless.entities.*;
 import com.backend.lawless.exceptions.LawlessException;
-import com.backend.lawless.mapping.ModelMapper;
-import com.sun.xml.bind.v2.model.core.ID;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Id;
-import java.awt.*;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
-import java.util.Scanner;
 
 @Service
 public class CaffServiceImpl implements CaffService {
@@ -50,7 +43,7 @@ public class CaffServiceImpl implements CaffService {
     }
 
     @Override
-    public CreateCaffResponse create(UserDetails userDetails, CreateCaffRequest request) throws LawlessException, IOException {
+    public CreateCaffResponse create(UserDetails userDetails, CreateCaffRequest request, MultipartFile caffFile) throws LawlessException, IOException {
         User user = getUserSafely(userDetails);
 
         Caff caff = new Caff();
@@ -60,15 +53,15 @@ public class CaffServiceImpl implements CaffService {
         caff.setUploaded(new Date());
         caff.setPrice(request.getPrice());
         try {
-        caff.setCaffFile(request.getCaffFile().getBytes());
+        caff.setCaffFile(caffFile.getBytes());
         } catch (Exception e) {
             throw new LawlessException(e.getMessage());
         }
 
 
-        saveCafftoLocal(request.getCaffFile());
-        parseCaff(caff, request.getCaffFile());
-        readParsedFiles(caff); //todo comment out after parseCaff works
+        saveCafftoLocal(caffFile);
+        parseCaff(caff, caffFile);
+//        readParsedFiles(caff); //todo comment out after parseCaff works
         caffRepository.save(caff);
         deleteParsedFiles();
 
@@ -219,18 +212,30 @@ public class CaffServiceImpl implements CaffService {
     }
 
     private byte[] readBytesOfFile(File file) throws IOException {
-        byte[] bytes = new byte[(int) file.length()];
-
-        try (FileInputStream fis = new FileInputStream(file)) {
-
-            //read file into bytes[]
-            fis.read(bytes);
-
+        byte[] imageInByte = null;
+        try {
+            BufferedImage placeholder = ImageIO.read(file);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(placeholder, "png", baos);
+            baos.flush();
+            imageInByte = baos.toByteArray();
+            baos.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return bytes;
+        return imageInByte;
+//        byte[] bytes = new byte[(int) file.length()];
+//
+//        try (FileInputStream fis = new FileInputStream(file)) {
+//
+//            //read file into bytes[]
+//            fis.read(bytes);
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return bytes;
     }
 
     private void saveCafftoLocal(MultipartFile multipartFileCaff) throws LawlessException{
@@ -304,48 +309,48 @@ public class CaffServiceImpl implements CaffService {
     }
 
     private void readParsedFiles(Caff caff) throws LawlessException {
-        Ciff ciff1 = new Ciff();
-        Ciff ciff2 = new Ciff();
-        File ciffPrew1 = new File("src/main/resources/caff-test/pista.ppm");
-        File ciffPrew2 = new File("src/main/resources/caff-test/pista2.ppm");
-        // TODO delete when file upload is completed;
-        File caffFile = new File("src/main/resources/caff-test/2.caff");
-        // TODO END
-        try {
-            // TODO delete when file upload is completed;
-//            caff.setCaffFile(readBytesOfFile(caffFile));
-            // TODO END
-            File myObj = new File("src/main/resources/caff-test/logdata.txt");
-            Scanner myReader = new Scanner(myObj);
-            List<String> logData = new ArrayList<String>();
-            while (myReader.hasNextLine()) {
-                logData.add(myReader.nextLine());
-            }
-            myReader.close();
-            // TODO This is baaaad and only for testing purposes
-            ciff1.setCiffFilePreview(readBytesOfFile(ciffPrew1));
-            ciff1.setCaption(logData.get(0));
-            ciff1.setWidth(Integer.parseInt(logData.get(1)));
-            ciff1.setHeight(Integer.parseInt(logData.get(2)));
-            ciff1.setTags(new ArrayList<>());
-            ciff1.getTags().add(new Tag(logData.get(3)));
-            ciff1.getTags().add(new Tag(logData.get(4)));
-            ciff1.getTags().add(new Tag(logData.get(5)));
-            // Ciff2
-            ciff2.setCiffFilePreview(readBytesOfFile(ciffPrew2));
-            ciff2.setCaption(logData.get(0));
-            ciff2.setWidth(Integer.parseInt(logData.get(1)));
-            ciff2.setHeight(Integer.parseInt(logData.get(2)));
-            ciff2.setTags(new ArrayList<>());
-            ciff2.getTags().add(new Tag(logData.get(3)));
-            ciff2.getTags().add(new Tag(logData.get(4)));
-            ciff2.getTags().add(new Tag(logData.get(5)));
-            caff.setCiffs(new ArrayList<>());
-            caff.getCiffs().add(ciff1);
-            caff.getCiffs().add(ciff2);
-        } catch (IOException e) {
-            throw new LawlessException(e.getMessage());
-        }
+//        Ciff ciff1 = new Ciff();
+//        Ciff ciff2 = new Ciff();
+//        File ciffPrew1 = new File("src/main/resources/caff-test/pista.ppm");
+//        File ciffPrew2 = new File("src/main/resources/caff-test/pista2.ppm");
+//        // TODO delete when file upload is completed;
+//        File caffFile = new File("src/main/resources/caff-test/2.caff");
+//        // TODO END
+//        try {
+//            // TODO delete when file upload is completed;
+////            caff.setCaffFile(readBytesOfFile(caffFile));
+//            // TODO END
+//            File myObj = new File("src/main/resources/caff-test/logdata.txt");
+//            Scanner myReader = new Scanner(myObj);
+//            List<String> logData = new ArrayList<String>();
+//            while (myReader.hasNextLine()) {
+//                logData.add(myReader.nextLine());
+//            }
+//            myReader.close();
+//            // TODO This is baaaad and only for testing purposes
+//            ciff1.setCiffFilePreview(readBytesOfFile(ciffPrew1.toPath()));
+//            ciff1.setCaption(logData.get(0));
+//            ciff1.setWidth(Integer.parseInt(logData.get(1)));
+//            ciff1.setHeight(Integer.parseInt(logData.get(2)));
+//            ciff1.setTags(new ArrayList<>());
+//            ciff1.getTags().add(new Tag(logData.get(3)));
+//            ciff1.getTags().add(new Tag(logData.get(4)));
+//            ciff1.getTags().add(new Tag(logData.get(5)));
+//            // Ciff2
+//            ciff2.setCiffFilePreview(readBytesOfFile(ciffPrew2));
+//            ciff2.setCaption(logData.get(0));
+//            ciff2.setWidth(Integer.parseInt(logData.get(1)));
+//            ciff2.setHeight(Integer.parseInt(logData.get(2)));
+//            ciff2.setTags(new ArrayList<>());
+//            ciff2.getTags().add(new Tag(logData.get(3)));
+//            ciff2.getTags().add(new Tag(logData.get(4)));
+//            ciff2.getTags().add(new Tag(logData.get(5)));
+//            caff.setCiffs(new ArrayList<>());
+//            caff.getCiffs().add(ciff1);
+//            caff.getCiffs().add(ciff2);
+//        } catch (IOException e) {
+//            throw new LawlessException(e.getMessage());
+//        }
     }
 
 
