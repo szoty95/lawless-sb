@@ -75,42 +75,19 @@
         }
       }
     },
-    "/api/caff/commentAdd" : {
-      "post" : {
-        "tags" : [ "Caff" ],
-        "summary" : "Comment caff ",
-        "description" : "",
-        "operationId" : "comment",
-        "parameters" : [ {
-          "in" : "body",
-          "name" : "body",
-          "required" : false,
-          "schema" : {
-            "$ref" : "#/definitions/CommentAddCaffReq"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/DetailsAllCaffResp"
-            }
-          }
-        }
-      }
-    },
     "/api/caff/create" : {
       "post" : {
         "tags" : [ "Caff" ],
         "summary" : "Create and process caff ",
         "description" : "",
         "operationId" : "create",
-        "consumes" : [ "multipart/form-data" ],
         "parameters" : [ {
-          "name" : "file",
-          "in" : "query",
-          "required" : true,
-          "type" : "ref"
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/MultipartFile"
+          }
         }, {
           "name" : "name",
           "in" : "query",
@@ -139,17 +116,16 @@
       }
     },
     "/api/caff/delete" : {
-      "delete" : {
+      "post" : {
         "tags" : [ "Caff" ],
         "summary" : "Delete caff ",
         "description" : "",
         "operationId" : "delete",
         "parameters" : [ {
-          "name" : "id",
+          "name" : "",
           "in" : "query",
           "required" : true,
-          "type" : "integer",
-          "format" : "int64"
+          "type" : "ref"
         } ],
         "responses" : {
           "200" : {
@@ -168,11 +144,10 @@
         "description" : "",
         "operationId" : "details",
         "parameters" : [ {
-          "name" : "id",
+          "name" : "",
           "in" : "query",
           "required" : true,
-          "type" : "integer",
-          "format" : "int64"
+          "type" : "ref"
         } ],
         "responses" : {
           "200" : {
@@ -200,29 +175,6 @@
         }
       }
     },
-    "/api/caff/picture" : {
-      "get" : {
-        "tags" : [ "Caff" ],
-        "summary" : "Get Caff preview picture",
-        "description" : "",
-        "operationId" : "picture",
-        "parameters" : [ {
-          "name" : "id",
-          "in" : "query",
-          "required" : true,
-          "type" : "integer",
-          "format" : "int64"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/CaffPictureResponse"
-            }
-          }
-        }
-      }
-    },
     "/api/caff/update" : {
       "post" : {
         "tags" : [ "Caff" ],
@@ -230,11 +182,32 @@
         "description" : "",
         "operationId" : "update",
         "parameters" : [ {
+          "name" : "caffid",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "name",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "description",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "price",
+          "in" : "query",
+          "required" : false,
+          "type" : "number",
+          "format" : "double"
+        }, {
           "in" : "body",
           "name" : "body",
           "required" : false,
           "schema" : {
-            "$ref" : "#/definitions/UpdateCaffReq"
+            "$ref" : "#/definitions/MultipartFile"
           }
         } ],
         "responses" : {
@@ -249,15 +222,6 @@
     }
   },
   "definitions" : {
-    "CaffPictureResponse" : {
-      "type" : "object",
-      "properties" : {
-        "previewPicture" : {
-          "type" : "string",
-          "format" : "byte"
-        }
-      }
-    },
     "Comment" : {
       "type" : "object",
       "properties" : {
@@ -275,18 +239,6 @@
         "timeStamp" : {
           "type" : "string",
           "format" : "date-time"
-        }
-      }
-    },
-    "CommentAddCaffReq" : {
-      "type" : "object",
-      "properties" : {
-        "caffId" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "message" : {
-          "type" : "string"
         }
       }
     },
@@ -349,10 +301,16 @@
             "$ref" : "#/definitions/Comment"
           }
         },
+        "previewPictureUrl" : {
+          "type" : "string"
+        },
         "userPersonalData" : {
           "$ref" : "#/definitions/UserPersonalData"
         }
       }
+    },
+    "InputStream" : {
+      "type" : "object"
     },
     "LoginReq" : {
       "type" : "object",
@@ -385,6 +343,37 @@
         }
       }
     },
+    "MultipartFile" : {
+      "type" : "object",
+      "properties" : {
+        "name" : {
+          "type" : "string"
+        },
+        "empty" : {
+          "type" : "boolean"
+        },
+        "bytes" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string",
+            "format" : "byte"
+          }
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "inputStream" : {
+          "$ref" : "#/definitions/InputStream"
+        },
+        "contentType" : {
+          "type" : "string"
+        },
+        "originalFilename" : {
+          "type" : "string"
+        }
+      }
+    },
     "RegisterReq" : {
       "type" : "object",
       "properties" : {
@@ -410,25 +399,6 @@
         "name" : {
           "type" : "string",
           "enum" : [ "ROLE_USER", "ROLE_ADMIN" ]
-        }
-      }
-    },
-    "UpdateCaffReq" : {
-      "type" : "object",
-      "properties" : {
-        "caffId" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "name" : {
-          "type" : "string"
-        },
-        "description" : {
-          "type" : "string"
-        },
-        "price" : {
-          "type" : "number",
-          "format" : "double"
         }
       }
     },
