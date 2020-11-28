@@ -349,15 +349,15 @@
         "name" : {
           "type" : "string"
         },
+        "empty" : {
+          "type" : "boolean"
+        },
         "bytes" : {
           "type" : "array",
           "items" : {
             "type" : "string",
             "format" : "byte"
           }
-        },
-        "empty" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",

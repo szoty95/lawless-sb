@@ -1,13 +1,19 @@
 import Axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { CreateCaffResp } from "../swagger";
+import { CreateCaffResp, IDetailsCaffResp } from "../swagger";
 
 type CreateCaffQuery = (
   data?: FormData,
   authToken?: string
 ) => Promise<AxiosResponse<CreateCaffResp>>;
 
+type GetCaffQuery = (
+  data?: number,
+  authToken?: string
+) => Promise<AxiosResponse<IDetailsCaffResp>>;
+
 export type CaffClient = {
   create: CreateCaffQuery;
+  details: GetCaffQuery;
 };
 
 export function caff(config: AxiosRequestConfig): CaffClient {
@@ -22,7 +28,14 @@ export function caff(config: AxiosRequestConfig): CaffClient {
     });
   };
 
+  const details: GetCaffQuery = (data, authToken) => {
+    return axios.get<CreateCaffResp>(`/details?detailsCaffRequest=${data}`, {
+      headers: { Authorization: `Bearer ${authToken}` },
+    });
+  };
+
   return {
     create,
+    details,
   };
 }
