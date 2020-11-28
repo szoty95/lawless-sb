@@ -61,7 +61,7 @@ public class CaffServiceImpl implements CaffService {
 
         saveCafftoLocal(caffFile);
         parseCaff(caff, caffFile);
-//        readParsedFiles(caff); //todo comment out after parseCaff works
+//        readParsedFiles(caff); //TODO if using linux, comment the 2 lines above, and comment out this one
         caffRepository.save(caff);
         deleteParsedFiles();
 
