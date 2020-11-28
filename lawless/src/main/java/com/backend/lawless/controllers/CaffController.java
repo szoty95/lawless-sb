@@ -33,13 +33,13 @@ public class CaffController {
     @PostMapping(value = "/create")
     @ApiOperation(value = "Create and process caff ", response = CreateCaffResponse.class, nickname = "create")
     public ResponseEntity<?> create(@AuthenticationPrincipal UserDetails userDetails,
-                                    @RequestBody byte[] caffFile,
+                                    @RequestParam MultipartFile caffFile,
                                     @RequestParam("name") String name,
                                     @RequestParam("description") String description,
                                     @RequestParam("price") double price) {
         try {
-            return ResponseEntity.ok(caffService.create(userDetails, new CreateCaffRequest(name, description, price, caffFile)));
-        } catch (LawlessException  e) {
+            return ResponseEntity.ok(caffService.create(userDetails, new CreateCaffRequest(name, description, price, caffFile.getBytes())));
+        } catch (LawlessException | IOException e) {
             return ResponseEntity
                     .badRequest()
                     .body(e);
@@ -53,13 +53,13 @@ public class CaffController {
                                     @RequestParam(value = "name",required = false) String name,
                                     @RequestParam(value = "description", required = false) String description,
                                     @RequestParam(value = "price", required = false) Double price,
-                                    @RequestBody(required = false) byte[] caffFile) {
+                                    @RequestParam(required = false) MultipartFile caffFile) {
 
         try {
             UpdateCaffRequest updateCaffRequest = new UpdateCaffRequest();
             updateCaffRequest.setCaffId(caffId);
             if (caffFile != null) {
-                updateCaffRequest.setCaffFile(caffFile);
+                updateCaffRequest.setCaffFile(caffFile.getBytes());
             }
             if (name != null) {
                 updateCaffRequest.setName(name);
@@ -72,7 +72,7 @@ public class CaffController {
             }
 
             return ResponseEntity.ok(caffService.update(userDetails, updateCaffRequest));
-        } catch (LawlessException  e) {
+        } catch (LawlessException | IOException e) {
             return ResponseEntity
                     .badRequest()
                     .body(e);

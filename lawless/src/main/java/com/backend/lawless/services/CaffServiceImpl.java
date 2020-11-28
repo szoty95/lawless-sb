@@ -117,7 +117,7 @@ public class CaffServiceImpl implements CaffService {
             if (user.getRoles().stream().anyMatch(role -> role.getName() == ERole.ROLE_ADMIN)
                     || user.getId().equals(caff.getUserId())) {
                 caff.setCiffs(null);
-                
+
                 caffRepository.deleteById(Long.valueOf(request.getCaffId()));
                 return new DeleteCaffResponse("Delete successful!");
             }
