@@ -1,11 +1,13 @@
-import { CreateCaffResp } from "../swagger";
-import { useClientContext } from "./useClientContext";
-import useRequest from "./useRequest";
+import { CreateCaffResp } from '../swagger';
+import useClientContext from './useClientContext';
+import useRequest from './useRequest';
 
-export const useCreateCaff = () => {
+const useCreateCaff = () => {
   const { client } = useClientContext();
 
   return useRequest<FormData, CreateCaffResp>({
     request: client.caff.create,
   });
 };
+
+export default useCreateCaff;

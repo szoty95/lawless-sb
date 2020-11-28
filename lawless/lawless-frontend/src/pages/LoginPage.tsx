@@ -1,12 +1,10 @@
-import { Button, Grid } from "@material-ui/core";
-import React, { useState } from "react";
-import LoginForm from "../components/LoginForm";
-import RegisterDialog from "../components/RegisterDialog";
-import Page from "./Page";
+import { Button, Grid } from '@material-ui/core';
+import React, { useState } from 'react';
+import LoginForm from '../components/LoginForm';
+import RegisterDialog from '../components/RegisterDialog';
+import Page from './Page';
 
-interface Props {}
-
-const LoginPage = (props: Props) => {
+const LoginPage: React.FC = () => {
   const [open, setOpen] = useState(false);
   return (
     <Page title="Login">

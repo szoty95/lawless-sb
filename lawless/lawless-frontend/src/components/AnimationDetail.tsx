@@ -1,6 +1,6 @@
-import { Button, Chip, Grid, Typography } from "@material-ui/core";
-import Skeleton from "@material-ui/lab/Skeleton";
-import React from "react";
+import { Button, Chip, Grid, Typography } from '@material-ui/core';
+import Skeleton from '@material-ui/lab/Skeleton';
+import React from 'react';
 
 const AnimationDetail: React.FC = () => {
   return (
@@ -25,17 +25,13 @@ const AnimationDetail: React.FC = () => {
 
           <Grid item>
             <Typography>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Felis nam
-              fusce urna, nec. Egestas orci molestie felis, amet, at enim, odio
-              montes, ornare. Hendrerit et a sagittis id a sit nunc, congue
-              massa. Aliquam, in faucibus pulvinar convallis sed tristique.
-              Faucibus augue in duis lacus, ornare. Ipsum ac at odio aliquam id
-              natoque fermentum lobortis. Massa hac tristique consectetur enim
-              praesent egestas. Amet, nunc risus hac facilisis nulla vulputate.
-              Elementum ut rhoncus scelerisque eu turpis commodo hendrerit
-              interdum. Pellentesque vestibulum lectus arcu ornare ultricies.
-              Feugiat elit feugiat nunc ut id pulvinar quis. Elementum lectus
-              ornare purus sollicitudin in.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Felis nam fusce urna, nec. Egestas orci molestie
+              felis, amet, at enim, odio montes, ornare. Hendrerit et a sagittis id a sit nunc, congue massa. Aliquam,
+              in faucibus pulvinar convallis sed tristique. Faucibus augue in duis lacus, ornare. Ipsum ac at odio
+              aliquam id natoque fermentum lobortis. Massa hac tristique consectetur enim praesent egestas. Amet, nunc
+              risus hac facilisis nulla vulputate. Elementum ut rhoncus scelerisque eu turpis commodo hendrerit
+              interdum. Pellentesque vestibulum lectus arcu ornare ultricies. Feugiat elit feugiat nunc ut id pulvinar
+              quis. Elementum lectus ornare purus sollicitudin in.
             </Typography>
           </Grid>
 

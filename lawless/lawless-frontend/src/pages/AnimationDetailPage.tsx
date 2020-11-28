@@ -1,9 +1,9 @@
-import { Button, Container, Grid, Typography } from "@material-ui/core";
-import React from "react";
-import styled from "styled-components";
-import AnimationDetail from "../components/AnimationDetail";
-import Comment from "../components/Comment";
-import Page from "./Page";
+import { Button, Container, Grid, Typography } from '@material-ui/core';
+import React from 'react';
+import styled from 'styled-components';
+import AnimationDetail from '../components/AnimationDetail';
+import Comment from '../components/Comment';
+import Page from './Page';
 
 const StyledContainer = styled(Container)`
   padding-top: 1.5em;
@@ -22,9 +22,9 @@ const AnimationDetailPage: React.FC = () => {
             <Typography variant="h5"> Kommentek</Typography>
             <Comment
               comment={{
-                text: "asdas asda sd asd asd as das dsa ",
-                createdBy: "Teszt Elek",
-                createdAt: "2020. 44. 44",
+                text: 'asdas asda sd asd asd as das dsa ',
+                createdBy: 'Teszt Elek',
+                createdAt: '2020. 44. 44',
               }}
             />
           </Grid>

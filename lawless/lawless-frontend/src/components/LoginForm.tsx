@@ -1,15 +1,13 @@
-import { Button, Grid, Paper, TextField } from "@material-ui/core";
-import { useFormik } from "formik";
-import React, { useEffect } from "react";
-import styled from "styled-components";
-import * as yup from "yup";
-import { useLogin } from "../hooks/useLogin";
-import { LoginReq } from "../swagger";
-import CryptoJS from "crypto-js";
-import { useAuthToken } from "../hooks/useAuthToken";
-import { useUserContext } from "../hooks/useUserContext";
-
-interface Props {}
+import { Button, Grid, Paper, TextField } from '@material-ui/core';
+import { useFormik } from 'formik';
+import React, { useEffect } from 'react';
+import styled from 'styled-components';
+import * as yup from 'yup';
+import CryptoJS from 'crypto-js';
+import useLogin from '../hooks/useLogin';
+import { LoginReq } from '../swagger';
+import { useAuthToken } from '../hooks/useAuthToken';
+import useUserContext from '../hooks/useUserContext';
 
 const StyledGrid = styled(Grid)`
   padding: 1.5em;
@@ -17,25 +15,22 @@ const StyledGrid = styled(Grid)`
 `;
 
 const schema = yup.object({
-  userName: yup.string().required("Username is required"),
-  password: yup
-    .string()
-    .min(8, "Password must be min 8 character long.")
-    .required("Password is required"),
+  userName: yup.string().required('Username is required'),
+  password: yup.string().min(8, 'Password must be min 8 character long.').required('Password is required'),
 });
 
-const LoginForm = (props: Props) => {
+const LoginForm = () => {
   const [result, login] = useLogin();
   const { setAuthToken } = useAuthToken();
   const { setUser } = useUserContext();
 
   const formik = useFormik({
-    initialValues: { userName: "", password: "" },
+    initialValues: { userName: '', password: '' },
     validationSchema: schema,
     onSubmit: (values) => {
       const req = new LoginReq({
         username: values.userName,
-        email: "",
+        email: '',
         password: CryptoJS.SHA256(values.password).toString(),
       });
       login({ data: req });
@@ -55,12 +50,7 @@ const LoginForm = (props: Props) => {
   return (
     <form onSubmit={formik.handleSubmit}>
       <Paper>
-        <StyledGrid
-          container
-          direction="column"
-          spacing={2}
-          alignItems="center"
-        >
+        <StyledGrid container direction="column" spacing={2} alignItems="center">
           <Grid item>
             <TextField
               label="Username"
