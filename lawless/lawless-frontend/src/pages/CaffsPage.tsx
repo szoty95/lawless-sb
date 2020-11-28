@@ -92,12 +92,13 @@ const CaffsPage: React.FC = () => {
           <TextField value={filter} onChange={(e) => setFilter(e.target.value)} label='Keresés' variant="outlined"/>
         </Box>
         <Box display="flex" justifyContent="center" flexWrap="wrap">
-          {filterdCaffs.map((card) => (
+          {testData.map((card) => (
             <CaffCard
-            key={card.id}
-            id={card.id}
-            title={card.title}
-            createdBy={card.createdBy}
+              key={card.id}
+              id={card.id}
+              title={card.title}
+              createdBy={card.createdBy}
+              show={filterdCaffs.includes(card)}
             />
             ))}
         </Box>

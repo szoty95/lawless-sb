@@ -1,8 +1,9 @@
-import { Box, Card, CardMedia, Typography } from "@material-ui/core";
+import { Box, Card, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import React from "react";
 import { useHistory } from "react-router";
+import ShowPPM from "./ShowPPM";
 
 const useStyles = makeStyles({
   root: {
@@ -10,16 +11,22 @@ const useStyles = makeStyles({
     height: 345,
     margin: 32,
     cursor: "pointer",
+    display: (show) => show? '' : 'none',
   },
 
-  media: {
-    width: "100%",
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-end",
     height: "100%",
+    position: 'relative',
+    bottom: '345px',
+    zIndex: 1000,
   },
 
   mediaFooter: {
     padding: 16,
-    backgroundColor: "rgba(255, 255, 255, 0.3)",
+    backgroundColor: "rgba(255, 255, 255, 0.6)",
   },
 });
 
@@ -27,30 +34,23 @@ interface Props {
   title: string;
   createdBy: string;
   id: number;
+  show: boolean;
 }
 
-const CaffCard: React.FC<Props> = ({ id, title, createdBy }) => {
-  const styles = useStyles();
+const CaffCard: React.FC<Props> = ({ id, title, createdBy, show}) => {
+  const styles = useStyles(show);
   const history = useHistory();
   return (
     <Card className={styles.root} onClick={() => history.push(`/caffs/${id}`)}>
-      <CardMedia
-        image="https://static.scientificamerican.com/sciam/cache/file/92E141F8-36E4-4331-BB2EE42AC8674DD3_source.jpg?w=590&h=800&62C6A28D-D2CA-4635-AA7017C94E6DDB72"
-        title={title}
-        className={styles.media}
-      >
+        <ShowPPM height={345} width={345} id={id}/>
         <Box
-          display="flex"
-          flexDirection="column"
-          justifyContent="flex-end"
-          height="100%"
+          className={styles.container}
         >
           <Box className={styles.mediaFooter}>
             <Typography variant="h4">{title}</Typography>
             <Typography>{createdBy}</Typography>
           </Box>
         </Box>
-      </CardMedia>
     </Card>
   );
 };
