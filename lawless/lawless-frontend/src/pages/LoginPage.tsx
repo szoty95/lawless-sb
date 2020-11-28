@@ -1,4 +1,4 @@
-import { Button, Grid } from "@material-ui/core";
+import { Button, Grid, Paper } from "@material-ui/core";
 import React, { useState } from "react";
 import LoginForm from "../components/LoginForm";
 import RegisterDialog from "../components/RegisterDialog";
@@ -11,9 +11,13 @@ const LoginPage = (props: Props) => {
   return (
     <Page title="Login">
       <Grid container justify="center" direction="column" alignItems="center">
-        <LoginForm />
-        <Button onClick={() => setOpen(true)}>Register</Button>
-        <RegisterDialog open={open} setOpen={setOpen} />
+        <Paper>
+          <Grid item container direction="column" alignItems="center">
+            <LoginForm />
+            <Button onClick={() => setOpen(true)}>Register</Button>
+            <RegisterDialog open={open} setOpen={setOpen} />
+          </Grid>
+        </Paper>
       </Grid>
     </Page>
   );
