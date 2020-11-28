@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { createContext } from "react";
-import { IUserPersonalData } from "../swagger";
+import React, { useState, createContext } from 'react';
+
+import { IUserPersonalData } from '../swagger';
 
 type User = IUserPersonalData & { roles: Array<string | undefined> };
 
@@ -16,9 +16,5 @@ export const UserContext = createContext<UserContextType | undefined>({
 
 export const UserContextProvider: React.FC = ({ children }) => {
   const [user, setUser] = useState<User | undefined>();
-  return (
-    <UserContext.Provider value={{ user: user, setUser: setUser }}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>;
 };

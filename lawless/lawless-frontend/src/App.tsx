@@ -1,9 +1,9 @@
-import React from "react";
-import { BrowserRouter as Router } from "react-router-dom";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core";
-import Routes from "./Routes";
-import { UserContextProvider } from "./contexts";
-import RememberMe from "./components/RememberMe";
+import React from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core';
+import Routes from './Routes';
+import { UserContextProvider } from './contexts';
+import RememberMe from './components/RememberMe';
 
 const theme = createMuiTheme();
 

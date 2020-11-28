@@ -1,5 +1,5 @@
-import React from "react";
-import { Button } from "@material-ui/core";
+import React from 'react';
+import { Button } from '@material-ui/core';
 
 type FileUploadProps = {
   disabled: boolean;
@@ -21,7 +21,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ disabled, handleUpload }) => {
               handleUpload(file);
             }
           }}
-          style={{ display: "none" }}
+          style={{ display: 'none' }}
         />
         <Button disabled={disabled} variant="contained" component="span">
           Choose File

@@ -1,6 +1,6 @@
-import { useLocalStorage } from "react-use";
+import { useLocalStorage } from 'react-use';
 
-const AUTH_TOKEN_KEY = "authToken";
+const AUTH_TOKEN_KEY = 'authToken';
 
 export const useAuthToken = () => {
   const [authToken, setAuthToken] = useLocalStorage(AUTH_TOKEN_KEY);
@@ -8,3 +8,5 @@ export const useAuthToken = () => {
 
   return { authToken, setAuthToken, removeAuthToken };
 };
+
+export default useAuthToken;

@@ -1,8 +1,8 @@
-import React from "react";
-import styled from "styled-components";
-import { AppBarProps} from "@material-ui/core";
+import React from 'react';
+import styled from 'styled-components';
+import { AppBarProps } from '@material-ui/core';
 
-import Header from "../components/Header";
+import Header from '../components/Header';
 
 export type PageProps = AppBarProps & {
   title: string;
@@ -19,7 +19,7 @@ const MainContent = styled.div`
   flex-grow: 1;
 `;
 
-const Page: React.FC<PageProps> = ({ children, title, ...rest }) => {
+const Page: React.FC<PageProps> = ({ children }) => {
   return (
     <PageContainer>
       <Header />

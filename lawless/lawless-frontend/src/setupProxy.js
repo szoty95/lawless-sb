@@ -1,13 +1,13 @@
-const { createProxyMiddleware } = require("http-proxy-middleware");
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports = function (app) {
   app.use(
-    "/api",
+    '/api',
     createProxyMiddleware({
-      target: "http://152.66.211.202:9090",
+      target: 'http://localhost:8080',
       secure: false,
       changeOrigin: true,
-      cookieDomainRewrite: "localhost",
-    })
+      cookieDomainRewrite: 'localhost',
+    }),
   );
 };
