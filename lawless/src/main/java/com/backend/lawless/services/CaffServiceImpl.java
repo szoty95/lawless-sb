@@ -164,7 +164,23 @@ public class CaffServiceImpl implements CaffService {
             List<DetailsCaffResponse> caffResponses = new ArrayList<DetailsCaffResponse>();
 
             for (Caff caffItem:caffs) {
-                caffResponses.add(new DetailsCaffResponse(caffItem));
+
+
+                DetailsCaffResponse response =new DetailsCaffResponse(caffItem);
+
+
+                if(userRepository.existsById(caffItem.getUserId())) {
+                    User user = userRepository.findById(caffItem.getUserId()).get();
+
+                    response.setUserPersonalData(new UserPersonalData(
+                            user.getUsername(),
+                            user.getEmail(),
+                            user.getFirstName(),
+                            user.getLastName(),
+                            user.getId().toString()));
+                }
+                caffResponses.add(response);
+
             }
 
           return new DetailsAllCaffResponse(caffResponses);
