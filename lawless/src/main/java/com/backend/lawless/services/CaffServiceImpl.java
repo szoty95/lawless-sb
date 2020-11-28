@@ -309,48 +309,48 @@ public class CaffServiceImpl implements CaffService {
     }
 
     private void readParsedFiles(Caff caff) throws LawlessException {
-//        Ciff ciff1 = new Ciff();
-//        Ciff ciff2 = new Ciff();
-//        File ciffPrew1 = new File("src/main/resources/caff-test/pista.ppm");
-//        File ciffPrew2 = new File("src/main/resources/caff-test/pista2.ppm");
-//        // TODO delete when file upload is completed;
-//        File caffFile = new File("src/main/resources/caff-test/2.caff");
-//        // TODO END
-//        try {
-//            // TODO delete when file upload is completed;
-////            caff.setCaffFile(readBytesOfFile(caffFile));
-//            // TODO END
-//            File myObj = new File("src/main/resources/caff-test/logdata.txt");
-//            Scanner myReader = new Scanner(myObj);
-//            List<String> logData = new ArrayList<String>();
-//            while (myReader.hasNextLine()) {
-//                logData.add(myReader.nextLine());
-//            }
-//            myReader.close();
-//            // TODO This is baaaad and only for testing purposes
-//            ciff1.setCiffFilePreview(readBytesOfFile(ciffPrew1.toPath()));
-//            ciff1.setCaption(logData.get(0));
-//            ciff1.setWidth(Integer.parseInt(logData.get(1)));
-//            ciff1.setHeight(Integer.parseInt(logData.get(2)));
-//            ciff1.setTags(new ArrayList<>());
-//            ciff1.getTags().add(new Tag(logData.get(3)));
-//            ciff1.getTags().add(new Tag(logData.get(4)));
-//            ciff1.getTags().add(new Tag(logData.get(5)));
-//            // Ciff2
-//            ciff2.setCiffFilePreview(readBytesOfFile(ciffPrew2));
-//            ciff2.setCaption(logData.get(0));
-//            ciff2.setWidth(Integer.parseInt(logData.get(1)));
-//            ciff2.setHeight(Integer.parseInt(logData.get(2)));
-//            ciff2.setTags(new ArrayList<>());
-//            ciff2.getTags().add(new Tag(logData.get(3)));
-//            ciff2.getTags().add(new Tag(logData.get(4)));
-//            ciff2.getTags().add(new Tag(logData.get(5)));
-//            caff.setCiffs(new ArrayList<>());
-//            caff.getCiffs().add(ciff1);
-//            caff.getCiffs().add(ciff2);
-//        } catch (IOException e) {
-//            throw new LawlessException(e.getMessage());
-//        }
+        Ciff ciff1 = new Ciff();
+        Ciff ciff2 = new Ciff();
+        File ciffPrew1 = new File("src/main/resources/caff-test/pista.ppm");
+        File ciffPrew2 = new File("src/main/resources/caff-test/pista2.ppm");
+        // TODO delete when file upload is completed;
+        File caffFile = new File("src/main/resources/caff-test/2.caff");
+        // TODO END
+        try {
+            // TODO delete when file upload is completed;
+//            caff.setCaffFile(readBytesOfFile(caffFile));
+            // TODO END
+            File myObj = new File("src/main/resources/caff-test/logdata.txt");
+            Scanner myReader = new Scanner(myObj);
+            List<String> logData = new ArrayList<String>();
+            while (myReader.hasNextLine()) {
+                logData.add(myReader.nextLine());
+            }
+            myReader.close();
+            // TODO This is baaaad and only for testing purposes
+            ciff1.setCiffFilePreview(readBytesOfFile(ciffPrew1));
+            ciff1.setCaption(logData.get(0));
+            ciff1.setWidth(Integer.parseInt(logData.get(1)));
+            ciff1.setHeight(Integer.parseInt(logData.get(2)));
+            ciff1.setTags(new ArrayList<>());
+            ciff1.getTags().add(new Tag(logData.get(3)));
+            ciff1.getTags().add(new Tag(logData.get(4)));
+            ciff1.getTags().add(new Tag(logData.get(5)));
+            // Ciff2
+            ciff2.setCiffFilePreview(readBytesOfFile(ciffPrew2));
+            ciff2.setCaption(logData.get(0));
+            ciff2.setWidth(Integer.parseInt(logData.get(1)));
+            ciff2.setHeight(Integer.parseInt(logData.get(2)));
+            ciff2.setTags(new ArrayList<>());
+            ciff2.getTags().add(new Tag(logData.get(3)));
+            ciff2.getTags().add(new Tag(logData.get(4)));
+            ciff2.getTags().add(new Tag(logData.get(5)));
+            caff.setCiffs(new ArrayList<>());
+            caff.getCiffs().add(ciff1);
+            caff.getCiffs().add(ciff2);
+        } catch (IOException e) {
+            throw new LawlessException(e.getMessage());
+        }
     }
 
 
