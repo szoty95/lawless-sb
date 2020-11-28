@@ -32,8 +32,8 @@ public class CaffController {
                                     @RequestParam("description") String description,
                                     @RequestParam("price") double price) {
         try {
-            return ResponseEntity.ok(caffService.create(userDetails, new CreateCaffRequest(name, description, price, caffFile.getBytes())));
-        } catch (LawlessException | IOException e) {
+            return ResponseEntity.ok(caffService.create(userDetails, new CreateCaffRequest(name, description, price, caffFile)));
+        } catch (LawlessException e) {
             return ResponseEntity
                     .badRequest()
                     .body(e);

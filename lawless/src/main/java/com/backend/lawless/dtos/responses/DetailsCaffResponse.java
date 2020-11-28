@@ -1,5 +1,6 @@
 package com.backend.lawless.dtos.responses;
 
+import com.backend.lawless.dtos.parts.UserPersonalData;
 import com.backend.lawless.entities.Caff;
 import com.backend.lawless.entities.Comment;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -43,5 +44,7 @@ public class DetailsCaffResponse {
 		price = caff.getPrice();
 		comments=caff.getComments();
 		previewPictureUrl = "TODO"; //TODO
+
 	}
+	private UserPersonalData userPersonalData;
 }

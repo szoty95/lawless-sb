@@ -2,10 +2,13 @@ package com.backend.lawless.services;
 
 import com.backend.lawless.daos.CaffRepository;
 import com.backend.lawless.daos.UserRepository;
+import com.backend.lawless.dtos.parts.UserPersonalData;
 import com.backend.lawless.dtos.requests.*;
 import com.backend.lawless.dtos.responses.*;
 import com.backend.lawless.entities.*;
 import com.backend.lawless.exceptions.LawlessException;
+import com.backend.lawless.mapping.ModelMapper;
+import com.sun.xml.bind.v2.model.core.ID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import javax.persistence.Id;
+import java.awt.*;
+import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -55,13 +60,14 @@ public class CaffServiceImpl implements CaffService {
         caff.setUploaded(new Date());
         caff.setPrice(request.getPrice());
         try {
-        caff.setCaffFile(request.getCaffFile());
+        caff.setCaffFile(request.getCaffFile().getBytes());
         } catch (Exception e) {
             throw new LawlessException(e.getMessage());
         }
 
         // TODO delete when parser is called finally
-
+        saveCafftoLocal(request.getCaffFile());
+        parseCaff(caff);
         readParsedFiles(caff);
         caffRepository.save(caff);
         
@@ -129,8 +135,22 @@ public class CaffServiceImpl implements CaffService {
     public DetailsCaffResponse details(DetailsCaffRequest request) throws LawlessException {
         try {
             Caff caff = getCaffSafely(Long.valueOf(request.getCaffId()));
+            DetailsCaffResponse response =new DetailsCaffResponse(caff);
 
-            return new DetailsCaffResponse(caff);
+            if(userRepository.existsById(response.getUserId())) {
+               User user = userRepository.findById(response.getUserId()).get();
+
+
+
+            response.setUserPersonalData(new UserPersonalData(
+                            user.getUsername(),
+                            user.getEmail(),
+                            user.getFirstName(),
+                            user.getLastName(),
+                            user.getId().toString()));
+
+            return response;
+            } throw new LawlessException("Not Found!");
 
         } catch (Exception e) {
             throw new LawlessException("Not Found!");
@@ -166,6 +186,48 @@ public class CaffServiceImpl implements CaffService {
         }
 
         return bytes;
+    }
+
+    private void saveCafftoLocal(MultipartFile multipartFileCaff) throws LawlessException{
+        String rootDirectory=System.getProperty("user.dir");
+        String caffParserDirectory=rootDirectory+"\\src\\main\\resources\\caffParser";
+
+        Path filepath = Paths.get(caffParserDirectory, multipartFileCaff.getOriginalFilename());
+
+        try {
+            multipartFileCaff.transferTo(filepath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+    //WINDOWS dependency
+    private void parseCaff(Caff caff) throws LawlessException {
+
+        String rootDirectory=System.getProperty("user.dir");
+        String caffParserDirectory=rootDirectory+"\\src\\main\\resources\\caffParser";
+        String caffParserRelativeRoute = caffParserDirectory+"\\caffparser.exe";
+        String caffParserArgs = "2.caff output2 ciffData2";
+
+        String command = "cmd /c \" cd " + caffParserDirectory + " && caffparser.exe " + caffParserArgs +"\" ";
+
+        System.out.println(command);
+        try {
+            Process process = Runtime.getRuntime().exec(command);
+
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+
+            reader.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void readParsedFiles(Caff caff) throws LawlessException {
