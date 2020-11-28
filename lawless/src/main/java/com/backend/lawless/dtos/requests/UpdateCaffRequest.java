@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 @ApiModel(value = "UpdateCaffReq")
 public class UpdateCaffRequest {
     private String caffId;
-    private byte[] caffFile;
+   // private byte[] caffFile; //most ne
     private String name;
     private String description;
     private Double price;
