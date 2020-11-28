@@ -35,7 +35,7 @@ public class DetailsCaffResponse {
 	private List<Comment> comments;
 
 	@ApiModelProperty(dataType = "BYTE")
-	private List<byte[]> previewPictureUrl;
+	private byte[] previewPicture;
 
 	public DetailsCaffResponse(Caff caff){
 
@@ -46,10 +46,7 @@ public class DetailsCaffResponse {
 		uploaded= caff.getUploaded();
 		price = caff.getPrice();
 		comments=caff.getComments();
-		previewPictureUrl = new ArrayList<>();
-		caff.getCiffs().forEach(ciff -> {
-			previewPictureUrl.add(ciff.getCiffFilePreview());
-		});
+		previewPicture = caff.getCiffs().get(0).getCiffFilePreview();
 
 	}
 	private UserPersonalData userPersonalData;
