@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { AppBarProps} from "@material-ui/core";
+import { AppBarProps } from "@material-ui/core";
 
 import Header from "../components/Header";
 

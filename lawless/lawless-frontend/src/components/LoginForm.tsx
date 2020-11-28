@@ -1,8 +1,13 @@
 import { Button, Grid, Paper, TextField } from "@material-ui/core";
 import { useFormik } from "formik";
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import * as yup from "yup";
+import { useLogin } from "../hooks/useLogin";
+import { LoginReq } from "../swagger";
+import CryptoJS from "crypto-js";
+import { useAuthToken } from "../hooks/useAuthToken";
+import { useUserContext } from "../hooks/useUserContext";
 
 interface Props {}
 
@@ -20,13 +25,33 @@ const schema = yup.object({
 });
 
 const LoginForm = (props: Props) => {
+  const [result, login] = useLogin();
+  const { setAuthToken } = useAuthToken();
+  const { setUser } = useUserContext();
+
   const formik = useFormik({
     initialValues: { userName: "", password: "" },
     validationSchema: schema,
     onSubmit: (values) => {
-      console.log(values);
+      const req = new LoginReq({
+        username: values.userName,
+        email: "",
+        password: CryptoJS.SHA256(values.password).toString(),
+      });
+      login({ data: req });
     },
   });
+
+  useEffect(() => {
+    if (result.data) {
+      setAuthToken(result.data.token);
+      setUser({
+        ...result.data.userPersonalData,
+        roles: result.data.roles?.map((item) => item.name?.toString()) ?? [],
+      });
+    }
+  }, [result.data, setAuthToken, setUser]);
+
   return (
     <form onSubmit={formik.handleSubmit}>
       <Paper>

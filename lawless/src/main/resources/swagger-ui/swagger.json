@@ -86,8 +86,24 @@
           "name" : "body",
           "required" : false,
           "schema" : {
-            "$ref" : "#/definitions/CreateCaffReq"
+            "$ref" : "#/definitions/MultipartFile"
           }
+        }, {
+          "name" : "name",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "description",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "price",
+          "in" : "query",
+          "required" : true,
+          "type" : "number",
+          "format" : "double"
         } ],
         "responses" : {
           "200" : {
@@ -98,27 +114,137 @@
           }
         }
       }
-    }
-  },
-  "definitions" : {
-    "CreateCaffReq" : {
-      "type" : "object",
-      "properties" : {
-        "name" : {
-          "type" : "string"
-        },
-        "description" : {
-          "type" : "string"
-        },
-        "price" : {
-          "type" : "number",
-          "format" : "double"
-        },
-        "caffFile" : {
-          "type" : "file"
+    },
+    "/api/caff/delete" : {
+      "post" : {
+        "tags" : [ "Caff" ],
+        "summary" : "Delete caff ",
+        "description" : "",
+        "operationId" : "delete",
+        "parameters" : [ {
+          "name" : "",
+          "in" : "query",
+          "required" : true,
+          "type" : "ref"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/DeleteCaffResp"
+            }
+          }
         }
       }
     },
+    "/api/caff/details" : {
+      "get" : {
+        "tags" : [ "Caff" ],
+        "summary" : "Details caff ",
+        "description" : "",
+        "operationId" : "details",
+        "parameters" : [ {
+          "name" : "",
+          "in" : "query",
+          "required" : true,
+          "type" : "ref"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/DetailsCaffResp"
+            }
+          }
+        }
+      }
+    },
+    "/api/caff/detailsAll" : {
+      "get" : {
+        "tags" : [ "Caff" ],
+        "summary" : "Details all caff ",
+        "description" : "",
+        "operationId" : "detailsAll",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/DetailsAllCaffResp"
+            }
+          }
+        }
+      }
+    },
+    "/api/caff/update" : {
+      "post" : {
+        "tags" : [ "Caff" ],
+        "summary" : "Update caff ",
+        "description" : "",
+        "operationId" : "update",
+        "parameters" : [ {
+          "name" : "caffid",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "name",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "description",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "price",
+          "in" : "query",
+          "required" : false,
+          "type" : "number",
+          "format" : "double"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/MultipartFile"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/UpdateCaffResp"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+<<<<<<< HEAD
+=======
+    "Comment" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "userId" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "message" : {
+          "type" : "string"
+        },
+        "timeStamp" : {
+          "type" : "string",
+          "format" : "date-time"
+        }
+      }
+    },
+>>>>>>> 32c9652157a2f7f876799684db3b75548bd5f4ec
     "CreateCaffResp" : {
       "type" : "object",
       "properties" : {
@@ -127,6 +253,64 @@
           "format" : "int64"
         }
       }
+    },
+    "DeleteCaffResp" : {
+      "type" : "object",
+      "properties" : {
+        "response" : {
+          "type" : "string"
+        }
+      }
+    },
+    "DetailsAllCaffResp" : {
+      "type" : "object",
+      "properties" : {
+        "detailsAllCaffResponse" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/DetailsCaffResp"
+          }
+        }
+      }
+    },
+    "DetailsCaffResp" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "userId" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "description" : {
+          "type" : "string"
+        },
+        "uploaded" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "price" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "comments" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Comment"
+          }
+        },
+        "previewPictureUrl" : {
+          "type" : "string"
+        }
+      }
+    },
+    "InputStream" : {
+      "type" : "object"
     },
     "LoginReq" : {
       "type" : "object",
@@ -159,6 +343,37 @@
         }
       }
     },
+    "MultipartFile" : {
+      "type" : "object",
+      "properties" : {
+        "name" : {
+          "type" : "string"
+        },
+        "bytes" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string",
+            "format" : "byte"
+          }
+        },
+        "empty" : {
+          "type" : "boolean"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "inputStream" : {
+          "$ref" : "#/definitions/InputStream"
+        },
+        "contentType" : {
+          "type" : "string"
+        },
+        "originalFilename" : {
+          "type" : "string"
+        }
+      }
+    },
     "RegisterReq" : {
       "type" : "object",
       "properties" : {
@@ -184,6 +399,14 @@
         "name" : {
           "type" : "string",
           "enum" : [ "ROLE_USER", "ROLE_ADMIN" ]
+        }
+      }
+    },
+    "UpdateCaffResp" : {
+      "type" : "object",
+      "properties" : {
+        "response" : {
+          "type" : "string"
         }
       }
     },

@@ -3,6 +3,8 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router";
 
+import UploadCaffDialog from "./UploadCaffDialog";
+
 const useStyles = makeStyles({
   root: {
     backgroundColor: "black",
@@ -37,8 +39,8 @@ const Header: React.FC = () => {
             Outlaws
           </Typography>
           <Box display="flex">
-            <Button className={styles.button} variant="contained" color="primary">Upload</Button>
-            <Button className={styles.button} variant="contained"> Login</Button>
+            <UploadCaffDialog />
+            <Button onClick={() => history.push("/login")} className={styles.button} variant="contained"> Login</Button>
           </Box>
         </Box>
       </Toolbar>
