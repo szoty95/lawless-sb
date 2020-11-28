@@ -50,7 +50,7 @@ public class CaffServiceImpl implements CaffService {
     }
 
     @Override
-    public CreateCaffResponse create(UserDetails userDetails, CreateCaffRequest request) throws LawlessException, IOException {
+    public CreateCaffResponse create(UserDetails userDetails, CreateCaffRequest request, MultipartFile caffFile) throws LawlessException, IOException {
         User user = getUserSafely(userDetails);
 
         Caff caff = new Caff();
@@ -60,14 +60,14 @@ public class CaffServiceImpl implements CaffService {
         caff.setUploaded(new Date());
         caff.setPrice(request.getPrice());
         try {
-        caff.setCaffFile(request.getCaffFile().getBytes());
+        caff.setCaffFile(caffFile.getBytes());
         } catch (Exception e) {
             throw new LawlessException(e.getMessage());
         }
 
 
-        saveCafftoLocal(request.getCaffFile());
-        parseCaff(caff, request.getCaffFile());
+        saveCafftoLocal(caffFile);
+        parseCaff(caff, caffFile);
         readParsedFiles(caff); //todo comment out after parseCaff works
         caffRepository.save(caff);
         deleteParsedFiles();

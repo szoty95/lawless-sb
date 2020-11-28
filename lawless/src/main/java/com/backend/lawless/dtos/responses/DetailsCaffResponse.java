@@ -5,10 +5,12 @@ import com.backend.lawless.entities.Caff;
 import com.backend.lawless.entities.Comment;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +34,8 @@ public class DetailsCaffResponse {
 
 	private List<Comment> comments;
 
-	private String previewPictureUrl;
+	@ApiModelProperty(dataType = "BYTE")
+	private List<byte[]> previewPictureUrl;
 
 	public DetailsCaffResponse(Caff caff){
 
@@ -43,7 +46,10 @@ public class DetailsCaffResponse {
 		uploaded= caff.getUploaded();
 		price = caff.getPrice();
 		comments=caff.getComments();
-		previewPictureUrl = "TODO"; //TODO
+		previewPictureUrl = new ArrayList<>();
+		caff.getCiffs().forEach(ciff -> {
+			previewPictureUrl.add(ciff.getCiffFilePreview());
+		});
 
 	}
 	private UserPersonalData userPersonalData;
