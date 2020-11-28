@@ -50,19 +50,6 @@ const AnimationDetail: React.FC<AnimationDetailProps> = ({ animation }) => {
           <Grid item>
             <Typography>{animation.description}</Typography>
           </Grid>
-
-          <Grid item container spacing={2}>
-            <Grid item>
-              <Chip label="asdasdasd" />
-            </Grid>
-            <Grid item>
-              <Chip label="asdasdasd" />
-            </Grid>
-            <Grid item>
-              <Chip label="asdasdasd" />
-            </Grid>
-          </Grid>
-
           <Grid item>
             <Typography variant="h6">Price: {animation.price}</Typography>
           </Grid>
