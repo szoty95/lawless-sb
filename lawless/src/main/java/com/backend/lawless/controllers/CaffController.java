@@ -28,9 +28,9 @@ public class CaffController {
     @ApiOperation(value = "Create and process caff ", response = CreateCaffResponse.class, nickname = "create")
     public ResponseEntity<?> create(@AuthenticationPrincipal UserDetails userDetails,
                                     @RequestBody MultipartFile caffFile,
-                                    @RequestParam("name") String name,
-                                    @RequestParam("description") String description,
-                                    @RequestParam("price") double price) {
+                                    @RequestBody String name,
+                                    @RequestBody String description,
+                                    @RequestBody double price) {
         try {
             return ResponseEntity.ok(caffService.create(userDetails, new CreateCaffRequest(name, description, price, caffFile)));
         } catch (LawlessException | IOException e) {
@@ -43,10 +43,10 @@ public class CaffController {
     @PostMapping(value = "/update")
     @ApiOperation(value = "Update caff ", response = UpdateCaffResponse.class, nickname = "update")
     public ResponseEntity<?> update(@AuthenticationPrincipal UserDetails userDetails,
-                                    @RequestParam("caffid") String caffId,
-                                    @RequestParam(value = "name",required = false) String name,
-                                    @RequestParam(value = "description", required = false) String description,
-                                    @RequestParam(value = "price", required = false) Double price
+                                    @RequestBody String caffId,
+                                    @RequestBody String name,
+                                    @RequestBody String description,
+                                    @RequestBody Double price
      //                               ,@RequestBody(required = false) MultipartFile caffFile
                                     ){
 
@@ -77,7 +77,7 @@ public class CaffController {
     @PostMapping(value = "/delete")
     @ApiOperation(value = "Delete caff ", response = DeleteCaffResponse.class, nickname = "delete")
     public ResponseEntity<?> delete(@AuthenticationPrincipal UserDetails userDetails,
-                                    @RequestParam DeleteCaffRequest deleteCaffRequest) {
+                                    @RequestBody DeleteCaffRequest deleteCaffRequest) {
         try {
             return ResponseEntity.ok(
                     caffService.delete(userDetails,deleteCaffRequest));
