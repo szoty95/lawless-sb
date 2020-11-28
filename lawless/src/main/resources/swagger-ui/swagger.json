@@ -82,12 +82,26 @@
         "description" : "",
         "operationId" : "create",
         "parameters" : [ {
-          "in" : "body",
-          "name" : "body",
-          "required" : false,
-          "schema" : {
-            "$ref" : "#/definitions/CreateCaffReq"
-          }
+          "name" : "file",
+          "in" : "query",
+          "required" : true,
+          "type" : "ref"
+        }, {
+          "name" : "name",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "description",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "price",
+          "in" : "query",
+          "required" : true,
+          "type" : "number",
+          "format" : "double"
         } ],
         "responses" : {
           "200" : {
@@ -101,24 +115,6 @@
     }
   },
   "definitions" : {
-    "CreateCaffReq" : {
-      "type" : "object",
-      "properties" : {
-        "name" : {
-          "type" : "string"
-        },
-        "description" : {
-          "type" : "string"
-        },
-        "price" : {
-          "type" : "number",
-          "format" : "double"
-        },
-        "caffFile" : {
-          "type" : "file"
-        }
-      }
-    },
     "CreateCaffResp" : {
       "type" : "object",
       "properties" : {

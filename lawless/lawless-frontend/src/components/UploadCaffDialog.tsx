@@ -14,6 +14,7 @@ import {
 import FileUpload from "./FileUpload";
 import { useCreateCaff } from "../hooks/useCreateCaff";
 import { useAuthToken } from "../hooks/useAuthToken";
+import { Alert } from "@material-ui/lab";
 
 const ACCEPTED_FILE_TYPES = ["caff"];
 
@@ -35,6 +36,7 @@ const UploadCaffDialog: React.FC = () => {
 
   const [file, setFile] = useState<File | null>(null);
   const [isValidFile, setIsValidFile] = useState(false);
+  const [uploaded, setUploaded] = useState(false);
 
   const [formValues, setFormValues] = useState({
     title: "",
@@ -72,7 +74,7 @@ const UploadCaffDialog: React.FC = () => {
     if (file && isValidFile) {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("title", formValues.title);
+      formData.append("name", formValues.title);
       formData.append("price", formValues.price.toString());
       formData.append("description", formValues.description);
 
@@ -84,6 +86,7 @@ const UploadCaffDialog: React.FC = () => {
         price: 0,
       });
       setFile(null);
+      setUploaded(true);
     }
   };
 
@@ -93,96 +96,107 @@ const UploadCaffDialog: React.FC = () => {
       <Dialog
         open={open}
         className={classes.dialog}
-        onClose={() => setOpen(false)}
+        onClose={() => {
+          setOpen(false);
+          setUploaded(false);
+        }}
         disableBackdropClick={result.isLoading}
         disableEscapeKeyDown={result.isLoading}
       >
         <DialogTitle>Upload your animation</DialogTitle>
         <DialogContent>
+          {result.isError && uploaded && (
+            <Alert severity="error">Upload not successful. Try again.</Alert>
+          )}
           {result.isLoading ? (
-            <CircularProgress />
-          ) : (
-            !result.data && (
-              <form onSubmit={() => uploadFile()}>
+            <Grid container justify="center">
+              <CircularProgress />
+            </Grid>
+          ) : !result.data || !uploaded ? (
+            <form onSubmit={() => uploadFile()}>
+              <Grid container justify="center" spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    label="Animation title"
+                    value={formValues.title}
+                    onChange={handleChange("title")}
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    type="number"
+                    label="Price"
+                    value={formValues.price}
+                    onChange={handleChange("price")}
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    multiline
+                    fullWidth
+                    rowsMax="4"
+                    rows="2"
+                    label="Description"
+                    value={formValues.description}
+                    onChange={handleChange("description")}
+                    margin="normal"
+                  />
+                </Grid>
+              </Grid>
+              <Box marginTop={2}>
+                <Grid container justify="space-between">
+                  <Typography variant="subtitle1">File name:</Typography>
+
+                  <Typography variant="subtitle1">
+                    {file && (
+                      <>
+                        {isValidFile
+                          ? file.name
+                          : "File too big or wrong format"}
+                      </>
+                    )}
+                  </Typography>
+                </Grid>
+              </Box>
+              <Box marginY={2}>
                 <Grid container justify="center" spacing={2}>
-                  <Grid item xs={12}>
-                    <TextField
-                      required
-                      fullWidth
-                      label="Animation title"
-                      value={formValues.title}
-                      onChange={handleChange("title")}
-                      margin="normal"
+                  <Grid item>
+                    <FileUpload
+                      disabled={result.isLoading}
+                      handleUpload={handleUpload}
                     />
                   </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      required
-                      fullWidth
-                      type="number"
-                      label="Price"
-                      value={formValues.price}
-                      onChange={handleChange("price")}
-                      margin="normal"
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      required
-                      multiline
-                      fullWidth
-                      rowsMax="4"
-                      rows="2"
-                      label="Description"
-                      value={formValues.description}
-                      onChange={handleChange("description")}
-                      margin="normal"
-                    />
+                  <Grid item>
+                    <Button
+                      variant="contained"
+                      disabled={!file || !isValidFile || result.isLoading}
+                      type="submit"
+                      color="primary"
+                    >
+                      Upload
+                    </Button>
                   </Grid>
                 </Grid>
-                <Box marginTop={2}>
-                  <Grid container justify="space-between">
-                    <Typography variant="subtitle1">File name:</Typography>
-
-                    <Typography variant="subtitle1">
-                      {file && (
-                        <>
-                          {isValidFile
-                            ? file.name
-                            : "File too big or wrong format"}
-                        </>
-                      )}
-                    </Typography>
-                  </Grid>
-                </Box>
-                <Box marginY={2}>
-                  <Grid container justify="center" spacing={2}>
-                    <Grid item>
-                      <FileUpload
-                        disabled={result.isLoading}
-                        handleUpload={handleUpload}
-                      />
-                    </Grid>
-                    <Grid item>
-                      <Button
-                        variant="contained"
-                        disabled={!file || !isValidFile || result.isLoading}
-                        type="submit"
-                        color="primary"
-                      >
-                        Upload
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </Box>
-              </form>
-            )
+              </Box>
+            </form>
+          ) : (
+            <Alert severity="success">Upload successful</Alert>
           )}
           <Box marginY={3}>
             <Grid container justify="center">
               <Button
                 variant="contained"
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setOpen(false);
+                  setUploaded(false);
+                }}
                 disabled={result.isLoading}
               >
                 Done
