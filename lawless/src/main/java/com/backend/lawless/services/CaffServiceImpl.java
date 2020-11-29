@@ -265,7 +265,11 @@ public class CaffServiceImpl implements CaffService {
 
     private void saveCafftoLocal(MultipartFile multipartFileCaff) throws LawlessException{
         String rootDirectory=System.getProperty("user.dir");
-        String caffParserDirectory=rootDirectory+"\\src\\main\\resources\\caffParser";
+        String caffParserDirectory=rootDirectory+
+                            File.separator+"src"+
+                            File.separator+"main"+
+                            File.separator+"resources"+
+                            File.separator+"caffParser";
 
         Path filepath = Paths.get(caffParserDirectory, multipartFileCaff.getOriginalFilename());
 
