@@ -47,6 +47,17 @@ public class CaffServiceImpl implements CaffService {
         throw new LawlessException("Cant find caff");
     }
 
+    private static String OS = null;
+    public static String getOsName()
+    {
+        if(OS == null) { OS = System.getProperty("os.name"); }
+        return OS;
+    }
+    public static boolean isWindows()
+    {
+        return getOsName().startsWith("Windows");
+    }
+
     @Override
     public CreateCaffResponse create(UserDetails userDetails, CreateCaffRequest request, MultipartFile caffFile) throws LawlessException, IOException {
         User user = getUserSafely(userDetails);
@@ -285,57 +296,61 @@ public class CaffServiceImpl implements CaffService {
     //WINDOWS dependency
     private void parseCaff(Caff caff, MultipartFile multipartFileCaff) throws LawlessException, IOException {
 
-        String rootDirectory = System.getProperty("user.dir");
-        String caffParserDirectory = rootDirectory + "\\src\\main\\resources\\caffParser";
-        String caffParserRelativeRoute = caffParserDirectory + "\\caffparser.exe";
-        String caffParserArgs = multipartFileCaff.getOriginalFilename() + " " +
-                multipartFileCaff.getOriginalFilename() + "_prev " +
-                multipartFileCaff.getOriginalFilename() + "_ciff";
+        if (isWindows()) {
+            String rootDirectory = System.getProperty("user.dir");
+            String caffParserDirectory = rootDirectory + "\\src\\main\\resources\\caffParser";
+            String caffParserRelativeRoute = caffParserDirectory + "\\caffparser.exe";
+            String caffParserArgs = multipartFileCaff.getOriginalFilename() + " " +
+                    multipartFileCaff.getOriginalFilename() + "_prev " +
+                    multipartFileCaff.getOriginalFilename() + "_ciff";
 
-        String command = "cmd /c \" cd " + caffParserDirectory + " && caffparser.exe " + caffParserArgs + "\" ";
+            String command = "cmd /c \" cd " + caffParserDirectory + " && caffparser.exe " + caffParserArgs + "\" ";
 
-        System.out.println(command);
-        try {
-            Process process = Runtime.getRuntime().exec(command);
+            System.out.println(command);
+            try {
+                Process process = Runtime.getRuntime().exec(command);
 
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(process.getInputStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+                process.waitFor();
+
+                reader.close();
+
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
             }
-            process.waitFor();
 
-            reader.close();
+            //TODO Parse output files.....
+            Path ciffFilePath = Paths.get(caffParserDirectory, multipartFileCaff.getOriginalFilename() + "_ciff.txt");
 
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            Scanner myReader = new Scanner(ciffFilePath);
+            List<String> logData = new ArrayList<String>();
+            while (myReader.hasNextLine()) {
+                logData.add(myReader.nextLine());
+            }
+            myReader.close();
+            // TODO This is baaaad and only for testing purposes
+            Ciff ciff1 = new Ciff();
+            File ciffPrew1 = new File(caffParserDirectory + "\\" + multipartFileCaff.getOriginalFilename() + "_prev.ppm.ppm");
+
+            ciff1.setCiffFilePreview(readBytesOfFile(ciffPrew1));
+            ciff1.setCaption(logData.get(0));
+            ciff1.setWidth(Integer.parseInt(logData.get(1)));
+            ciff1.setHeight(Integer.parseInt(logData.get(2)));
+            ciff1.setTags(new ArrayList<>());
+            ciff1.getTags().add(new Tag(logData.get(3)));
+            ciff1.getTags().add(new Tag(logData.get(4)));
+            ciff1.getTags().add(new Tag(logData.get(5)));
+
+            caff.setCiffs(new ArrayList<>());
+            caff.getCiffs().add(ciff1);
+
         }
 
-        //TODO Parse output files.....
-        Path ciffFilePath = Paths.get(caffParserDirectory, multipartFileCaff.getOriginalFilename() + "_ciff.txt");
-
-        Scanner myReader = new Scanner(ciffFilePath);
-        List<String> logData = new ArrayList<String>();
-        while (myReader.hasNextLine()) {
-            logData.add(myReader.nextLine());
-        }
-        myReader.close();
-        // TODO This is baaaad and only for testing purposes
-        Ciff ciff1 = new Ciff();
-        File ciffPrew1 = new File(caffParserDirectory + "\\" + multipartFileCaff.getOriginalFilename() + "_prev.ppm.ppm");
-
-        ciff1.setCiffFilePreview(readBytesOfFile(ciffPrew1));
-        ciff1.setCaption(logData.get(0));
-        ciff1.setWidth(Integer.parseInt(logData.get(1)));
-        ciff1.setHeight(Integer.parseInt(logData.get(2)));
-        ciff1.setTags(new ArrayList<>());
-        ciff1.getTags().add(new Tag(logData.get(3)));
-        ciff1.getTags().add(new Tag(logData.get(4)));
-        ciff1.getTags().add(new Tag(logData.get(5)));
-
-        caff.setCiffs(new ArrayList<>());
-        caff.getCiffs().add(ciff1);
 
     }
 
