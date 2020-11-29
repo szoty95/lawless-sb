@@ -1,4 +1,4 @@
-import { Button, Chip, Grid, Typography } from "@material-ui/core";
+import { Button, Grid, Typography } from "@material-ui/core";
 import Skeleton from "@material-ui/lab/Skeleton";
 import React from "react";
 import { useUserContext } from "../hooks/useUserContext";
@@ -25,7 +25,8 @@ const AnimationDetail: React.FC<AnimationDetailProps> = ({ animation }) => {
           <Grid item container justify="space-between" alignItems="center">
             <Grid item>
               <Typography variant="h6">
-                {animation.userPersonalData?.firstName}
+                {animation.userPersonalData?.firstName}{" "}
+                {animation.userPersonalData?.lastName}
               </Typography>
               <Typography variant="subtitle1">{animation.uploaded}</Typography>
             </Grid>
