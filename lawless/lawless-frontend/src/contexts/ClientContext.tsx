@@ -1,6 +1,6 @@
-import React from "react";
-import { createContext } from "react";
-import { Client, createClient } from "../client/client";
+import React, { createContext } from 'react';
+
+import { Client, createClient } from '../client/client';
 
 export type ClientContextType = {
   client: Client;
@@ -14,10 +14,7 @@ type ClientContextProviderProps = {
   baseUrl?: string;
 };
 
-export const ClientContextProvider: React.FC<ClientContextProviderProps> = ({
-  children,
-  baseUrl = "",
-}) => {
+export const ClientContextProvider: React.FC<ClientContextProviderProps> = ({ children, baseUrl = '' }) => {
   return (
     <ClientContext.Provider
       value={{

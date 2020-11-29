@@ -1,12 +1,5 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  makeStyles,
-  Typography,
-} from "@material-ui/core";
-import React, { useState } from "react";
+import { Button, Dialog, DialogActions, DialogContent, makeStyles, Typography } from '@material-ui/core';
+import React, { useState } from 'react';
 
 interface DeleteDialogProps {
   onDelete: () => void;
@@ -14,7 +7,7 @@ interface DeleteDialogProps {
 
 const useStyles = makeStyles({
   button: {
-    padding: "4px 20px",
+    padding: '4px 20px',
     borderRadius: 32,
   },
 });
@@ -24,12 +17,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ onDelete }) => {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <Button
-        className={classes.button}
-        variant="contained"
-        color="secondary"
-        onClick={() => setOpen(true)}
-      >
+      <Button className={classes.button} variant="contained" color="secondary" onClick={() => setOpen(true)}>
         Delete
       </Button>
       <Dialog

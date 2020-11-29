@@ -1,18 +1,12 @@
-import {
-  Button,
-  CircularProgress,
-  Container,
-  Grid,
-  Typography,
-} from "@material-ui/core";
-import React, { useEffect } from "react";
-import { RouteComponentProps } from "react-router";
-import styled from "styled-components";
-import AnimationDetail from "../components/AnimationDetail";
-import Comment from "../components/Comment";
-import { useAuthToken } from "../hooks/useAuthToken";
-import { useGetCaff } from "../hooks/useGetCaff";
-import Page from "./Page";
+import { Button, CircularProgress, Container, Grid, Typography } from '@material-ui/core';
+import React, { useEffect } from 'react';
+import { RouteComponentProps } from 'react-router';
+import styled from 'styled-components';
+import AnimationDetail from '../components/AnimationDetail';
+import Comment from '../components/Comment';
+import { useAuthToken } from '../hooks/useAuthToken';
+import useGetCaff from '../hooks/useGetCaff';
+import Page from './Page';
 
 const StyledContainer = styled(Container)`
   padding-top: 1.5em;
@@ -63,9 +57,9 @@ const AnimationDetailPage: React.FC<AnimationDetailPageProps> = ({ match }) => {
             <Typography variant="h5"> Kommentek</Typography>
             <Comment
               comment={{
-                text: "asdas asda sd asd asd as das dsa ",
-                createdBy: "Teszt Elek",
-                createdAt: "2020. 44. 44",
+                text: 'asdas asda sd asd asd as das dsa ',
+                createdBy: 'Teszt Elek',
+                createdAt: '2020. 44. 44',
               }}
             />
           </Grid>

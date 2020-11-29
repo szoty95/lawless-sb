@@ -1,18 +1,11 @@
-import {
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogContent,
-  Grid,
-  TextField,
-} from "@material-ui/core";
-import CryptoJS from "crypto-js";
-import { useFormik } from "formik";
-import React from "react";
-import styled from "styled-components";
-import * as yup from "yup";
-import { useRegister } from "../hooks/useRegister";
-import { RegisterReq, UserPersonalData } from "../swagger";
+import { Button, CircularProgress, Dialog, DialogContent, Grid, TextField } from '@material-ui/core';
+import CryptoJS from 'crypto-js';
+import { useFormik } from 'formik';
+import React from 'react';
+import styled from 'styled-components';
+import * as yup from 'yup';
+import useRegister from '../hooks/useRegister';
+import { RegisterReq, UserPersonalData } from '../swagger';
 
 interface RegisterDialogProps {
   open: boolean;
@@ -25,19 +18,16 @@ const StyledGrid = styled(Grid)`
 `;
 
 const schema = yup.object({
-  userName: yup.string().required("Username is required"),
-  firstName: yup.string().required("First name is required"),
-  lastName: yup.string().required("Last name is required"),
-  email: yup.string().email().required("Email is required"),
-  password1: yup
-    .string()
-    .min(8, "Password must be min 8 character long.")
-    .required("Password field is required"),
+  userName: yup.string().required('Username is required'),
+  firstName: yup.string().required('First name is required'),
+  lastName: yup.string().required('Last name is required'),
+  email: yup.string().email().required('Email is required'),
+  password1: yup.string().min(8, 'Password must be min 8 character long.').required('Password field is required'),
   password2: yup
     .string()
-    .min(8, "Password must be min 8 character long.")
-    .required("Password confirmation required")
-    .equals([yup.ref("password1")], "Passwords should match"),
+    .min(8, 'Password must be min 8 character long.')
+    .required('Password confirmation required')
+    .equals([yup.ref('password1')], 'Passwords should match'),
 });
 
 const RegisterDialog: React.FC<RegisterDialogProps> = ({ open, setOpen }) => {
@@ -45,12 +35,12 @@ const RegisterDialog: React.FC<RegisterDialogProps> = ({ open, setOpen }) => {
 
   const formik = useFormik({
     initialValues: {
-      userName: "",
-      email: "",
-      firstName: "",
-      lastName: "",
-      password1: "",
-      password2: "",
+      userName: '',
+      email: '',
+      firstName: '',
+      lastName: '',
+      password1: '',
+      password2: '',
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -67,12 +57,12 @@ const RegisterDialog: React.FC<RegisterDialogProps> = ({ open, setOpen }) => {
       register({ data: req });
       setOpen(false);
       formik.setValues({
-        userName: "",
-        email: "",
-        firstName: "",
-        lastName: "",
-        password1: "",
-        password2: "",
+        userName: '',
+        email: '',
+        firstName: '',
+        lastName: '',
+        password1: '',
+        password2: '',
       });
     },
   });
@@ -82,12 +72,7 @@ const RegisterDialog: React.FC<RegisterDialogProps> = ({ open, setOpen }) => {
       <DialogContent>
         {!result.isLoading ? (
           <form onSubmit={formik.handleSubmit}>
-            <StyledGrid
-              container
-              direction="column"
-              spacing={2}
-              alignItems="center"
-            >
+            <StyledGrid container direction="column" spacing={2} alignItems="center">
               <Grid item>
                 <TextField
                   label="Username"
@@ -97,9 +82,7 @@ const RegisterDialog: React.FC<RegisterDialogProps> = ({ open, setOpen }) => {
                   value={formik.values.userName}
                   onChange={formik.handleChange}
                   placeholder="Username"
-                  error={
-                    formik.touched.userName && Boolean(formik.errors.userName)
-                  }
+                  error={formik.touched.userName && Boolean(formik.errors.userName)}
                   helperText={formik.touched.userName && formik.errors.userName}
                 />
               </Grid>
@@ -112,12 +95,8 @@ const RegisterDialog: React.FC<RegisterDialogProps> = ({ open, setOpen }) => {
                   value={formik.values.firstName}
                   onChange={formik.handleChange}
                   placeholder="First name"
-                  error={
-                    formik.touched.firstName && Boolean(formik.errors.firstName)
-                  }
-                  helperText={
-                    formik.touched.firstName && formik.errors.firstName
-                  }
+                  error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+                  helperText={formik.touched.firstName && formik.errors.firstName}
                 />
               </Grid>
               <Grid item>
@@ -129,9 +108,7 @@ const RegisterDialog: React.FC<RegisterDialogProps> = ({ open, setOpen }) => {
                   value={formik.values.lastName}
                   onChange={formik.handleChange}
                   placeholder="Last Name"
-                  error={
-                    formik.touched.lastName && Boolean(formik.errors.lastName)
-                  }
+                  error={formik.touched.lastName && Boolean(formik.errors.lastName)}
                   helperText={formik.touched.lastName && formik.errors.lastName}
                 />
               </Grid>
@@ -158,12 +135,8 @@ const RegisterDialog: React.FC<RegisterDialogProps> = ({ open, setOpen }) => {
                   onChange={formik.handleChange}
                   placeholder="Password"
                   type="password"
-                  error={
-                    formik.touched.password1 && Boolean(formik.errors.password1)
-                  }
-                  helperText={
-                    formik.touched.password1 && formik.errors.password1
-                  }
+                  error={formik.touched.password1 && Boolean(formik.errors.password1)}
+                  helperText={formik.touched.password1 && formik.errors.password1}
                 />
               </Grid>
               <Grid item>
@@ -176,12 +149,8 @@ const RegisterDialog: React.FC<RegisterDialogProps> = ({ open, setOpen }) => {
                   onChange={formik.handleChange}
                   placeholder="Password again"
                   type="password"
-                  error={
-                    formik.touched.password2 && Boolean(formik.errors.password2)
-                  }
-                  helperText={
-                    formik.touched.password2 && formik.errors.password2
-                  }
+                  error={formik.touched.password2 && Boolean(formik.errors.password2)}
+                  helperText={formik.touched.password2 && formik.errors.password2}
                 />
               </Grid>
               <Grid item container justify="space-between">

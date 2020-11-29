@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   TextField,
   Button,
@@ -9,11 +9,11 @@ import {
   Box,
   CircularProgress,
   makeStyles,
-} from "@material-ui/core";
-import { useAuthToken } from "../hooks/useAuthToken";
-import { Alert } from "@material-ui/lab";
-import { IDetailsCaffResp } from "../swagger";
-import { useUpdateCaff } from "../hooks/useUpdateCaff";
+} from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
+import { useAuthToken } from '../hooks/useAuthToken';
+import { IDetailsCaffResp } from '../swagger';
+import useUpdateCaff from '../hooks/useUpdateCaff';
 
 type UpdateCaffDialogProps = {
   animation: IDetailsCaffResp;
@@ -21,15 +21,15 @@ type UpdateCaffDialogProps = {
 
 const useStyles = makeStyles({
   dialog: {
-    padding: "1em",
+    padding: '1em',
   },
   error: {
-    color: "red",
+    color: 'red',
     fontWeight: 500,
   },
 
   button: {
-    padding: "4px 28px",
+    padding: '4px 28px',
     borderRadius: 32,
     marginLeft: 32,
   },
@@ -45,9 +45,7 @@ const EditCaffDialog: React.FC<UpdateCaffDialogProps> = ({ animation }) => {
     price: animation.price,
   });
 
-  const handleChange = (name: string) => (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChange = (name: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormValues({ ...formValues, [name]: event.target.value });
   };
 
@@ -66,20 +64,15 @@ const EditCaffDialog: React.FC<UpdateCaffDialogProps> = ({ animation }) => {
     });
 
     setFormValues({
-      title: "",
-      description: "",
+      title: '',
+      description: '',
       price: 0,
     });
   };
 
   return (
     <>
-      <Button
-        className={classes.button}
-        variant="contained"
-        color="primary"
-        onClick={() => setOpen(true)}
-      >
+      <Button className={classes.button} variant="contained" color="primary" onClick={() => setOpen(true)}>
         Edit
       </Button>
       <Dialog
@@ -92,9 +85,7 @@ const EditCaffDialog: React.FC<UpdateCaffDialogProps> = ({ animation }) => {
       >
         <DialogTitle>Update animation</DialogTitle>
         <DialogContent>
-          {result.isError && (
-            <Alert severity="error">Update not successful. Try again.</Alert>
-          )}
+          {result.isError && <Alert severity="error">Update not successful. Try again.</Alert>}
           {result.isLoading ? (
             <Grid container justify="center">
               <CircularProgress />
@@ -108,7 +99,7 @@ const EditCaffDialog: React.FC<UpdateCaffDialogProps> = ({ animation }) => {
                     fullWidth
                     label="Animation title"
                     value={formValues.title}
-                    onChange={handleChange("title")}
+                    onChange={handleChange('title')}
                     margin="normal"
                   />
                 </Grid>
@@ -119,7 +110,7 @@ const EditCaffDialog: React.FC<UpdateCaffDialogProps> = ({ animation }) => {
                     type="number"
                     label="Price"
                     value={formValues.price}
-                    onChange={handleChange("price")}
+                    onChange={handleChange('price')}
                     margin="normal"
                   />
                 </Grid>
@@ -132,7 +123,7 @@ const EditCaffDialog: React.FC<UpdateCaffDialogProps> = ({ animation }) => {
                     rows="2"
                     label="Description"
                     value={formValues.description}
-                    onChange={handleChange("description")}
+                    onChange={handleChange('description')}
                     margin="normal"
                   />
                 </Grid>

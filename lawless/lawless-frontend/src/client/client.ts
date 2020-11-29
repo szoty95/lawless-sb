@@ -1,13 +1,10 @@
-import { AxiosRequestConfig } from "axios";
-import { auth, AuthClient } from "./auth";
-import { caff, CaffClient } from "./caff";
+import { AxiosRequestConfig } from 'axios';
+import { auth, AuthClient } from './auth';
+import { caff, CaffClient } from './caff';
 
-const DEFAULT_BASE_URL = "";
+const DEFAULT_BASE_URL = '';
 
-export function createClient(
-  baseURL = DEFAULT_BASE_URL,
-  configOverride?: AxiosRequestConfig
-) {
+export function createClient(baseURL = DEFAULT_BASE_URL, configOverride?: AxiosRequestConfig) {
   const config: AxiosRequestConfig = {
     baseURL,
     withCredentials: true,
