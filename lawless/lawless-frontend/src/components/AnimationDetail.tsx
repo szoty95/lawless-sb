@@ -1,8 +1,12 @@
-import { Button, Grid, Typography } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
 import Skeleton from "@material-ui/lab/Skeleton";
 import React from "react";
+import { Redirect } from "react-router";
+import { useAuthToken } from "../hooks/useAuthToken";
+import { useDeleteCaff } from "../hooks/useDelete";
 import { useUserContext } from "../hooks/useUserContext";
 import { IDetailsCaffResp } from "../swagger";
+import DeleteDialog from "./DeleteDialog";
 import EditCaffDialog from "./EditCaffDetailForm";
 
 const ADMIN = "ROLE_ADMIN";
@@ -13,8 +17,22 @@ type AnimationDetailProps = {
 
 const AnimationDetail: React.FC<AnimationDetailProps> = ({ animation }) => {
   const { user } = useUserContext();
+  const { authToken } = useAuthToken();
+  const [result, deleteCaff] = useDeleteCaff();
   console.log(user?.userId);
   console.log(animation.userId);
+
+  const handleDelete = () => {
+    deleteCaff({
+      data: { caffId: animation.id?.toString() },
+      authToken: authToken as string,
+    });
+  };
+
+  if (result.data) {
+    return <Redirect to="/" />;
+  }
+
   return (
     <Grid container direction="column">
       <Typography variant="h5">{animation.name}</Typography>

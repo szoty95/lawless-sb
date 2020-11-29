@@ -8,7 +8,7 @@ import {
 import React, { useState } from "react";
 
 interface DeleteDialogProps {
-  onDelete: () => {};
+  onDelete: () => void;
 }
 
 const DeleteDialog: React.FC<DeleteDialogProps> = ({ onDelete }) => {
