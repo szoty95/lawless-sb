@@ -59,19 +59,22 @@ const AnimationDetailPage: React.FC<AnimationDetailPageProps> = ({ match }) => {
           <Grid item container direction="column" spacing={2}>
             <Typography variant="h5">Kommentek</Typography>
 
-            {result.data.comments?.map((item: IComment) =>
-              item.timeStamp && item.message ? (
-                <Comment
-                  key={item.id}
-                  comment={{
-                    text: item.message,
-                    createdAt: format(parseISO(item.timeStamp.toString()), 'yyyy-mm-d'),
-                  }}
-                />
-              ) : (
-                ''
-              ),
-            )}
+            <Grid container direction="column" spacing={2}>
+              {result.data.comments?.map((item: IComment) =>
+                item.timeStamp && item.message ? (
+                  <Grid item key={item.id}>
+                    <Comment
+                      comment={{
+                        text: item.message,
+                        createdAt: format(parseISO(item.timeStamp.toString()), 'yyyy-mm-d'),
+                      }}
+                    />
+                  </Grid>
+                ) : (
+                  ''
+                ),
+              )}
+            </Grid>
           </Grid>
           <Grid item container justify="flex-end">
             <CommentDialog caffId={result.data.id} />
