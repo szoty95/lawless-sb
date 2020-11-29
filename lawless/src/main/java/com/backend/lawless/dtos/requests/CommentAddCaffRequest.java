@@ -11,8 +11,7 @@ import java.io.Serializable;
 @ApiModel(value = "CommentAddCaffReq")
 
 public class CommentAddCaffRequest {
-
 	private Long caffId;
-	private Long userId;
 	private String message;
+
 }
