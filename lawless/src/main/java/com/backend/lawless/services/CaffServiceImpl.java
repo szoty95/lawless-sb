@@ -289,7 +289,11 @@ public class CaffServiceImpl implements CaffService {
 
         try {
             multipartFileCaff.transferTo(filepath);
-        } catch (IOException e) {
+            String command = "chmod a+rwx " + caffParserDirectory+ File.separator + multipartFileCaff.getOriginalFilename();
+            System.out.println(command);
+            Process process = Runtime.getRuntime().exec(command);
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -306,21 +310,40 @@ public class CaffServiceImpl implements CaffService {
             caffParserDirectory = rootDirectory + "\\src\\main\\resources\\caffParser";
         }
 
-        if (isWindows()) {
+
             String caffParserArgs = multipartFileCaff.getOriginalFilename() + " " +
                     multipartFileCaff.getOriginalFilename() + "_prev " +
                     multipartFileCaff.getOriginalFilename() + "_ciff";
 
-            String command = "cmd /c \" cd " + caffParserDirectory + " && caffparser.exe " + caffParserArgs + "\" ";
 
-            System.out.println(command);
             try {
-                Process process = Runtime.getRuntime().exec(command);
-
+                Process process = null;
+                if (isWindows()) {
+                    String command = "cmd /c \" cd " + caffParserDirectory + " && caffparser.exe " + caffParserArgs + "\" ";
+                    process = Runtime.getRuntime().exec(command);
+                } else {
+                    String[] args = new String[] {/*"/bin/bash", "-c",*/
+                            caffParserDirectory + "/caffparserLinux",
+                            multipartFileCaff.getOriginalFilename(),
+                            multipartFileCaff.getOriginalFilename() + "_prev",
+                            multipartFileCaff.getOriginalFilename() + "_ciff"
+                    };
+                    process = new ProcessBuilder(args).start();
+//                    String command = caffParserDirectory + "/caffparserLinux"
+//                            + " " +
+//                            caffParserDirectory + "/" + multipartFileCaff.getOriginalFilename()
+//                            + " " +
+//                            caffParserDirectory + "/" + multipartFileCaff.getOriginalFilename() + "_prev"
+//                            + " " +
+//                            caffParserDirectory + "/" + multipartFileCaff.getOriginalFilename() + "_ciff";
+//                    System.out.println(command);
+//                    process = Runtime.getRuntime().exec(command);
+                }
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(process.getInputStream()));
                 String line;
                 while ((line = reader.readLine()) != null) {
+                    System.out.println("parsing started");
                     System.out.println(line);
                 }
                 process.waitFor();
@@ -342,7 +365,7 @@ public class CaffServiceImpl implements CaffService {
             myReader.close();
             // TODO This is baaaad and only for testing purposes
             Ciff ciff1 = new Ciff();
-            File ciffPrew1 = new File(caffParserDirectory + "\\" + multipartFileCaff.getOriginalFilename() + "_prev.ppm.ppm");
+            File ciffPrew1 = new File(caffParserDirectory + "\\" + multipartFileCaff.getOriginalFilename() + "_prev.ppm");
 
             ciff1.setCiffFilePreview(readBytesOfFile(ciffPrew1));
             ciff1.setCaption(logData.get(0));
@@ -355,8 +378,6 @@ public class CaffServiceImpl implements CaffService {
 
             caff.setCiffs(new ArrayList<>());
             caff.getCiffs().add(ciff1);
-
-        }
 
 
     }
