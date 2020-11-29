@@ -30,7 +30,7 @@ const Header: React.FC = () => {
     <AppBar className={styles.root} position="static">
       <Toolbar>
         <Box display="flex" justifyContent="space-between" flex={1} alignItems="center">
-          <Typography onClick={() => history.push('/caffs')} className={styles.logo} variant="h3">
+          <Typography onClick={() => history.push('/animations')} className={styles.logo} variant="h3">
             Outlaws
           </Typography>
           <Box display="flex">

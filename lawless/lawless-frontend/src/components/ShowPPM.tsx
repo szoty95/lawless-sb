@@ -16,7 +16,7 @@ const ShowPPM: React.FC<Props> = ({ height: h, width: w, id }) => {
     axios({
       url: 'https://raw.githubusercontent.com/szoty95/lawless-sb/webapp/lawless/src/main/resources/caff-test/pista.ppm',
       baseURL: 'https://cors-anywhere.herokuapp.com',
-    }).then(function (response) {
+    }).then((response) => {
       const data = (response.data as string).split(/\r?\n/);
       setWidth(parseInt(data[1], 10));
       setHeight(parseInt(data[2], 10));
@@ -49,7 +49,7 @@ const ShowPPM: React.FC<Props> = ({ height: h, width: w, id }) => {
         imageData.data[pixelIndex + 2] = parseInt(rgb[2], 10);
         imageData.data[pixelIndex + 3] = 255;
       });
-      createImageBitmap(imageData).then(function (imgBitmap) {
+      createImageBitmap(imageData).then((imgBitmap) => {
         context.drawImage(imgBitmap, 0, 0, 345, 345);
       });
     }

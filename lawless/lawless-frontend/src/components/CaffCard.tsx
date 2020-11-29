@@ -41,7 +41,7 @@ const CaffCard: React.FC<Props> = ({ id, title, createdBy, show }) => {
   const styles = useStyles(show);
   const history = useHistory();
   return (
-    <Card className={styles.root} onClick={() => history.push(`/caffs/${id}`)}>
+    <Card className={styles.root} onClick={() => history.push(`/animations/${id}`)}>
       <ShowPPM height={345} width={345} id={id} />
       <Box className={styles.container}>
         <Box className={styles.mediaFooter}>

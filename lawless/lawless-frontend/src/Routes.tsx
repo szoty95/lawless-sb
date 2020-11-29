@@ -11,7 +11,7 @@ const Routes = () => {
       <ProtectedRoute path="/login">
         <LoginPage />
       </ProtectedRoute>
-      <Route guard path="/caffs">
+      <Route path="/animations">
         <CaffsPage />
       </Route>
       <ProtectedRoute path="/animation/:id">
