@@ -1,5 +1,11 @@
 import Axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { CreateCaffResp, IDetailsCaffResp, UpdateCaffResp } from "../swagger";
+import {
+  CreateCaffResp,
+  IDeleteCaffReq,
+  IDeleteCaffResp,
+  IDetailsCaffResp,
+  UpdateCaffResp,
+} from "../swagger";
 
 type CreateCaffQuery = (
   data?: FormData,
@@ -22,10 +28,16 @@ type GetCaffQuery = (
   authToken?: string
 ) => Promise<AxiosResponse<IDetailsCaffResp>>;
 
+type DeleteCaffQuery = (
+  data?: IDeleteCaffReq,
+  authToken?: string
+) => Promise<AxiosResponse<IDeleteCaffResp>>;
+
 export type CaffClient = {
   create: CreateCaffQuery;
   details: GetCaffQuery;
   update: UpdateCaffQuery;
+  deleteCaff: DeleteCaffQuery;
 };
 
 export function caff(config: AxiosRequestConfig): CaffClient {
@@ -58,9 +70,18 @@ export function caff(config: AxiosRequestConfig): CaffClient {
     });
   };
 
+  const deleteCaff: DeleteCaffQuery = (data, authToken) => {
+    return axios.post<IDeleteCaffResp>("/delete", data, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+  };
+
   return {
     create,
     details,
     update,
+    deleteCaff,
   };
 }
