@@ -75,6 +75,30 @@
         }
       }
     },
+    "/api/caff/commentAdd" : {
+      "post" : {
+        "tags" : [ "Caff" ],
+        "summary" : "Comment caff ",
+        "description" : "",
+        "operationId" : "comment",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/CommentAddCaffReq"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/DetailsAllCaffResp"
+            }
+          }
+        }
+      }
+    },
     "/api/caff/create" : {
       "post" : {
         "tags" : [ "Caff" ],
@@ -115,18 +139,17 @@
       }
     },
     "/api/caff/delete" : {
-      "post" : {
+      "delete" : {
         "tags" : [ "Caff" ],
         "summary" : "Delete caff ",
         "description" : "",
         "operationId" : "delete",
         "parameters" : [ {
-          "in" : "body",
-          "name" : "body",
-          "required" : false,
-          "schema" : {
-            "$ref" : "#/definitions/DeleteCaffReq"
-          }
+          "name" : "id",
+          "in" : "query",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
         } ],
         "responses" : {
           "200" : {
@@ -145,10 +168,11 @@
         "description" : "",
         "operationId" : "details",
         "parameters" : [ {
-          "name" : "",
+          "name" : "id",
           "in" : "query",
           "required" : true,
-          "type" : "ref"
+          "type" : "integer",
+          "format" : "int64"
         } ],
         "responses" : {
           "200" : {
@@ -176,6 +200,29 @@
         }
       }
     },
+    "/api/caff/picture" : {
+      "get" : {
+        "tags" : [ "Caff" ],
+        "summary" : "Get Caff preview picture",
+        "description" : "",
+        "operationId" : "picture",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "query",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/CaffPictureResponse"
+            }
+          }
+        }
+      }
+    },
     "/api/caff/update" : {
       "post" : {
         "tags" : [ "Caff" ],
@@ -187,29 +234,7 @@
           "name" : "body",
           "required" : false,
           "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "in" : "body",
-          "name" : "body",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "in" : "body",
-          "name" : "body",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "in" : "body",
-          "name" : "body",
-          "required" : false,
-          "schema" : {
-            "type" : "number",
-            "format" : "double"
+            "$ref" : "#/definitions/UpdateCaffReq"
           }
         } ],
         "responses" : {
@@ -224,6 +249,15 @@
     }
   },
   "definitions" : {
+    "CaffPictureResponse" : {
+      "type" : "object",
+      "properties" : {
+        "previewPicture" : {
+          "type" : "string",
+          "format" : "byte"
+        }
+      }
+    },
     "Comment" : {
       "type" : "object",
       "properties" : {
@@ -244,20 +278,24 @@
         }
       }
     },
+    "CommentAddCaffReq" : {
+      "type" : "object",
+      "properties" : {
+        "caffId" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "message" : {
+          "type" : "string"
+        }
+      }
+    },
     "CreateCaffResp" : {
       "type" : "object",
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "int64"
-        }
-      }
-    },
-    "DeleteCaffReq" : {
-      "type" : "object",
-      "properties" : {
-        "caffId" : {
-          "type" : "string"
         }
       }
     },
@@ -310,10 +348,6 @@
           "items" : {
             "$ref" : "#/definitions/Comment"
           }
-        },
-        "previewPicture" : {
-          "type" : "string",
-          "format" : "byte"
         },
         "userPersonalData" : {
           "$ref" : "#/definitions/UserPersonalData"
@@ -376,6 +410,25 @@
         "name" : {
           "type" : "string",
           "enum" : [ "ROLE_USER", "ROLE_ADMIN" ]
+        }
+      }
+    },
+    "UpdateCaffReq" : {
+      "type" : "object",
+      "properties" : {
+        "caffId" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "description" : {
+          "type" : "string"
+        },
+        "price" : {
+          "type" : "number",
+          "format" : "double"
         }
       }
     },
