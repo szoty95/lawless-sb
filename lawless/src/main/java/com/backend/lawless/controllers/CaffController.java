@@ -55,13 +55,13 @@ public class CaffController {
         }
     }
 
-    @PostMapping(value = "/delete")
+    @DeleteMapping(value = "/delete")
     @ApiOperation(value = "Delete caff ", response = DeleteCaffResponse.class, nickname = "delete")
     public ResponseEntity<?> delete(@AuthenticationPrincipal UserDetails userDetails,
-                                    @RequestBody DeleteCaffRequest deleteCaffRequest) {
+                                    @RequestParam("id") Long id) {
         try {
             return ResponseEntity.ok(
-                    caffService.delete(userDetails,deleteCaffRequest));
+                    caffService.delete(userDetails,id));
         } catch (LawlessException e) {
             return ResponseEntity
                     .badRequest()
