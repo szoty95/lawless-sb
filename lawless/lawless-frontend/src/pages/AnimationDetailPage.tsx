@@ -1,9 +1,10 @@
-import { Button, CircularProgress, Container, Grid, Typography } from '@material-ui/core';
+import { CircularProgress, Container, Grid, Typography } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
 import AnimationDetail from '../components/AnimationDetail';
 import Comment from '../components/Comment';
+import CommentDialog from '../components/CommentDialog';
 import { useAuthToken } from '../hooks/useAuthToken';
 import useGetCaff from '../hooks/useGetCaff';
 import Page from './Page';
@@ -64,7 +65,7 @@ const AnimationDetailPage: React.FC<AnimationDetailPageProps> = ({ match }) => {
             />
           </Grid>
           <Grid item container justify="flex-end">
-            <Button variant="contained">Add comment</Button>
+            <CommentDialog caffId={result.data.id} />
           </Grid>
         </Grid>
       </StyledContainer>

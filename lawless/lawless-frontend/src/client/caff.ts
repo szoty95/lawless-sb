@@ -6,6 +6,7 @@ import {
   IUpdateCaffReq,
   UpdateCaffResp,
   IDetailsAllCaffResp,
+  ICommentAddCaffReq,
 } from '../swagger';
 import { Image } from './types';
 
@@ -19,6 +20,8 @@ type GetCaffQuery = (data?: number, authToken?: string) => Promise<AxiosResponse
 
 type DeleteCaffQuery = (data?: number, authToken?: string) => Promise<AxiosResponse<IDeleteCaffResp>>;
 
+type AddCommentQuery = (data?: ICommentAddCaffReq, authToken?: string) => Promise<AxiosResponse<{ status: string }>>;
+
 export type CaffClient = {
   create: CreateCaffQuery;
   details: GetCaffQuery;
@@ -26,6 +29,7 @@ export type CaffClient = {
   deleteCaff: DeleteCaffQuery;
   animationsList: AnimationsListQuery;
   getPreview: PreviewQuery;
+  addComment: AddCommentQuery;
 };
 
 export function caff(config: AxiosRequestConfig): CaffClient {
@@ -74,6 +78,14 @@ export function caff(config: AxiosRequestConfig): CaffClient {
     return axios.get<Image>(`/picture?id=${data?.id}`);
   };
 
+  const addComment: AddCommentQuery = (data, authToken) => {
+    return axios.post<{ status: string }>('/commentAdd', data, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+  };
+
   return {
     create,
     details,
@@ -81,5 +93,6 @@ export function caff(config: AxiosRequestConfig): CaffClient {
     deleteCaff,
     animationsList,
     getPreview,
+    addComment,
   };
 }

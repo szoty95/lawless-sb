@@ -23,7 +23,7 @@ const Routes = () => {
 
       <ProtectedRoute guard exact path="/">
         <Page title="Main">
-          <Link to="/animation/3">animation</Link>
+          <Link to="/animation/1">animation</Link>
         </Page>
       </ProtectedRoute>
       <Route>
