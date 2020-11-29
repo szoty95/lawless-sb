@@ -179,10 +179,9 @@ export interface ICaffClient {
   create(file: any, name: string, description: string, price: number): Promise<CreateCaffResp>;
   /**
    * Delete caff
-   * @param body (optional)
    * @return successful operation
    */
-  delete(body: DeleteCaffReq | null | undefined): Promise<DeleteCaffResp>;
+  delete(id: number): Promise<DeleteCaffResp>;
   /**
    * Details caff
    * @return successful operation
@@ -317,21 +316,20 @@ export class CaffClient implements ICaffClient {
 
   /**
    * Delete caff
-   * @param body (optional)
    * @return successful operation
    */
-  delete(body: DeleteCaffReq | null | undefined, signal?: AbortSignal | undefined): Promise<DeleteCaffResp> {
-    let url_ = this.baseUrl + "/api/caff/delete";
+  delete(id: number, signal?: AbortSignal | undefined): Promise<DeleteCaffResp> {
+    let url_ = this.baseUrl + "/api/caff/delete?";
+    if (id === undefined || id === null)
+      throw new Error("The parameter 'id' must be defined and cannot be null.");
+    else
+      url_ += "id=" + encodeURIComponent("" + id) + "&";
     url_ = url_.replace(/[?&]$/, "");
 
-    const content_ = JSON.stringify(body);
-
     let options_ = <RequestInit>{
-      body: content_,
-      method: "POST",
+      method: "DELETE",
       signal,
       headers: {
-        "Content-Type": "application/json",
         "Accept": "application/json"
       }
     };
@@ -687,42 +685,6 @@ export class CreateCaffResp implements ICreateCaffResp {
 
 export interface ICreateCaffResp {
   id?: number | undefined;
-}
-
-export class DeleteCaffReq implements IDeleteCaffReq {
-  caffId?: string | undefined;
-
-  constructor(data?: IDeleteCaffReq) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      this.caffId = _data["caffId"];
-    }
-  }
-
-  static fromJS(data: any): DeleteCaffReq {
-    data = typeof data === 'object' ? data : {};
-    let result = new DeleteCaffReq();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    data["caffId"] = this.caffId;
-    return data;
-  }
-}
-
-export interface IDeleteCaffReq {
-  caffId?: string | undefined;
 }
 
 export class DeleteCaffResp implements IDeleteCaffResp {
