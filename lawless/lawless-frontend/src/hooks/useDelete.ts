@@ -1,5 +1,5 @@
 import { IDeleteCaffResp } from '../swagger';
-import { useClientContext } from './useClientContext';
+import useClientContext from './useClientContext';
 import useRequest from './useRequest';
 
 const useDeleteCaff = () => {

@@ -1,5 +1,5 @@
 import { IUpdateCaffReq, UpdateCaffResp } from '../swagger';
-import { useClientContext } from './useClientContext';
+import useClientContext from './useClientContext';
 import useRequest from './useRequest';
 
 const useUpdateCaff = () => {
