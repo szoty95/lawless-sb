@@ -28,6 +28,12 @@ const useStyles = makeStyles({
     color: "red",
     fontWeight: 500,
   },
+
+  button: {
+    padding: "8px 48px",
+    borderRadius: 32,
+    marginLeft: 32,
+  },
 });
 
 const UploadCaffDialog: React.FC = () => {
@@ -92,7 +98,14 @@ const UploadCaffDialog: React.FC = () => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Add</Button>
+      <Button
+        className={classes.button}
+        variant="contained"
+        color="primary"
+        onClick={() => setOpen(true)}
+      >
+        Upload
+      </Button>
       <Dialog
         open={open}
         className={classes.dialog}

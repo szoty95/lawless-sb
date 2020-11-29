@@ -2,6 +2,7 @@ import { AppBar, Box, Button, Toolbar, Typography } from "@material-ui/core";
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router";
+import UploadCaffDialog from "./UploadCaffDialog";
 
 const useStyles = makeStyles({
   root: {
@@ -14,11 +15,10 @@ const useStyles = makeStyles({
   },
 
   button: {
-    padding: '8px 48px',
+    padding: "8px 48px",
     borderRadius: 32,
     marginLeft: 32,
   },
-
 });
 
 const Header: React.FC = () => {
@@ -28,7 +28,12 @@ const Header: React.FC = () => {
   return (
     <AppBar className={styles.root} position="static">
       <Toolbar>
-        <Box display="flex" justifyContent="space-between" flex={1} alignItems="center">
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          flex={1}
+          alignItems="center"
+        >
           <Typography
             onClick={() => history.push("/caffs")}
             className={styles.logo}
@@ -37,8 +42,7 @@ const Header: React.FC = () => {
             Outlaws
           </Typography>
           <Box display="flex">
-            <Button className={styles.button} variant="contained" color="primary">Upload</Button>
-            <Button className={styles.button} variant="contained"> Login</Button>
+            <UploadCaffDialog />
           </Box>
         </Box>
       </Toolbar>
