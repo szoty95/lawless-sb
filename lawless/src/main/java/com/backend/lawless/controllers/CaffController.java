@@ -115,4 +115,17 @@ public class CaffController {
         }
     }
 
+    @PostMapping(value = "/commentAdd")
+    @ApiOperation(value = "Comment caff ", response = DetailsAllCaffResponse.class, nickname = "comment")
+    public ResponseEntity<?> commentAdd(@AuthenticationPrincipal UserDetails userDetails,
+                                        @RequestBody CommentAddCaffRequest commentAddCaffRequest) {
+        try {
+            return ResponseEntity.ok(
+                    caffService.commentAdd(userDetails,commentAddCaffRequest));
+        } catch (LawlessException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(e);
+        }
+    }
 }

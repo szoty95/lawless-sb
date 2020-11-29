@@ -1,6 +1,7 @@
 package com.backend.lawless.services;
 
 import com.backend.lawless.daos.CaffRepository;
+import com.backend.lawless.daos.CommentRepository;
 import com.backend.lawless.daos.UserRepository;
 import com.backend.lawless.dtos.parts.UserPersonalData;
 import com.backend.lawless.dtos.requests.*;
@@ -28,6 +29,9 @@ public class CaffServiceImpl implements CaffService {
 
     @Autowired
     CaffRepository caffRepository;
+
+    @Autowired
+    CommentRepository commentRepository;
 
     private User getUserSafely(UserDetails userDetails) throws LawlessException {
         if (userRepository.existsByUsername(userDetails.getUsername())) {
@@ -69,11 +73,9 @@ public class CaffServiceImpl implements CaffService {
     }
 
     private void deleteParsedFiles() {
-
         String rootDirectory=System.getProperty("user.dir");
         String caffParserDirectory=rootDirectory+"\\src\\main\\resources\\caffParser";
         String caffParserRelativeRoute = caffParserDirectory+"\\caffparser.exe";
-
 
         String command = "cmd /c \" cd " + caffParserDirectory + " && for /f %F in ('dir /b /a-d ^| findstr /vile \".exe\"') do del \"%F\""  +"\" ";
 
@@ -186,13 +188,11 @@ public class CaffServiceImpl implements CaffService {
             List<DetailsCaffResponse> caffResponses = new ArrayList<DetailsCaffResponse>();
 
             for (Caff caffItem:caffs) {
-
-
                 DetailsCaffResponse response =new DetailsCaffResponse(caffItem);
-
 
                 if(userRepository.existsById(caffItem.getUserId())) {
                     User user = userRepository.findById(caffItem.getUserId()).get();
+
 
                     response.setUserPersonalData(new UserPersonalData(
                             user.getUsername(),
@@ -200,6 +200,7 @@ public class CaffServiceImpl implements CaffService {
                             user.getFirstName(),
                             user.getLastName(),
                             user.getId().toString()));
+
                 }
                 caffResponses.add(response);
 
@@ -207,7 +208,31 @@ public class CaffServiceImpl implements CaffService {
 
           return new DetailsAllCaffResponse(caffResponses);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new LawlessException("Not Found!");
+        }
+    }
+
+    @Override
+    public CommentAddCaffResponse commentAdd(UserDetails userDetails, CommentAddCaffRequest request) throws LawlessException {
+        try {
+            Caff caff = getCaffSafely(request.getCaffId());
+            User user = getUserSafely(userDetails);
+
+            Comment comment = new Comment(user.getId(),request.getMessage(),new Date());
+            commentRepository.save(comment);
+            System.out.println(comment.toString());
+
+
+
+            caff.addComments(comment);
+
+            System.out.println(caff.getComments().toString());
+            caffRepository.save(caff);
+
+            return new CommentAddCaffResponse("Ok");
+        }catch (Exception e) {
+            throw new LawlessException("Error!");
         }
     }
 

@@ -39,5 +39,9 @@ public class Caff {
     @OneToMany()
     private List<Comment> comments;
 
+    public void addComments(Comment comment){
+        this.comments.add(comment);
+    }
+
 
 }
