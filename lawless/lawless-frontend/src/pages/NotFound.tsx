@@ -1,9 +1,7 @@
 import { Grid, Typography } from '@material-ui/core';
 import React from 'react';
 
-interface Props {}
-
-const NotFound = (props: Props) => {
+const NotFound = () => {
   return (
     <Grid container direction="column" justify="center" alignItems="center">
       <Grid container direction="column">
