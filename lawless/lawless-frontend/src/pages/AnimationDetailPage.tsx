@@ -8,6 +8,7 @@ import Comment from '../components/Comment';
 import CommentDialog from '../components/CommentDialog';
 import { useAuthToken } from '../hooks/useAuthToken';
 import useGetCaff from '../hooks/useGetCaff';
+import useUserContext from '../hooks/useUserContext';
 import { IComment } from '../swagger';
 import Page from './Page';
 
@@ -24,6 +25,7 @@ export type AnimationDetailPageProps = RouteComponentProps<MatchParams>;
 const AnimationDetailPage: React.FC<AnimationDetailPageProps> = ({ match }) => {
   const [result, getCaff] = useGetCaff();
   const { authToken } = useAuthToken();
+  const { user } = useUserContext();
 
   useEffect(() => {
     if (!result.data) {
@@ -77,7 +79,7 @@ const AnimationDetailPage: React.FC<AnimationDetailPageProps> = ({ match }) => {
             </Grid>
           </Grid>
           <Grid item container justify="flex-end">
-            <CommentDialog caffId={result.data.id} />
+            {!!user && <CommentDialog caffId={result.data.id} />}
           </Grid>
         </Grid>
       </StyledContainer>
