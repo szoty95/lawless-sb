@@ -13,5 +13,4 @@ public class CreateCaffRequest implements Serializable {
     private String name;
     private String description;
     private double price;
-//    private MultipartFile caffFile;
 }

@@ -104,26 +104,16 @@ public class CaffServiceImpl implements CaffService {
     public UpdateCaffResponse update(UserDetails userDetails, UpdateCaffRequest request)
             throws LawlessException {
         User user = getUserSafely(userDetails);
-        Caff caff = getCaffSafely(Long.valueOf(request.getCaffId()));
+        Caff caff = getCaffSafely(request.getCaffId());
 
         // update if admin, or current user requested caff update
         try {
             if (user.getRoles().stream().anyMatch(role -> role.getName() == ERole.ROLE_ADMIN)
                     || user.getId().equals(caff.getUserId())) {
 
-                //   if (request.getCaffFile() != null) {
-                //       caff.setCaffFile(request.getCaffFile());
-                //   }
-                if (request.getName() != null) {
-                    caff.setName(request.getName());
-                }
-                if (request.getDescription() != null) {
-                    caff.setDescription(request.getDescription());
-                }
-                if (request.getPrice() != null) {
-                    caff.setPrice(request.getPrice());
-                }
-
+                caff.setName(request.getName());
+                caff.setDescription(request.getDescription());
+                caff.setPrice(request.getPrice());
                 caffRepository.save(caff);
 
                 return new UpdateCaffResponse("Update successful!");
@@ -157,9 +147,9 @@ public class CaffServiceImpl implements CaffService {
     }
 
     @Override
-    public DetailsCaffResponse details(DetailsCaffRequest request) throws LawlessException {
+    public DetailsCaffResponse details(Long id) throws LawlessException {
         try {
-            Caff caff = getCaffSafely(Long.valueOf(request.getCaffId()));
+            Caff caff = getCaffSafely(Long.valueOf(id));
             DetailsCaffResponse response = new DetailsCaffResponse(caff);
 
             if (userRepository.existsById(response.getUserId())) {
