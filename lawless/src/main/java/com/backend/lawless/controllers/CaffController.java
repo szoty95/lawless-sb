@@ -102,7 +102,7 @@ public class CaffController {
         }
     }
 
-    @GetMapping(value = "/details/picture")
+    @GetMapping(value = "/picture")
     @ApiOperation(value = "Get Caff preview picture", response = CaffPictureResponse.class, nickname = "picture")
     public ResponseEntity<?> picture(@RequestParam Long id) {
         try {
