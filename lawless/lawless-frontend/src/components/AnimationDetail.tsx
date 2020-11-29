@@ -1,15 +1,15 @@
-import { Grid, Typography } from "@material-ui/core";
-import Skeleton from "@material-ui/lab/Skeleton";
-import React from "react";
-import { Redirect } from "react-router";
-import { useAuthToken } from "../hooks/useAuthToken";
-import { useDeleteCaff } from "../hooks/useDelete";
-import { useUserContext } from "../hooks/useUserContext";
-import { IDetailsCaffResp } from "../swagger";
-import DeleteDialog from "./DeleteDialog";
-import EditCaffDialog from "./EditCaffDetailForm";
+import { Grid, Typography } from '@material-ui/core';
+import Skeleton from '@material-ui/lab/Skeleton';
+import React from 'react';
+import { Redirect } from 'react-router';
+import { useAuthToken } from '../hooks/useAuthToken';
+import useDeleteCaff from '../hooks/useDelete';
+import useUserContext from '../hooks/useUserContext';
+import { IDetailsCaffResp } from '../swagger';
+import DeleteDialog from './DeleteDialog';
+import EditCaffDialog from './EditCaffDetailForm';
 
-const ADMIN = "ROLE_ADMIN";
+const ADMIN = 'ROLE_ADMIN';
 
 type AnimationDetailProps = {
   animation: IDetailsCaffResp;
@@ -44,23 +44,20 @@ const AnimationDetail: React.FC<AnimationDetailProps> = ({ animation }) => {
           <Grid item container justify="space-between" alignItems="center">
             <Grid item xs={6}>
               <Typography variant="h6">
-                {animation.userPersonalData?.firstName}{" "}
-                {animation.userPersonalData?.lastName}
+                {animation.userPersonalData?.firstName} {animation.userPersonalData?.lastName}
               </Typography>
               <Typography variant="subtitle1">{animation.uploaded}</Typography>
             </Grid>
-            {user &&
-              (user.roles.includes(ADMIN) ||
-                user.userId === animation.userId) && (
-                <Grid xs={6} item container spacing={2}>
-                  <Grid item>
-                    <EditCaffDialog animation={animation} />
-                  </Grid>
-                  <Grid item>
-                    <DeleteDialog onDelete={handleDelete} />
-                  </Grid>
+            {user && (user.roles.includes(ADMIN) || user.userId === animation.userId) && (
+              <Grid xs={6} item container spacing={2}>
+                <Grid item>
+                  <EditCaffDialog animation={animation} />
                 </Grid>
-              )}
+                <Grid item>
+                  <DeleteDialog onDelete={handleDelete} />
+                </Grid>
+              </Grid>
+            )}
           </Grid>
 
           <Grid item>

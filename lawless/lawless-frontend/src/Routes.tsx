@@ -1,31 +1,25 @@
-import React from "react";
-import { Route, Switch } from "react-router";
-import ProtectedRoute from "./components/ProtectedRoute";
-import CaffsPage from "./pages/CaffsPage";
-import LoginPage from "./pages/LoginPage";
-import { Link } from "react-router-dom";
-import AnimationDetailPage from "./pages/AnimationDetailPage";
-import NotFound from "./pages/NotFound";
-import Page from "./pages/Page";
+import React from 'react';
+import { Route, Switch } from 'react-router';
+import { Link } from 'react-router-dom';
+import ProtectedRoute from './components/ProtectedRoute';
+import CaffsPage from './pages/CaffsPage';
+import LoginPage from './pages/LoginPage';
+import AnimationDetailPage from './pages/AnimationDetailPage';
+import NotFound from './pages/NotFound';
+import Page from './pages/Page';
 
-interface Props {}
-
-const Routes = (props: Props) => {
+const Routes = () => {
   return (
     <Switch>
       <ProtectedRoute path="/login">
         <LoginPage />
       </ProtectedRoute>
 
-      <ProtectedRoute guard path="/caffs">
+      <Route guard path="/animations">
         <CaffsPage />
-      </ProtectedRoute>
+      </Route>
 
-      <ProtectedRoute
-        guard
-        path="/animation/:caffId"
-        component={AnimationDetailPage}
-      />
+      <Route guard path="/animation/:caffId" component={AnimationDetailPage} />
 
       <ProtectedRoute guard exact path="/">
         <Page title="Main">

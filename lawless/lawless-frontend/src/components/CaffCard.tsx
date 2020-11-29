@@ -1,25 +1,32 @@
-import { Box, Card, CardMedia, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Box, Card, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
-import React from "react";
-import { useHistory } from "react-router";
+import React from 'react';
+import { useHistory } from 'react-router';
+import Preview from './Preview';
 
 const useStyles = makeStyles({
   root: {
     width: 345,
     height: 345,
     margin: 32,
-    cursor: "pointer",
+    cursor: 'pointer',
+    display: (show) => (show ? '' : 'none'),
   },
 
-  media: {
-    width: "100%",
-    height: "100%",
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    height: '100%',
+    bottom: '345px',
+    position: 'relative',
+    zIndex: 1000,
   },
 
   mediaFooter: {
     padding: 16,
-    backgroundColor: "rgba(255, 255, 255, 0.3)",
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
   },
 });
 
@@ -27,30 +34,25 @@ interface Props {
   title: string;
   createdBy: string;
   id: number;
+  price: number;
+  show: boolean;
 }
 
-const CaffCard: React.FC<Props> = ({ id, title, createdBy }) => {
-  const styles = useStyles();
+const CaffCard: React.FC<Props> = ({ id, title, createdBy, price, show }) => {
+  const styles = useStyles(show);
   const history = useHistory();
   return (
-    <Card className={styles.root} onClick={() => history.push(`/caffs/${id}`)}>
-      <CardMedia
-        image="https://static.scientificamerican.com/sciam/cache/file/92E141F8-36E4-4331-BB2EE42AC8674DD3_source.jpg?w=590&h=800&62C6A28D-D2CA-4635-AA7017C94E6DDB72"
-        title={title}
-        className={styles.media}
-      >
-        <Box
-          display="flex"
-          flexDirection="column"
-          justifyContent="flex-end"
-          height="100%"
-        >
-          <Box className={styles.mediaFooter}>
-            <Typography variant="h4">{title}</Typography>
+    <Card className={styles.root} onClick={() => history.push(`/animation/${id}`)}>
+      <Preview height={345} width={345} id={id} />
+      <Box className={styles.container}>
+        <Box className={styles.mediaFooter}>
+          <Typography variant="h4">{title}</Typography>
+          <Box display="flex" justifyContent="space-between">
             <Typography>{createdBy}</Typography>
+            <Typography variant="h4">{price}</Typography>
           </Box>
         </Box>
-      </CardMedia>
+      </Box>
     </Card>
   );
 };
