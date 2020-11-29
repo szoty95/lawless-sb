@@ -46,7 +46,7 @@ public class DetailsCaffResponse {
 		uploaded= caff.getUploaded();
 		price = caff.getPrice();
 		comments=caff.getComments();
-		previewPicture = caff.getCiffs().get(0).getCiffFilePreview();
+		previewPicture = "TODO".getBytes(); //TODO
 
 	}
 	private UserPersonalData userPersonalData;
