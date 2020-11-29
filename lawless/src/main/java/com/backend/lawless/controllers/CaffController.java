@@ -71,7 +71,7 @@ public class CaffController {
 
     @GetMapping(value = "/details")
     @ApiOperation(value = "Details caff ", response = DetailsCaffResponse.class, nickname = "details")
-    public ResponseEntity<?> details(@RequestParam Long id) {
+    public ResponseEntity<?> details(@RequestParam("id") Long id) {
         try {
             return ResponseEntity.ok(
                     caffService.details(id));
@@ -84,7 +84,7 @@ public class CaffController {
 
     @GetMapping(value = "/picture")
     @ApiOperation(value = "Get Caff preview picture", response = CaffPictureResponse.class, nickname = "picture")
-    public ResponseEntity<?> picture(@RequestParam Long id) {
+    public ResponseEntity<?> picture(@RequestParam("id") Long id) {
         try {
             return ResponseEntity.ok(
                     caffService.getPicture(id));
