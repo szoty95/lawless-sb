@@ -4,6 +4,7 @@ import {
   IDeleteCaffReq,
   IDeleteCaffResp,
   IDetailsCaffResp,
+  IUpdateCaffReq,
   UpdateCaffResp,
 } from "../swagger";
 
@@ -11,12 +12,6 @@ type CreateCaffQuery = (
   data?: FormData,
   authToken?: string
 ) => Promise<AxiosResponse<CreateCaffResp>>;
-
-export type IUpdateCaffReq = {
-  name?: string;
-  price?: string;
-  description?: string;
-};
 
 type UpdateCaffQuery = (
   data?: IUpdateCaffReq,

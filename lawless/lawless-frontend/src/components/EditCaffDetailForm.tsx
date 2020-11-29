@@ -60,7 +60,7 @@ const EditCaffDialog: React.FC<UpdateCaffDialogProps> = ({ animation }) => {
         caffId: animation.id,
         name: formValues.title,
         description: formValues.description,
-        price: formValues.price?.toString(),
+        price: formValues.price,
       },
       authToken: authToken as string,
     });
