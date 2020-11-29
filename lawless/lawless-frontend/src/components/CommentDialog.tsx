@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogContent, DialogTitle, Grid, makeStyles, TextField } from '@material-ui/core';
 import { useFormik } from 'formik';
 import React, { useState } from 'react';
-import { Redirect } from 'react-router';
+import { useHistory } from 'react-router';
 import { useAuthToken } from '../hooks/useAuthToken';
 import useAddComment from '../hooks/useCommentAdd';
 import { ICommentAddCaffReq } from '../swagger';
@@ -22,6 +22,7 @@ const CommentDialog: React.FC<CommentDialogProps> = ({ caffId }) => {
   const [open, setOpen] = useState(false);
   const [result, comment] = useAddComment();
   const { authToken } = useAuthToken();
+  const history = useHistory();
 
   const formik = useFormik({
     initialValues: { message: '' },
@@ -35,7 +36,7 @@ const CommentDialog: React.FC<CommentDialogProps> = ({ caffId }) => {
   });
 
   if (result.data) {
-    return <Redirect to={`/animation/${caffId}`} />;
+    history.go(0);
   }
 
   return (
