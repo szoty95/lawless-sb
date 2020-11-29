@@ -18,7 +18,7 @@ import { useAuthToken } from '../hooks/useAuthToken';
 
 const ACCEPTED_FILE_TYPES = ['caff'];
 
-const MAX_SIZE_IN_BYTES = 10 * 1024 * 1024 * 1024;
+const MAX_SIZE_IN_BYTES = 50 * 1024 * 1024;
 
 const useStyles = makeStyles({
   dialog: {
