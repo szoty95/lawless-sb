@@ -73,7 +73,7 @@ const UploadCaffDialog: React.FC = () => {
   const uploadFile = () => {
     if (file && isValidFile) {
       const formData = new FormData();
-      formData.append("caffFile", file);
+      formData.append("file", file);
       formData.append("name", formValues.title);
       formData.append("price", formValues.price.toString());
       formData.append("description", formValues.description);

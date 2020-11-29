@@ -12,7 +12,7 @@ import {
 import { useAuthToken } from "../hooks/useAuthToken";
 import { Alert } from "@material-ui/lab";
 import { IDetailsCaffResp } from "../swagger";
-import { useCreateCaff } from "../hooks/useCreateCaff";
+import { useUpdateCaff } from "../hooks/useUpdateCaff";
 
 type UpdateCaffDialogProps = {
   animation: IDetailsCaffResp;
@@ -33,12 +33,16 @@ const EditCaffDialog: React.FC<UpdateCaffDialogProps> = ({ animation }) => {
     setFormValues({ ...formValues, [name]: event.target.value });
   };
 
-  const [result, createCaff] = useCreateCaff();
+  const [result, updateCaff] = useUpdateCaff();
   const { authToken } = useAuthToken();
 
   const updateCaffData = () => {
-    createCaff({
-      data: new FormData(),
+    updateCaff({
+      data: {
+        name: formValues.title,
+        description: formValues.description,
+        price: formValues.price?.toString(),
+      },
       authToken: authToken as string,
     });
 
@@ -70,7 +74,7 @@ const EditCaffDialog: React.FC<UpdateCaffDialogProps> = ({ animation }) => {
               <CircularProgress />
             </Grid>
           ) : !result.data ? (
-            <form onSubmit={() => updateCaffData()}>
+            <form onSubmit={updateCaffData}>
               <Grid container justify="center" spacing={2}>
                 <Grid item xs={12}>
                   <TextField
