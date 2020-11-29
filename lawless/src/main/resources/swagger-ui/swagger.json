@@ -82,10 +82,12 @@
         "description" : "",
         "operationId" : "comment",
         "parameters" : [ {
-          "name" : "",
-          "in" : "query",
-          "required" : true,
-          "type" : "ref"
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/CommentAddCaffReq"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -263,6 +265,18 @@
         "timeStamp" : {
           "type" : "string",
           "format" : "date-time"
+        }
+      }
+    },
+    "CommentAddCaffReq" : {
+      "type" : "object",
+      "properties" : {
+        "caffId" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "message" : {
+          "type" : "string"
         }
       }
     },

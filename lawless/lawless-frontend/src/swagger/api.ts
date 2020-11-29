@@ -168,9 +168,10 @@ export class AuthClient implements IAuthClient {
 export interface ICaffClient {
   /**
    * Comment caff
+   * @param body (optional)
    * @return successful operation
    */
-  commentAdd(unnamed: any): Promise<DetailsAllCaffResp>;
+  commentAdd(body: CommentAddCaffReq | null | undefined): Promise<DetailsAllCaffResp>;
   /**
    * Create and process caff
    * @return successful operation
@@ -212,20 +213,21 @@ export class CaffClient implements ICaffClient {
 
   /**
    * Comment caff
+   * @param body (optional)
    * @return successful operation
    */
-  commentAdd(unnamed: any, signal?: AbortSignal | undefined): Promise<DetailsAllCaffResp> {
-    let url_ = this.baseUrl + "/api/caff/commentAdd?";
-    if (unnamed === undefined || unnamed === null)
-      throw new Error("The parameter 'unnamed' must be defined and cannot be null.");
-    else
-      url_ += "=" + encodeURIComponent("" + unnamed) + "&";
+  commentAdd(body: CommentAddCaffReq | null | undefined, signal?: AbortSignal | undefined): Promise<DetailsAllCaffResp> {
+    let url_ = this.baseUrl + "/api/caff/commentAdd";
     url_ = url_.replace(/[?&]$/, "");
 
+    const content_ = JSON.stringify(body);
+
     let options_ = <RequestInit>{
+      body: content_,
       method: "POST",
       signal,
       headers: {
+        "Content-Type": "application/json",
         "Accept": "application/json"
       }
     };
@@ -525,6 +527,46 @@ export interface IComment {
   userId?: number | undefined;
   message?: string | undefined;
   timeStamp?: Date | undefined;
+}
+
+export class CommentAddCaffReq implements ICommentAddCaffReq {
+  caffId?: number | undefined;
+  message?: string | undefined;
+
+  constructor(data?: ICommentAddCaffReq) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.caffId = _data["caffId"];
+      this.message = _data["message"];
+    }
+  }
+
+  static fromJS(data: any): CommentAddCaffReq {
+    data = typeof data === 'object' ? data : {};
+    let result = new CommentAddCaffReq();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["caffId"] = this.caffId;
+    data["message"] = this.message;
+    return data;
+  }
+}
+
+export interface ICommentAddCaffReq {
+  caffId?: number | undefined;
+  message?: string | undefined;
 }
 
 export class CreateCaffResp implements ICreateCaffResp {
