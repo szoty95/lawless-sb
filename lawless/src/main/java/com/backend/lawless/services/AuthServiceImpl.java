@@ -101,7 +101,8 @@ public class AuthServiceImpl implements AuthService {
                 new UserPersonalData(user.getUsername(),
                         user.getEmail(),
                         user.getFirstName(),
-                        user.getLastName()),
+                        user.getLastName(),
+                        user.getId().toString()),
                 ModelMapper.beToDto(user.getRoles()));
     }
 
@@ -113,7 +114,8 @@ public class AuthServiceImpl implements AuthService {
                     user.getUsername(),
                     user.getEmail(),
                     user.getFirstName(),
-                    user.getLastName()),
+                    user.getLastName(),
+                    user.getId().toString()),
                     ModelMapper.beToDto(user.getRoles()));
         } else {
             throw new LawlessException("The requested user is not in the database");

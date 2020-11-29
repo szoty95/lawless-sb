@@ -36,8 +36,8 @@ const schema = yup.object({
   password2: yup
     .string()
     .min(8, "Password must be min 8 character long.")
-    .required("Password confirmation required"),
-  // .equals(["password1"], "Passwords should match"),
+    .required("Password confirmation required")
+    .equals([yup.ref("password1")], "Passwords should match"),
 });
 
 const RegisterDialog: React.FC<RegisterDialogProps> = ({ open, setOpen }) => {
@@ -64,7 +64,7 @@ const RegisterDialog: React.FC<RegisterDialogProps> = ({ open, setOpen }) => {
         userPersonalData: personalData,
         password: CryptoJS.SHA256(values.password1).toString(),
       });
-      register(req);
+      register({ data: req });
       setOpen(false);
       formik.setValues({
         userName: "",

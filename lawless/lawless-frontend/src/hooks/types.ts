@@ -1,3 +1,5 @@
+import { AxiosResponse } from "axios";
+
 export interface ResponseData<T> {
   isLoading: boolean;
   isError: boolean;
@@ -5,11 +7,14 @@ export interface ResponseData<T> {
 }
 
 export interface RequestArgs<T = any, R = any> {
-  request: (body: RequestParams<T>) => Promise<R> | undefined;
+  request: (data?: T, authToken?: string) => Promise<AxiosResponse<R>>;
   initialData?: R | undefined;
   initialParams?: RequestParams<T>;
 }
 
-export type RequestParams<T = any> = T | null | undefined;
+export type RequestParams<T = any> = {
+  data?: T;
+  authToken?: string;
+};
 
-export type Refetch<T> = (params?: RequestParams<T>) => void;
+export type Refetch<T> = (params: RequestParams<T>) => void;

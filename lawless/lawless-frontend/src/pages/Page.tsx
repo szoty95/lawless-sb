@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import { AppBarProps} from "@material-ui/core";
 
 import Header from "../components/Header";
+import { AppBarProps } from "@material-ui/core";
 
 export type PageProps = AppBarProps & {
   title: string;

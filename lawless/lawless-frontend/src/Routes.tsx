@@ -3,6 +3,10 @@ import { Route, Switch } from "react-router";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CaffsPage from "./pages/CaffsPage";
 import LoginPage from "./pages/LoginPage";
+import { Link } from "react-router-dom";
+import AnimationDetailPage from "./pages/AnimationDetailPage";
+import NotFound from "./pages/NotFound";
+import Page from "./pages/Page";
 
 interface Props {}
 
@@ -13,8 +17,23 @@ const Routes = (props: Props) => {
         <LoginPage />
       </ProtectedRoute>
 
-      <Route guard path="/caffs">
+      <ProtectedRoute guard path="/caffs">
         <CaffsPage />
+      </ProtectedRoute>
+
+      <ProtectedRoute
+        guard
+        path="/animation/:caffId"
+        component={AnimationDetailPage}
+      />
+
+      <ProtectedRoute guard exact path="/">
+        <Page title="Main">
+          <Link to="/animation/3">animation</Link>
+        </Page>
+      </ProtectedRoute>
+      <Route>
+        <NotFound />
       </Route>
     </Switch>
   );

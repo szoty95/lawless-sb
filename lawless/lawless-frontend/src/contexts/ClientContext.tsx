@@ -1,19 +1,13 @@
 import React from "react";
 import { createContext } from "react";
-import { AuthClient, CaffClient } from "../swagger/api";
+import { Client, createClient } from "../client/client";
 
 export type ClientContextType = {
-  client: {
-    auth: AuthClient;
-    caff: CaffClient;
-  };
+  client: Client;
 };
 
 export const ClientContext = createContext<ClientContextType>({
-  client: {
-    auth: new AuthClient("http://localhost:8080"),
-    caff: new CaffClient("http://localhost:8080"),
-  },
+  client: createClient(),
 });
 
 type ClientContextProviderProps = {
@@ -22,15 +16,12 @@ type ClientContextProviderProps = {
 
 export const ClientContextProvider: React.FC<ClientContextProviderProps> = ({
   children,
-  baseUrl = "http://localhost:8080",
+  baseUrl = "",
 }) => {
   return (
     <ClientContext.Provider
       value={{
-        client: {
-          auth: new AuthClient("http://localhost:8080"),
-          caff: new CaffClient("http://localhost:8080"),
-        },
+        client: createClient(baseUrl),
       }}
     >
       {children}
