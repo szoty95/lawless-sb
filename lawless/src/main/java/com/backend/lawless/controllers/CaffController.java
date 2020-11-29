@@ -91,10 +91,10 @@ public class CaffController {
 
     @GetMapping(value = "/details")
     @ApiOperation(value = "Details caff ", response = DetailsCaffResponse.class, nickname = "details")
-    public ResponseEntity<?> details(@RequestParam DetailsCaffRequest detailsCaffRequest) {
+    public ResponseEntity<?> details(@RequestParam Long id) {
         try {
             return ResponseEntity.ok(
-                    caffService.details(detailsCaffRequest));
+                    caffService.details(id));
         } catch (LawlessException e) {
             return ResponseEntity
                     .badRequest()

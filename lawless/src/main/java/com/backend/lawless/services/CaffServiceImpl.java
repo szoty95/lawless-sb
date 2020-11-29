@@ -157,9 +157,9 @@ public class CaffServiceImpl implements CaffService {
     }
 
     @Override
-    public DetailsCaffResponse details(DetailsCaffRequest request) throws LawlessException {
+    public DetailsCaffResponse details(Long id) throws LawlessException {
         try {
-            Caff caff = getCaffSafely(Long.valueOf(request.getCaffId()));
+            Caff caff = getCaffSafely(Long.valueOf(id));
             DetailsCaffResponse response = new DetailsCaffResponse(caff);
 
             if (userRepository.existsById(response.getUserId())) {
