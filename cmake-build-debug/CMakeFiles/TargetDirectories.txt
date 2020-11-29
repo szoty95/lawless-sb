@@ -1,3 +1,0 @@
-C:/szbizt/c/lawless-sb/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/szbizt/c/lawless-sb/cmake-build-debug/CMakeFiles/untitled.dir
-C:/szbizt/c/lawless-sb/cmake-build-debug/CMakeFiles/rebuild_cache.dir
