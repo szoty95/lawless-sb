@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import React from 'react';
 import { useHistory } from 'react-router';
-import ShowPPM from './ShowPPM';
+import Preview from './Preview';
 
 const useStyles = makeStyles({
   root: {
@@ -19,8 +19,8 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     justifyContent: 'flex-end',
     height: '100%',
-    position: 'relative',
     bottom: '345px',
+    position: 'relative',
     zIndex: 1000,
   },
 
@@ -34,19 +34,23 @@ interface Props {
   title: string;
   createdBy: string;
   id: number;
+  price: number;
   show: boolean;
 }
 
-const CaffCard: React.FC<Props> = ({ id, title, createdBy, show }) => {
+const CaffCard: React.FC<Props> = ({ id, title, createdBy, price, show }) => {
   const styles = useStyles(show);
   const history = useHistory();
   return (
-    <Card className={styles.root} onClick={() => history.push(`/animations/${id}`)}>
-      <ShowPPM height={345} width={345} id={id} />
+    <Card className={styles.root} onClick={() => history.push(`/animation/${id}`)}>
+      <Preview height={345} width={345} id={id} />
       <Box className={styles.container}>
         <Box className={styles.mediaFooter}>
           <Typography variant="h4">{title}</Typography>
-          <Typography>{createdBy}</Typography>
+          <Box display="flex" justifyContent="space-between">
+            <Typography>{createdBy}</Typography>
+            <Typography variant="h4">{price}</Typography>
+          </Box>
         </Box>
       </Box>
     </Card>
