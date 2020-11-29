@@ -42,7 +42,7 @@ const AnimationDetail: React.FC<AnimationDetailProps> = ({ animation }) => {
         </Grid>
         <Grid item xs={12} sm={6} container direction="column" spacing={2}>
           <Grid item container justify="space-between" alignItems="center">
-            <Grid item>
+            <Grid item xs={6}>
               <Typography variant="h6">
                 {animation.userPersonalData?.firstName}{" "}
                 {animation.userPersonalData?.lastName}
@@ -52,7 +52,7 @@ const AnimationDetail: React.FC<AnimationDetailProps> = ({ animation }) => {
             {user &&
               (user.roles.includes(ADMIN) ||
                 user.userId === animation.userId) && (
-                <Grid item container>
+                <Grid xs={6} item container spacing={2}>
                   <Grid item>
                     <EditCaffDialog animation={animation} />
                   </Grid>

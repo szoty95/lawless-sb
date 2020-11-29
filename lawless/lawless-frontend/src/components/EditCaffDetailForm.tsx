@@ -29,7 +29,7 @@ const useStyles = makeStyles({
   },
 
   button: {
-    padding: "8px 48px",
+    padding: "4px 28px",
     borderRadius: 32,
     marginLeft: 32,
   },

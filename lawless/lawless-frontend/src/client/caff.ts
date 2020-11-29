@@ -56,7 +56,7 @@ export function caff(config: AxiosRequestConfig): CaffClient {
   };
 
   const details: GetCaffQuery = (data, authToken) => {
-    return axios.get<CreateCaffResp>(`/details?detailsCaffRequest=${data}`, {
+    return axios.get<CreateCaffResp>(`/details?id=${data}`, {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
