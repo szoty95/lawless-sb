@@ -2,11 +2,11 @@ import { Grid, Typography } from '@material-ui/core';
 import React from 'react';
 import { Redirect } from 'react-router';
 import { useAuthToken } from '../hooks/useAuthToken';
-import useDeleteCaff from '../hooks/useDelete';
+import useDeleteCaff from '../hooks/useDeleteCaff';
 import useUserContext from '../hooks/useUserContext';
 import { IDetailsCaffResp } from '../swagger';
 import DeleteDialog from './DeleteDialog';
-import EditCaffDialog from './EditCaffDetailForm';
+import EditCaffDialog from './EditCaffDialog';
 import Preview from './Preview';
 
 const ADMIN = 'ROLE_ADMIN';

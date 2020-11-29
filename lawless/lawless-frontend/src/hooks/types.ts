@@ -8,7 +8,7 @@ export interface ResponseData<T> {
 
 export interface RequestArgs<T = any, R = any> {
   request: (data?: T, authToken?: string) => Promise<AxiosResponse<R>>;
-  initialData?: R | undefined;
+  initialData?: R;
   initialParams?: RequestParams<T>;
 }
 
