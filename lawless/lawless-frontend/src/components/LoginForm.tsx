@@ -9,8 +9,6 @@ import { LoginReq } from '../swagger';
 import { useAuthToken } from '../hooks/useAuthToken';
 import useUserContext from '../hooks/useUserContext';
 
-interface Props {}
-
 const StyledGrid = styled(Grid)`
   padding: 1.5em;
   padding-bottom: ;

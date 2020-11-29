@@ -1,11 +1,14 @@
-import { Button, CircularProgress, Container, Grid, Typography } from '@material-ui/core';
+import { CircularProgress, Container, Grid, Typography } from '@material-ui/core';
+import { format, parseISO } from 'date-fns';
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
 import AnimationDetail from '../components/AnimationDetail';
 import Comment from '../components/Comment';
+import CommentDialog from '../components/CommentDialog';
 import { useAuthToken } from '../hooks/useAuthToken';
 import useGetCaff from '../hooks/useGetCaff';
+import { IComment } from '../swagger';
 import Page from './Page';
 
 const StyledContainer = styled(Container)`
@@ -54,17 +57,27 @@ const AnimationDetailPage: React.FC<AnimationDetailPageProps> = ({ match }) => {
           </Grid>
           {/* Kommentek */}
           <Grid item container direction="column" spacing={2}>
-            <Typography variant="h5"> Kommentek</Typography>
-            <Comment
-              comment={{
-                text: 'asdas asda sd asd asd as das dsa ',
-                createdBy: 'Teszt Elek',
-                createdAt: '2020. 44. 44',
-              }}
-            />
+            <Typography variant="h5">Kommentek</Typography>
+
+            <Grid container direction="column" spacing={2}>
+              {result.data.comments?.map((item: IComment) =>
+                item.timeStamp && item.message ? (
+                  <Grid item key={item.id}>
+                    <Comment
+                      comment={{
+                        text: item.message,
+                        createdAt: format(parseISO(item.timeStamp.toString()), 'yyyy-mm-d'),
+                      }}
+                    />
+                  </Grid>
+                ) : (
+                  ''
+                ),
+              )}
+            </Grid>
           </Grid>
           <Grid item container justify="flex-end">
-            <Button variant="contained">Add comment</Button>
+            <CommentDialog caffId={result.data.id} />
           </Grid>
         </Grid>
       </StyledContainer>
