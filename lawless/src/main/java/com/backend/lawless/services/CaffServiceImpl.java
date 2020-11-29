@@ -1,6 +1,7 @@
 package com.backend.lawless.services;
 
 import com.backend.lawless.daos.CaffRepository;
+import com.backend.lawless.daos.CiffPreviewRepository;
 import com.backend.lawless.daos.CommentRepository;
 import com.backend.lawless.daos.UserRepository;
 import com.backend.lawless.dtos.parts.UserPersonalData;
@@ -33,6 +34,9 @@ public class CaffServiceImpl implements CaffService {
 
     @Autowired
     CommentRepository commentRepository;
+
+    @Autowired
+    CiffPreviewRepository ciffPreviewRepository;
 
     private boolean isProduction = true;
 
@@ -103,36 +107,36 @@ public class CaffServiceImpl implements CaffService {
                     File.separator + "resources" +
                     File.separator + "caffParser";
         }
-            String caffParserRelativeRoute = caffParserDirectory + "\\caffparser.exe";
+        String caffParserRelativeRoute = caffParserDirectory + "\\caffparser.exe";
 
-            String fileNameWithOutExt = FilenameUtils.removeExtension(caffFile.getOriginalFilename()) + "_" + time;
+        String fileNameWithOutExt = FilenameUtils.removeExtension(caffFile.getOriginalFilename()) + "_" + time;
 
-            String targetDirForLinux = File.separator + FilenameUtils.removeExtension(caffFile.getOriginalFilename()) + "_" + time + File.separator;
+        String targetDirForLinux = File.separator + FilenameUtils.removeExtension(caffFile.getOriginalFilename()) + "_" + time + File.separator;
 
-            String command = "";
-            if (isWindows()) {
-                command = "cmd /c \" cd " + caffParserDirectory + " && rmdir /s /q " + fileNameWithOutExt + " \" ";
-            } else {
-                command = "rm -r " + caffParserDirectory + targetDirForLinux;
+        String command = "";
+        if (isWindows()) {
+            command = "cmd /c \" cd " + caffParserDirectory + " && rmdir /s /q " + fileNameWithOutExt + " \" ";
+        } else {
+            command = "rm -r " + caffParserDirectory + targetDirForLinux;
+        }
+
+        System.out.println(command);
+        try {
+            Process process = Runtime.getRuntime().exec(command);
+
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
             }
+            process.waitFor();
 
-            System.out.println(command);
-            try {
-                Process process = Runtime.getRuntime().exec(command);
+            reader.close();
 
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(process.getInputStream()));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
-                }
-                process.waitFor();
-
-                reader.close();
-
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
 
 //        }
     }
@@ -216,7 +220,11 @@ public class CaffServiceImpl implements CaffService {
             caff = caffRepository.findById(id).get();
         }
         if (caff.getCiffs().size() > 0) {
-            return new CaffPictureResponse(caff.getCiffs().get(0).getCiffFilePreview());
+            if (ciffPreviewRepository.findById(caff.getCiffs().get(0).getPreviewId()).isPresent()) {
+                return new CaffPictureResponse(ciffPreviewRepository.findById(caff.getCiffs().get(0).getPreviewId()).get().getCiffFilePreview());
+            } else {
+                throw new LawlessException("There is no preview for this caff.");
+            }
         } else throw new LawlessException("There is no preview for this caff.");
     }
 
@@ -390,10 +398,14 @@ public class CaffServiceImpl implements CaffService {
             logData.add(myReader.nextLine());
         }
         myReader.close();
-        Ciff ciff1 = new Ciff();
-        File ciffPrew1 = new File(outputDir + File.separator + multipartFileCaff.getOriginalFilename() + "_prev.ppm");
 
-        ciff1.setCiffFilePreview(readBytesOfFile(ciffPrew1));
+        File ciffPrew1 = new File(outputDir + File.separator + multipartFileCaff.getOriginalFilename() + "_prev.ppm");
+        CiffPreview ciffPreview = new CiffPreview();
+        ciffPreview.setCiffFilePreview(readBytesOfFile(ciffPrew1));
+        ciffPreviewRepository.save(ciffPreview);
+
+        Ciff ciff1 = new Ciff();
+        ciff1.setPreviewId(ciffPreview.getId());
         ciff1.setCaption(logData.get(0));
         ciff1.setWidth(Integer.parseInt(logData.get(1)));
         ciff1.setHeight(Integer.parseInt(logData.get(2)));

@@ -17,8 +17,7 @@ public class Ciff {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    //image file
-    private byte[] ciffFilePreview;
+    private Long previewId;
     private String caption;
     private int width;
     private int height;
