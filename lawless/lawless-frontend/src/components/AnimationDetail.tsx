@@ -1,5 +1,4 @@
 import { Grid, Typography } from '@material-ui/core';
-import Skeleton from '@material-ui/lab/Skeleton';
 import React from 'react';
 import { Redirect } from 'react-router';
 import { useAuthToken } from '../hooks/useAuthToken';
@@ -8,6 +7,7 @@ import useUserContext from '../hooks/useUserContext';
 import { IDetailsCaffResp } from '../swagger';
 import DeleteDialog from './DeleteDialog';
 import EditCaffDialog from './EditCaffDetailForm';
+import Preview from './Preview';
 
 const ADMIN = 'ROLE_ADMIN';
 
@@ -36,7 +36,7 @@ const AnimationDetail: React.FC<AnimationDetailProps> = ({ animation }) => {
       <Typography variant="h5">{animation.name}</Typography>
       <Grid container>
         <Grid item xs={12} sm={6} container direction="column">
-          <Skeleton variant="rect" width={500} height={400} />
+          <Preview id={animation.id || -1} width={500} height={400} />
         </Grid>
         <Grid item xs={12} sm={6} container direction="column" spacing={2}>
           <Grid item container justify="space-between" alignItems="center">
