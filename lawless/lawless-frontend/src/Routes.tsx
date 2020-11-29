@@ -1,9 +1,12 @@
 import React from 'react';
 import { Route, Switch } from 'react-router';
+import { Link } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import CaffsPage from './pages/CaffsPage';
-import AnimationDetailPage from './pages/AnimationDetailPage';
 import LoginPage from './pages/LoginPage';
+import AnimationDetailPage from './pages/AnimationDetailPage';
+import NotFound from './pages/NotFound';
+import Page from './pages/Page';
 
 const Routes = () => {
   return (
@@ -11,12 +14,21 @@ const Routes = () => {
       <ProtectedRoute path="/login">
         <LoginPage />
       </ProtectedRoute>
-      <Route path="/animations">
+
+      <Route guard path="/animations">
         <CaffsPage />
       </Route>
-      <ProtectedRoute path="/animation/:id">
-        <AnimationDetailPage />
+
+      <Route guard path="/animation/:caffId" component={AnimationDetailPage} />
+
+      <ProtectedRoute guard exact path="/">
+        <Page title="Main">
+          <Link to="/animation/1">animation</Link>
+        </Page>
       </ProtectedRoute>
+      <Route>
+        <NotFound />
+      </Route>
     </Switch>
   );
 };
