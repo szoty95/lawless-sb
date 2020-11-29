@@ -15,6 +15,7 @@ const Routes = () => {
       <Route path="/animation/:caffId" component={AnimationDetailPage} />
       <Route path="/">
         <CaffsPage />
+      </Route>
       <Route>
         <NotFound />
       </Route>

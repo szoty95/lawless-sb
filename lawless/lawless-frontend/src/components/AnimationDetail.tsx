@@ -1,4 +1,5 @@
 import { Grid, Typography } from '@material-ui/core';
+import { format, parseISO } from 'date-fns';
 import React from 'react';
 import { Redirect } from 'react-router';
 import { useAuthToken } from '../hooks/useAuthToken';
@@ -44,7 +45,11 @@ const AnimationDetail: React.FC<AnimationDetailProps> = ({ animation }) => {
               <Typography variant="h6">
                 {animation.userPersonalData?.firstName} {animation.userPersonalData?.lastName}
               </Typography>
-              <Typography variant="subtitle1">{animation.uploaded}</Typography>
+              {animation.uploaded && (
+                <Typography variant="subtitle1">
+                  {format(parseISO(animation.uploaded.toString()), 'yyyy-mm-d')}
+                </Typography>
+              )}
             </Grid>
             {user && (user.roles.includes(ADMIN) || user.userId === animation.userId) && (
               <Grid xs={6} item container spacing={2}>
