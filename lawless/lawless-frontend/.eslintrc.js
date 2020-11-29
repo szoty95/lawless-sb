@@ -61,6 +61,7 @@ module.exports = {
       '@typescript-eslint/explicit-module-boundary-types': 0, // TODO Review if it's needed
       '@typescript-eslint/no-empty-interface': 1,
       '@typescript-eslint/no-empty-function': 1,
+      'no-nested-ternary': 1,
     },
     settings: {
       react: {
