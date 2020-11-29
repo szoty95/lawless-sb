@@ -102,6 +102,19 @@ public class CaffController {
         }
     }
 
+    @GetMapping(value = "/picture")
+    @ApiOperation(value = "Get Caff preview picture", response = CaffPictureResponse.class, nickname = "picture")
+    public ResponseEntity<?> picture(@RequestParam Long id) {
+        try {
+            return ResponseEntity.ok(
+                    caffService.getPicture(id));
+        } catch (LawlessException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(e);
+        }
+    }
+
     @GetMapping(value = "/detailsAll")
     @ApiOperation(value = "Details all caff ", response = DetailsAllCaffResponse.class, nickname = "detailsAll")
     public ResponseEntity<?> detailsAll() {
@@ -115,4 +128,17 @@ public class CaffController {
         }
     }
 
+    @PostMapping(value = "/commentAdd")
+    @ApiOperation(value = "Comment caff ", response = DetailsAllCaffResponse.class, nickname = "comment")
+    public ResponseEntity<?> commentAdd(@AuthenticationPrincipal UserDetails userDetails,
+                                        @RequestBody CommentAddCaffRequest commentAddCaffRequest) {
+        try {
+            return ResponseEntity.ok(
+                    caffService.commentAdd(userDetails,commentAddCaffRequest));
+        } catch (LawlessException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(e);
+        }
+    }
 }

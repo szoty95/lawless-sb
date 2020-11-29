@@ -8,6 +8,7 @@ import {
   DialogTitle,
   Box,
   CircularProgress,
+  makeStyles,
 } from "@material-ui/core";
 import { useAuthToken } from "../hooks/useAuthToken";
 import { Alert } from "@material-ui/lab";
@@ -18,8 +19,25 @@ type UpdateCaffDialogProps = {
   animation: IDetailsCaffResp;
 };
 
+const useStyles = makeStyles({
+  dialog: {
+    padding: "1em",
+  },
+  error: {
+    color: "red",
+    fontWeight: 500,
+  },
+
+  button: {
+    padding: "8px 48px",
+    borderRadius: 32,
+    marginLeft: 32,
+  },
+});
+
 const EditCaffDialog: React.FC<UpdateCaffDialogProps> = ({ animation }) => {
   const [open, setOpen] = useState(false);
+  const classes = useStyles();
 
   const [formValues, setFormValues] = useState({
     title: animation.name,
@@ -39,6 +57,7 @@ const EditCaffDialog: React.FC<UpdateCaffDialogProps> = ({ animation }) => {
   const updateCaffData = () => {
     updateCaff({
       data: {
+        caffId: animation.id,
         name: formValues.title,
         description: formValues.description,
         price: formValues.price?.toString(),
@@ -55,7 +74,14 @@ const EditCaffDialog: React.FC<UpdateCaffDialogProps> = ({ animation }) => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Edit</Button>
+      <Button
+        className={classes.button}
+        variant="contained"
+        color="primary"
+        onClick={() => setOpen(true)}
+      >
+        Edit
+      </Button>
       <Dialog
         open={open}
         onClose={() => {
@@ -111,6 +137,9 @@ const EditCaffDialog: React.FC<UpdateCaffDialogProps> = ({ animation }) => {
                   />
                 </Grid>
               </Grid>
+              <Button variant="contained" type="submit">
+                Submit
+              </Button>
             </form>
           ) : (
             <Alert severity="success">Update successful</Alert>
@@ -124,7 +153,7 @@ const EditCaffDialog: React.FC<UpdateCaffDialogProps> = ({ animation }) => {
                 }}
                 disabled={result.isLoading}
               >
-                Done
+                Cancel
               </Button>
             </Grid>
           </Box>

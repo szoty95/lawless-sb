@@ -7,6 +7,7 @@ type CreateCaffQuery = (
 ) => Promise<AxiosResponse<CreateCaffResp>>;
 
 export type IUpdateCaffReq = {
+  caffId?: number;
   name?: string;
   price?: string;
   description?: string;

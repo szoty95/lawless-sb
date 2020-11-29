@@ -3,6 +3,7 @@ import Skeleton from "@material-ui/lab/Skeleton";
 import React from "react";
 import { useUserContext } from "../hooks/useUserContext";
 import { IDetailsCaffResp } from "../swagger";
+import EditCaffDialog from "./EditCaffDetailForm";
 
 const ADMIN = "ROLE_ADMIN";
 
@@ -35,14 +36,10 @@ const AnimationDetail: React.FC<AnimationDetailProps> = ({ animation }) => {
                 user.userId === animation.userId) && (
                 <Grid item container>
                   <Grid item>
-                    <Button variant="contained" color="primary">
-                      Edit
-                    </Button>
+                    <EditCaffDialog animation={animation} />
                   </Grid>
                   <Grid item>
-                    <Button variant="contained" color="primary">
-                      Delete
-                    </Button>
+                    <DeleteDialog onDelete={handleDelete} />
                   </Grid>
                 </Grid>
               )}

@@ -15,5 +15,7 @@ public interface CaffService {
     UpdateCaffResponse update(UserDetails userDetails, UpdateCaffRequest request) throws LawlessException;
     DeleteCaffResponse delete(UserDetails userDetails, DeleteCaffRequest request) throws LawlessException;
     DetailsCaffResponse details(DetailsCaffRequest request) throws LawlessException;
+    CaffPictureResponse getPicture(Long id) throws LawlessException;
     DetailsAllCaffResponse detailsAll() throws LawlessException;
+    CommentAddCaffResponse commentAdd(UserDetails userDetails, CommentAddCaffRequest request) throws LawlessException;
 }
