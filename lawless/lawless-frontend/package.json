@@ -5,11 +5,15 @@
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/lab": "^4.0.0-alpha.56",
+    "@sentry/react": "^5.27.6",
+    "@sentry/tracing": "^5.27.6",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "@types/axios": "^0.14.0",
     "@types/crypto-js": "^4.0.1",
+    "@types/date-fns": "^2.6.0",
+    "@types/enzyme": "^3.10.8",
     "@types/jest": "^26.0.15",
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.53",
@@ -19,6 +23,9 @@
     "@types/yup": "^0.29.9",
     "axios": "^0.21.0",
     "crypto-js": "^4.0.0",
+    "date-fns": "^2.16.1",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.5",
     "formik": "^2.2.5",
     "http-proxy-middleware": "^1.0.6",
     "material-ui": "^0.20.2",
@@ -56,5 +63,17 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint": "^7.14.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-airbnb-typescript-prettier": "^4.1.0",
+    "eslint-import-resolver-typescript": "^2.3.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.21.5",
+    "nodemon": "^2.0.6",
+    "prettier": "^2.2.1",
+    "typescript-eslint-parser": "^22.0.0"
   }
 }
