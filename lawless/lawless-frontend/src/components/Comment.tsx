@@ -1,14 +1,13 @@
-import { Card, CardContent, Grid, Typography } from "@material-ui/core";
-import React from "react";
+import { Card, CardContent, Grid, Typography } from '@material-ui/core';
+import React from 'react';
 
-interface IComment {
+interface Comment {
   text: string;
-  createdBy: string;
   createdAt: string;
 }
 
 interface CommentProps {
-  comment: IComment;
+  comment: Comment;
 }
 
 const Comment: React.FC<CommentProps> = ({ comment }) => {
@@ -17,7 +16,6 @@ const Comment: React.FC<CommentProps> = ({ comment }) => {
       <CardContent>
         <Typography>{comment.text}</Typography>
         <Grid container direction="column" alignItems="flex-end">
-          <Typography variant="subtitle1">{comment.createdBy}</Typography>
           <Typography variant="caption">{comment.createdAt}</Typography>
         </Grid>
       </CardContent>

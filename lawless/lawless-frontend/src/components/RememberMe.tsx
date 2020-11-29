@@ -1,8 +1,8 @@
-import { CircularProgress } from "@material-ui/core";
-import React, { useEffect } from "react";
-import { useAuthToken } from "../hooks/useAuthToken";
-import { useMe } from "../hooks/useMe";
-import { useUserContext } from "../hooks/useUserContext";
+import { CircularProgress } from '@material-ui/core';
+import React, { useEffect } from 'react';
+import { useAuthToken } from '../hooks/useAuthToken';
+import useMe from '../hooks/useMe';
+import useUserContext from '../hooks/useUserContext';
 
 const RememberMe: React.FC = ({ children }) => {
   const [result, getMe] = useMe();

@@ -1,7 +1,8 @@
-import React from "react";
-import styled from "styled-components";
-import { AppBar, AppBarProps, Toolbar, Typography } from "@material-ui/core";
-import UploadCaffDialog from "../components/UploadCaffDialog";
+import React from 'react';
+import styled from 'styled-components';
+import { AppBarProps } from '@material-ui/core';
+
+import Header from '../components/Header';
 
 export type PageProps = AppBarProps & {
   title: string;
@@ -18,15 +19,10 @@ const MainContent = styled.div`
   flex-grow: 1;
 `;
 
-const Page: React.FC<PageProps> = ({ children, title, ...rest }) => {
+const Page: React.FC<PageProps> = ({ children }) => {
   return (
     <PageContainer>
-      <AppBar position="static" {...rest}>
-        <Toolbar>
-          <Typography variant="h6">{title}</Typography>
-          <UploadCaffDialog />
-        </Toolbar>
-      </AppBar>
+      <Header />
       <MainContent>{children}</MainContent>
     </PageContainer>
   );

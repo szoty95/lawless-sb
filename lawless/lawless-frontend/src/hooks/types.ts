@@ -1,4 +1,4 @@
-import { AxiosResponse } from "axios";
+import { AxiosResponse } from 'axios';
 
 export interface ResponseData<T> {
   isLoading: boolean;
@@ -8,7 +8,7 @@ export interface ResponseData<T> {
 
 export interface RequestArgs<T = any, R = any> {
   request: (data?: T, authToken?: string) => Promise<AxiosResponse<R>>;
-  initialData?: R | undefined;
+  initialData?: R;
   initialParams?: RequestParams<T>;
 }
 

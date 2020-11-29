@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   TextField,
   Button,
@@ -10,23 +10,28 @@ import {
   Box,
   Typography,
   CircularProgress,
-} from "@material-ui/core";
-import FileUpload from "./FileUpload";
-import { useCreateCaff } from "../hooks/useCreateCaff";
-import { useAuthToken } from "../hooks/useAuthToken";
-import { Alert } from "@material-ui/lab";
+} from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
+import FileUpload from './FileUpload';
+import useCreateCaff from '../hooks/useCreateCaff';
+import { useAuthToken } from '../hooks/useAuthToken';
 
-const ACCEPTED_FILE_TYPES = ["caff"];
+const ACCEPTED_FILE_TYPES = ['caff'];
 
-const MAX_SIZE_IN_BYTES = 10 * 1024 * 1024 * 1024;
+const MAX_SIZE_IN_BYTES = 50 * 1024 * 1024;
 
 const useStyles = makeStyles({
   dialog: {
-    padding: "1em",
+    padding: '1em',
   },
   error: {
-    color: "red",
+    color: 'red',
     fontWeight: 500,
+  },
+  button: {
+    padding: '8px 48px',
+    borderRadius: 32,
+    marginLeft: 32,
   },
 });
 
@@ -39,14 +44,12 @@ const UploadCaffDialog: React.FC = () => {
   const [uploaded, setUploaded] = useState(false);
 
   const [formValues, setFormValues] = useState({
-    title: "",
-    description: "",
+    title: '',
+    description: '',
     price: 0,
   });
 
-  const handleChange = (name: string) => (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChange = (name: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormValues({ ...formValues, [name]: event.target.value });
   };
 
@@ -73,16 +76,16 @@ const UploadCaffDialog: React.FC = () => {
   const uploadFile = () => {
     if (file && isValidFile) {
       const formData = new FormData();
-      formData.append("file", file);
-      formData.append("name", formValues.title);
-      formData.append("price", formValues.price.toString());
-      formData.append("description", formValues.description);
+      formData.append('file', file);
+      formData.append('name', formValues.title);
+      formData.append('price', formValues.price.toString());
+      formData.append('description', formValues.description);
 
       createCaff({ data: formData, authToken: authToken as string });
 
       setFormValues({
-        title: "",
-        description: "",
+        title: '',
+        description: '',
         price: 0,
       });
       setFile(null);
@@ -92,7 +95,9 @@ const UploadCaffDialog: React.FC = () => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Add</Button>
+      <Button className={classes.button} onClick={() => setOpen(true)} variant="contained" color="primary">
+        Upload
+      </Button>
       <Dialog
         open={open}
         className={classes.dialog}
@@ -105,9 +110,7 @@ const UploadCaffDialog: React.FC = () => {
       >
         <DialogTitle>Upload your animation</DialogTitle>
         <DialogContent>
-          {result.isError && uploaded && (
-            <Alert severity="error">Upload not successful. Try again.</Alert>
-          )}
+          {result.isError && uploaded && <Alert severity="error">Upload not successful. Try again.</Alert>}
           {result.isLoading ? (
             <Grid container justify="center">
               <CircularProgress />
@@ -121,7 +124,7 @@ const UploadCaffDialog: React.FC = () => {
                     fullWidth
                     label="Animation title"
                     value={formValues.title}
-                    onChange={handleChange("title")}
+                    onChange={handleChange('title')}
                     margin="normal"
                   />
                 </Grid>
@@ -132,7 +135,7 @@ const UploadCaffDialog: React.FC = () => {
                     type="number"
                     label="Price"
                     value={formValues.price}
-                    onChange={handleChange("price")}
+                    onChange={handleChange('price')}
                     margin="normal"
                   />
                 </Grid>
@@ -145,7 +148,7 @@ const UploadCaffDialog: React.FC = () => {
                     rows="2"
                     label="Description"
                     value={formValues.description}
-                    onChange={handleChange("description")}
+                    onChange={handleChange('description')}
                     margin="normal"
                   />
                 </Grid>
@@ -155,23 +158,14 @@ const UploadCaffDialog: React.FC = () => {
                   <Typography variant="subtitle1">File name:</Typography>
 
                   <Typography variant="subtitle1">
-                    {file && (
-                      <>
-                        {isValidFile
-                          ? file.name
-                          : "File too big or wrong format"}
-                      </>
-                    )}
+                    {file && <>{isValidFile ? file.name : 'File too big or wrong format'}</>}
                   </Typography>
                 </Grid>
               </Box>
               <Box marginY={2}>
                 <Grid container justify="center" spacing={2}>
                   <Grid item>
-                    <FileUpload
-                      disabled={result.isLoading}
-                      handleUpload={handleUpload}
-                    />
+                    <FileUpload disabled={result.isLoading} handleUpload={handleUpload} />
                   </Grid>
                   <Grid item>
                     <Button
