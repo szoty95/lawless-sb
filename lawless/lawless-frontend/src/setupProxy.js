@@ -5,7 +5,7 @@ module.exports = (app) => {
   app.use(
     '/api',
     createProxyMiddleware({
-      target: "http://localhost:8080",
+      target: 'http://localhost:8080',
       secure: false,
       changeOrigin: true,
       cookieDomainRewrite: 'localhost',
