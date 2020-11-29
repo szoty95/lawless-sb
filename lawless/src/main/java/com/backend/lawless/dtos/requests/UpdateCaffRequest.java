@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @ApiModel(value = "UpdateCaffReq")
 public class UpdateCaffRequest {
-    private String caffId;
+    private Long caffId;
     private String name;
     private String description;
     private double price;

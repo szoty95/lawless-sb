@@ -104,7 +104,7 @@ public class CaffServiceImpl implements CaffService {
     public UpdateCaffResponse update(UserDetails userDetails, UpdateCaffRequest request)
             throws LawlessException {
         User user = getUserSafely(userDetails);
-        Caff caff = getCaffSafely(Long.valueOf(request.getCaffId()));
+        Caff caff = getCaffSafely(request.getCaffId());
 
         // update if admin, or current user requested caff update
         try {
