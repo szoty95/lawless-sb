@@ -39,6 +39,7 @@ public class CaffServiceImpl implements CaffService {
         }
         throw new LawlessException("Cant find user");
     }
+
     private Caff getCaffSafely(Long caffId) throws LawlessException {
         if (caffRepository.findById(caffId).isPresent()) {
             return caffRepository.findById(caffId).get();
@@ -57,7 +58,7 @@ public class CaffServiceImpl implements CaffService {
         caff.setUploaded(new Date());
         caff.setPrice(request.getPrice());
         try {
-        caff.setCaffFile(caffFile.getBytes());
+            caff.setCaffFile(caffFile.getBytes());
         } catch (Exception e) {
             throw new LawlessException(e.getMessage());
         }
@@ -73,11 +74,11 @@ public class CaffServiceImpl implements CaffService {
     }
 
     private void deleteParsedFiles() {
-        String rootDirectory=System.getProperty("user.dir");
-        String caffParserDirectory=rootDirectory+"\\src\\main\\resources\\caffParser";
-        String caffParserRelativeRoute = caffParserDirectory+"\\caffparser.exe";
+        String rootDirectory = System.getProperty("user.dir");
+        String caffParserDirectory = rootDirectory + "\\src\\main\\resources\\caffParser";
+        String caffParserRelativeRoute = caffParserDirectory + "\\caffparser.exe";
 
-        String command = "cmd /c \" cd " + caffParserDirectory + " && for /f %F in ('dir /b /a-d ^| findstr /vile \".exe\"') do del \"%F\""  +"\" ";
+        String command = "cmd /c \" cd " + caffParserDirectory + " && for /f %F in ('dir /b /a-d ^| findstr /vile \".exe\"') do del \"%F\"" + "\" ";
 
         System.out.println(command);
         try {
@@ -110,9 +111,9 @@ public class CaffServiceImpl implements CaffService {
             if (user.getRoles().stream().anyMatch(role -> role.getName() == ERole.ROLE_ADMIN)
                     || user.getId().equals(caff.getUserId())) {
 
-             //   if (request.getCaffFile() != null) {
-             //       caff.setCaffFile(request.getCaffFile());
-             //   }
+                //   if (request.getCaffFile() != null) {
+                //       caff.setCaffFile(request.getCaffFile());
+                //   }
                 if (request.getName() != null) {
                     caff.setName(request.getName());
                 }
@@ -139,7 +140,7 @@ public class CaffServiceImpl implements CaffService {
         User user = getUserSafely(userDetails);
         Caff caff = getCaffSafely(Long.valueOf(request.getCaffId()));
 
-            // Delete if admin, or current user uploaded caff
+        // Delete if admin, or current user uploaded caff
         try {
             if (user.getRoles().stream().anyMatch(role -> role.getName() == ERole.ROLE_ADMIN)
                     || user.getId().equals(caff.getUserId())) {
@@ -148,7 +149,7 @@ public class CaffServiceImpl implements CaffService {
                 caffRepository.deleteById(Long.valueOf(request.getCaffId()));
                 return new DeleteCaffResponse("Delete successful!");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new LawlessException("Delete failed!");
         }
 
@@ -159,26 +160,37 @@ public class CaffServiceImpl implements CaffService {
     public DetailsCaffResponse details(DetailsCaffRequest request) throws LawlessException {
         try {
             Caff caff = getCaffSafely(Long.valueOf(request.getCaffId()));
-            DetailsCaffResponse response =new DetailsCaffResponse(caff);
+            DetailsCaffResponse response = new DetailsCaffResponse(caff);
 
-            if(userRepository.existsById(response.getUserId())) {
-               User user = userRepository.findById(response.getUserId()).get();
+            if (userRepository.existsById(response.getUserId())) {
+                User user = userRepository.findById(response.getUserId()).get();
 
 
+                response.setUserPersonalData(new UserPersonalData(
+                        user.getUsername(),
+                        user.getEmail(),
+                        user.getFirstName(),
+                        user.getLastName(),
+                        user.getId().toString()));
 
-            response.setUserPersonalData(new UserPersonalData(
-                            user.getUsername(),
-                            user.getEmail(),
-                            user.getFirstName(),
-                            user.getLastName(),
-                            user.getId().toString()));
-
-            return response;
-            } throw new LawlessException("Not Found!");
+                return response;
+            }
+            throw new LawlessException("Not Found!");
 
         } catch (Exception e) {
             throw new LawlessException("Not Found!");
         }
+    }
+
+    @Override
+    public CaffPictureResponse getPicture(Long id) throws LawlessException {
+        Caff caff = new Caff();
+        if (caffRepository.existsById(id)) {
+            caff = caffRepository.findById(id).get();
+        }
+        if (caff.getCiffs().size() > 0) {
+            return new CaffPictureResponse(caff.getCiffs().get(0).getCiffFilePreview());
+        } else throw new LawlessException("There is no preview for this caff.");
     }
 
     @Override
@@ -187,10 +199,10 @@ public class CaffServiceImpl implements CaffService {
             List<Caff> caffs = caffRepository.findAll();
             List<DetailsCaffResponse> caffResponses = new ArrayList<DetailsCaffResponse>();
 
-            for (Caff caffItem:caffs) {
-                DetailsCaffResponse response =new DetailsCaffResponse(caffItem);
+            for (Caff caffItem : caffs) {
+                DetailsCaffResponse response = new DetailsCaffResponse(caffItem);
 
-                if(userRepository.existsById(caffItem.getUserId())) {
+                if (userRepository.existsById(caffItem.getUserId())) {
                     User user = userRepository.findById(caffItem.getUserId()).get();
 
 
@@ -206,7 +218,7 @@ public class CaffServiceImpl implements CaffService {
 
             }
 
-          return new DetailsAllCaffResponse(caffResponses);
+            return new DetailsAllCaffResponse(caffResponses);
         } catch (Exception e) {
             e.printStackTrace();
             throw new LawlessException("Not Found!");
@@ -219,10 +231,9 @@ public class CaffServiceImpl implements CaffService {
             Caff caff = getCaffSafely(request.getCaffId());
             User user = getUserSafely(userDetails);
 
-            Comment comment = new Comment(user.getId(),request.getMessage(),new Date());
+            Comment comment = new Comment(user.getId(), request.getMessage(), new Date());
             commentRepository.save(comment);
             System.out.println(comment.toString());
-
 
 
             caff.addComments(comment);
@@ -231,7 +242,7 @@ public class CaffServiceImpl implements CaffService {
             caffRepository.save(caff);
 
             return new CommentAddCaffResponse("Ok");
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new LawlessException("Error!");
         }
     }
@@ -263,9 +274,9 @@ public class CaffServiceImpl implements CaffService {
 //        return bytes;
     }
 
-    private void saveCafftoLocal(MultipartFile multipartFileCaff) throws LawlessException{
-        String rootDirectory=System.getProperty("user.dir");
-        String caffParserDirectory=rootDirectory+"\\src\\main\\resources\\caffParser";
+    private void saveCafftoLocal(MultipartFile multipartFileCaff) throws LawlessException {
+        String rootDirectory = System.getProperty("user.dir");
+        String caffParserDirectory = rootDirectory + "\\src\\main\\resources\\caffParser";
 
         Path filepath = Paths.get(caffParserDirectory, multipartFileCaff.getOriginalFilename());
 
@@ -276,17 +287,18 @@ public class CaffServiceImpl implements CaffService {
         }
 
     }
+
     //WINDOWS dependency
     private void parseCaff(Caff caff, MultipartFile multipartFileCaff) throws LawlessException, IOException {
 
-        String rootDirectory=System.getProperty("user.dir");
-        String caffParserDirectory=rootDirectory+"\\src\\main\\resources\\caffParser";
-        String caffParserRelativeRoute = caffParserDirectory+"\\caffparser.exe";
+        String rootDirectory = System.getProperty("user.dir");
+        String caffParserDirectory = rootDirectory + "\\src\\main\\resources\\caffParser";
+        String caffParserRelativeRoute = caffParserDirectory + "\\caffparser.exe";
         String caffParserArgs = multipartFileCaff.getOriginalFilename() + " " +
-                multipartFileCaff.getOriginalFilename() +"_prev " +
+                multipartFileCaff.getOriginalFilename() + "_prev " +
                 multipartFileCaff.getOriginalFilename() + "_ciff";
 
-        String command = "cmd /c \" cd " + caffParserDirectory + " && caffparser.exe " + caffParserArgs +"\" ";
+        String command = "cmd /c \" cd " + caffParserDirectory + " && caffparser.exe " + caffParserArgs + "\" ";
 
         System.out.println(command);
         try {
@@ -307,7 +319,7 @@ public class CaffServiceImpl implements CaffService {
         }
 
         //TODO Parse output files.....
-        Path ciffFilePath = Paths.get(caffParserDirectory, multipartFileCaff.getOriginalFilename()+"_ciff.txt");
+        Path ciffFilePath = Paths.get(caffParserDirectory, multipartFileCaff.getOriginalFilename() + "_ciff.txt");
 
         Scanner myReader = new Scanner(ciffFilePath);
         List<String> logData = new ArrayList<String>();
@@ -317,7 +329,7 @@ public class CaffServiceImpl implements CaffService {
         myReader.close();
         // TODO This is baaaad and only for testing purposes
         Ciff ciff1 = new Ciff();
-        File ciffPrew1 = new File(caffParserDirectory+"\\"+multipartFileCaff.getOriginalFilename() +"_prev.ppm.ppm");
+        File ciffPrew1 = new File(caffParserDirectory + "\\" + multipartFileCaff.getOriginalFilename() + "_prev.ppm.ppm");
 
         ciff1.setCiffFilePreview(readBytesOfFile(ciffPrew1));
         ciff1.setCaption(logData.get(0));
