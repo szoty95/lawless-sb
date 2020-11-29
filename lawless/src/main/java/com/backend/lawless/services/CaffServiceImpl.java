@@ -126,9 +126,9 @@ public class CaffServiceImpl implements CaffService {
     }
 
     @Override
-    public DeleteCaffResponse delete(UserDetails userDetails, DeleteCaffRequest request) throws LawlessException {
+    public DeleteCaffResponse delete(UserDetails userDetails, Long id) throws LawlessException {
         User user = getUserSafely(userDetails);
-        Caff caff = getCaffSafely(Long.valueOf(request.getCaffId()));
+        Caff caff = getCaffSafely(id);
 
         // Delete if admin, or current user uploaded caff
         try {
@@ -136,7 +136,7 @@ public class CaffServiceImpl implements CaffService {
                     || user.getId().equals(caff.getUserId())) {
                 caff.setCiffs(null);
 
-                caffRepository.deleteById(Long.valueOf(request.getCaffId()));
+                caffRepository.deleteById(id);
                 return new DeleteCaffResponse("Delete successful!");
             }
         } catch (Exception e) {

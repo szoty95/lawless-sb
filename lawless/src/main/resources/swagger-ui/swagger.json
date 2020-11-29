@@ -152,6 +152,7 @@
         }
       }
     },
+<<<<<<< HEAD
     "/api/caff/delete": {
       "post": {
         "tags": ["Caff"],
@@ -173,6 +174,26 @@
             "description": "successful operation",
             "schema": {
               "$ref": "#/definitions/DeleteCaffResp"
+=======
+    "/api/caff/delete" : {
+      "delete" : {
+        "tags" : [ "Caff" ],
+        "summary" : "Delete caff ",
+        "description" : "",
+        "operationId" : "delete",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "query",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/DeleteCaffResp"
+>>>>>>> e95a370648cc1a5da166ef4362c67cbe329d49c3
             }
           }
         }
@@ -390,19 +411,11 @@
         }
       }
     },
-    "DeleteCaffReq": {
-      "type": "object",
-      "properties": {
-        "caffId": {
-          "type": "string"
-        }
-      }
-    },
-    "DeleteCaffResp": {
-      "type": "object",
-      "properties": {
-        "response": {
-          "type": "string"
+    "DeleteCaffResp" : {
+      "type" : "object",
+      "properties" : {
+        "response" : {
+          "type" : "string"
         }
       }
     },
