@@ -85,30 +85,32 @@ public class CaffServiceImpl implements CaffService {
     }
 
     private void deleteParsedFiles() {
-        String rootDirectory = System.getProperty("user.dir");
-        String caffParserDirectory = rootDirectory + "\\src\\main\\resources\\caffParser";
-        String caffParserRelativeRoute = caffParserDirectory + "\\caffparser.exe";
+        if (isWindows()) {
+            String rootDirectory = System.getProperty("user.dir");
+            String caffParserDirectory = rootDirectory + "\\src\\main\\resources\\caffParser";
+            String caffParserRelativeRoute = caffParserDirectory + "\\caffparser.exe";
 
-        String command = "cmd /c \" cd " + caffParserDirectory + " && for /f %F in ('dir /b /a-d ^| findstr /vile \".exe\"') do del \"%F\"" + "\" ";
+            String command = "cmd /c \" cd " + caffParserDirectory + " && for /f %F in ('dir /b /a-d ^| findstr /vile \".exe caffparserLinux\"') do del \"%F\"" + "\" ";
 
-        System.out.println(command);
-        try {
-            Process process = Runtime.getRuntime().exec(command);
+            System.out.println(command);
+            try {
+                Process process = Runtime.getRuntime().exec(command);
 
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(process.getInputStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+                process.waitFor();
+
+                reader.close();
+
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
             }
-            process.waitFor();
 
-            reader.close();
-
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
         }
-
     }
 
     @Override
