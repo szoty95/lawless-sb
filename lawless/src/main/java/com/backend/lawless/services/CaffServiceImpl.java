@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.apache.commons.io.FilenameUtils;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -74,23 +74,27 @@ public class CaffServiceImpl implements CaffService {
             throw new LawlessException(e.getMessage());
         }
 
-
-        saveCafftoLocal(caffFile);
-        parseCaff(caff, caffFile);
+        String time= String.valueOf(new Date().getTime());
+        saveCafftoLocal(caffFile, time);
+        parseCaff(caff, caffFile,time);
 //        readParsedFiles(caff); //TODO if using linux, comment the 2 lines above, and comment out this one
         caffRepository.save(caff);
-        deleteParsedFiles();
+        deleteParsedFiles(caffFile,time);
 
         return new CreateCaffResponse(caff.getId());
     }
 
-    private void deleteParsedFiles() {
+    private void deleteParsedFiles(MultipartFile caffFile,String time) {
+        System.out.println("DELETEPARSEDFILES CALLED");
         if (isWindows()) {
             String rootDirectory = System.getProperty("user.dir");
             String caffParserDirectory = rootDirectory + "\\src\\main\\resources\\caffParser";
             String caffParserRelativeRoute = caffParserDirectory + "\\caffparser.exe";
 
-            String command = "cmd /c \" cd " + caffParserDirectory + " && for /f %F in ('dir /b /a-d ^| findstr /vile \".exe caffparserLinux\"') do del \"%F\"" + "\" ";
+            String fileNameWithOutExt = FilenameUtils.removeExtension(caffFile.getOriginalFilename())+"_"+time;
+
+
+            String command = "cmd /c \" cd " + caffParserDirectory + " && rmdir /s /q "+ fileNameWithOutExt  +" \" ";
 
             System.out.println(command);
             try {
@@ -277,7 +281,9 @@ public class CaffServiceImpl implements CaffService {
 //        return bytes;
     }
 
-    private void saveCafftoLocal(MultipartFile multipartFileCaff) throws LawlessException{
+    private void saveCafftoLocal(MultipartFile multipartFileCaff, String time) throws LawlessException{
+
+
         String rootDirectory=System.getProperty("user.dir");
         String caffParserDirectory=rootDirectory+
                             File.separator+"src"+
@@ -285,7 +291,15 @@ public class CaffServiceImpl implements CaffService {
                             File.separator+"resources"+
                             File.separator+"caffParser";
 
-        Path filepath = Paths.get(caffParserDirectory, multipartFileCaff.getOriginalFilename());
+        String fileNameWithOutExt = FilenameUtils.removeExtension(multipartFileCaff.getOriginalFilename());
+        File targetDirectory = new File(caffParserDirectory+File.separator+fileNameWithOutExt+"_"+time);
+
+
+        if (! targetDirectory.exists()){
+            targetDirectory.mkdir();
+        }
+
+        Path filepath = Paths.get(targetDirectory.getAbsolutePath(), multipartFileCaff.getOriginalFilename());
 
         try {
             multipartFileCaff.transferTo(filepath);
@@ -293,18 +307,23 @@ public class CaffServiceImpl implements CaffService {
             e.printStackTrace();
         }
 
+
     }
 
     //WINDOWS dependency
-    private void parseCaff(Caff caff, MultipartFile multipartFileCaff) throws LawlessException, IOException {
+    private void parseCaff(Caff caff, MultipartFile multipartFileCaff, String time) throws LawlessException, IOException {
 
         if (isWindows()) {
             String rootDirectory = System.getProperty("user.dir");
             String caffParserDirectory = rootDirectory + "\\src\\main\\resources\\caffParser";
             String caffParserRelativeRoute = caffParserDirectory + "\\caffparser.exe";
-            String caffParserArgs = multipartFileCaff.getOriginalFilename() + " " +
-                    multipartFileCaff.getOriginalFilename() + "_prev " +
-                    multipartFileCaff.getOriginalFilename() + "_ciff";
+            String targetDir = "."+File.separator+FilenameUtils.removeExtension(multipartFileCaff.getOriginalFilename())+"_"+time+File.separator;
+            String outputDir = caffParserDirectory + File.separator + FilenameUtils.removeExtension(multipartFileCaff.getOriginalFilename())+"_"+time+File.separator;
+
+            String caffParserArgs =
+                    targetDir+ multipartFileCaff.getOriginalFilename() +" " +
+                            targetDir+multipartFileCaff.getOriginalFilename() + "_prev " +
+                            targetDir+multipartFileCaff.getOriginalFilename() + "_ciff";
 
             String command = "cmd /c \" cd " + caffParserDirectory + " && caffparser.exe " + caffParserArgs + "\" ";
 
@@ -321,13 +340,13 @@ public class CaffServiceImpl implements CaffService {
                 process.waitFor();
 
                 reader.close();
-
+                System.out.println("Caff parser finsihed");
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
-
+            System.out.println("output dir" + outputDir);
             //TODO Parse output files.....
-            Path ciffFilePath = Paths.get(caffParserDirectory, multipartFileCaff.getOriginalFilename() + "_ciff.txt");
+            Path ciffFilePath = Paths.get(outputDir, multipartFileCaff.getOriginalFilename() + "_ciff.txt");
 
             Scanner myReader = new Scanner(ciffFilePath);
             List<String> logData = new ArrayList<String>();
@@ -337,7 +356,7 @@ public class CaffServiceImpl implements CaffService {
             myReader.close();
             // TODO This is baaaad and only for testing purposes
             Ciff ciff1 = new Ciff();
-            File ciffPrew1 = new File(caffParserDirectory + "\\" + multipartFileCaff.getOriginalFilename() + "_prev.ppm.ppm");
+            File ciffPrew1 = new File(outputDir + File.separator + multipartFileCaff.getOriginalFilename() + "_prev.ppm.ppm");
 
             ciff1.setCiffFilePreview(readBytesOfFile(ciffPrew1));
             ciff1.setCaption(logData.get(0));
