@@ -1,4 +1,5 @@
 import { CircularProgress, Container, Grid, Typography } from '@material-ui/core';
+import { format, parseISO } from 'date-fns';
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
@@ -7,6 +8,7 @@ import Comment from '../components/Comment';
 import CommentDialog from '../components/CommentDialog';
 import { useAuthToken } from '../hooks/useAuthToken';
 import useGetCaff from '../hooks/useGetCaff';
+import { IComment } from '../swagger';
 import Page from './Page';
 
 const StyledContainer = styled(Container)`
@@ -55,14 +57,21 @@ const AnimationDetailPage: React.FC<AnimationDetailPageProps> = ({ match }) => {
           </Grid>
           {/* Kommentek */}
           <Grid item container direction="column" spacing={2}>
-            <Typography variant="h5"> Kommentek</Typography>
-            <Comment
-              comment={{
-                text: 'asdas asda sd asd asd as das dsa ',
-                createdBy: 'Teszt Elek',
-                createdAt: '2020. 44. 44',
-              }}
-            />
+            <Typography variant="h5">Kommentek</Typography>
+
+            {result.data.comments?.map((item: IComment) =>
+              item.timeStamp && item.message ? (
+                <Comment
+                  key={item.id}
+                  comment={{
+                    text: item.message,
+                    createdAt: format(parseISO(item.timeStamp.toString()), 'yyyy-mm-d'),
+                  }}
+                />
+              ) : (
+                ''
+              ),
+            )}
           </Grid>
           <Grid item container justify="flex-end">
             <CommentDialog caffId={result.data.id} />
