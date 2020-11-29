@@ -69,11 +69,9 @@ public class CaffServiceImpl implements CaffService {
     }
 
     private void deleteParsedFiles() {
-
         String rootDirectory=System.getProperty("user.dir");
         String caffParserDirectory=rootDirectory+"\\src\\main\\resources\\caffParser";
         String caffParserRelativeRoute = caffParserDirectory+"\\caffparser.exe";
-
 
         String command = "cmd /c \" cd " + caffParserDirectory + " && for /f %F in ('dir /b /a-d ^| findstr /vile \".exe\"') do del \"%F\""  +"\" ";
 
@@ -208,6 +206,20 @@ public class CaffServiceImpl implements CaffService {
           return new DetailsAllCaffResponse(caffResponses);
         } catch (Exception e) {
             throw new LawlessException("Not Found!");
+        }
+    }
+
+    @Override
+    public CommentAddCaffResponse commentAdd(UserDetails userDetails, CommentAddCaffRequest request) throws LawlessException {
+        try {
+            Caff caff = getCaffSafely(request.getCaffId());
+
+            Comment comment = new Comment(request.getUserId(),request.getMessage(),new Date());
+            caff.addComments(comment);
+
+            return new CommentAddCaffResponse("Ok");
+        }catch (Exception e) {
+            throw new LawlessException("Error!");
         }
     }
 

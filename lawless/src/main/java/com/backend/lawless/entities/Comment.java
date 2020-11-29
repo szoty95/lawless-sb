@@ -1,6 +1,8 @@
 package com.backend.lawless.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,6 +13,7 @@ import java.util.Date;
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "id")
         })
+@NoArgsConstructor
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,7 +24,13 @@ public class Comment {
     private String message;
     private Date timeStamp;
 
-    // connections to other tables
+    public Comment(Long userId, String message, Date timeStamp) {
+        this.userId = userId;
+        this.message = message;
+        this.timeStamp = timeStamp;
+    }
+
+// connections to other tables
 //    @ManyToOne
 //    Caff[] caffs;
 //
