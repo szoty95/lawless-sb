@@ -19,8 +19,6 @@ const AnimationDetail: React.FC<AnimationDetailProps> = ({ animation }) => {
   const { user } = useUserContext();
   const { authToken } = useAuthToken();
   const [result, deleteCaff] = useDeleteCaff();
-  console.log(user?.userId);
-  console.log(animation.userId);
 
   const handleDelete = () => {
     deleteCaff({
