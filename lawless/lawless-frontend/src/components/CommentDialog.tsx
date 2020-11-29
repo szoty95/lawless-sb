@@ -40,7 +40,7 @@ const CommentDialog: React.FC<CommentDialogProps> = ({ caffId }) => {
 
   return (
     <>
-      <Button className={classes.button} variant="contained" onClick={() => setOpen(true)}>
+      <Button className={classes.button} color="primary" variant="contained" onClick={() => setOpen(true)}>
         Add comment
       </Button>
       <Dialog
@@ -64,7 +64,7 @@ const CommentDialog: React.FC<CommentDialogProps> = ({ caffId }) => {
                 onChange={formik.handleChange}
                 placeholder="Message"
               />
-              <Button variant="contained" type="submit">
+              <Button style={{ marginTop: '0.5em' }} color="primary" variant="contained" type="submit">
                 Send
               </Button>
             </Grid>
