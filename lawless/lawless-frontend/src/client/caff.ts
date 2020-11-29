@@ -1,7 +1,6 @@
 import Axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import {
   CreateCaffResp,
-  IDeleteCaffReq,
   IDeleteCaffResp,
   IDetailsCaffResp,
   IUpdateCaffReq,
@@ -24,7 +23,7 @@ type GetCaffQuery = (
 ) => Promise<AxiosResponse<IDetailsCaffResp>>;
 
 type DeleteCaffQuery = (
-  data?: IDeleteCaffReq,
+  data?: number,
   authToken?: string
 ) => Promise<AxiosResponse<IDeleteCaffResp>>;
 
@@ -66,7 +65,7 @@ export function caff(config: AxiosRequestConfig): CaffClient {
   };
 
   const deleteCaff: DeleteCaffQuery = (data, authToken) => {
-    return axios.post<IDeleteCaffResp>("/delete", data, {
+    return axios.delete<IDeleteCaffResp>(`/delete?id=${data}`, {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },

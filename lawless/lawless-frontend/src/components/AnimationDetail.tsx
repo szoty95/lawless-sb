@@ -24,7 +24,7 @@ const AnimationDetail: React.FC<AnimationDetailProps> = ({ animation }) => {
 
   const handleDelete = () => {
     deleteCaff({
-      data: { caffId: animation.id?.toString() },
+      data: animation.id,
       authToken: authToken as string,
     });
   };
