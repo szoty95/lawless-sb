@@ -63,7 +63,7 @@ export function caff(config: AxiosRequestConfig): CaffClient {
   };
 
   const deleteCaff: DeleteCaffQuery = (data, authToken) => {
-    return axios.post<IDeleteCaffResp>('/delete', data, {
+    return axios.delete<IDeleteCaffResp>('/delete?id={data}', {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
