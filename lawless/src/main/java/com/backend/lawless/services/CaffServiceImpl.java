@@ -11,11 +11,14 @@ import com.backend.lawless.exceptions.LawlessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -33,6 +36,8 @@ public class CaffServiceImpl implements CaffService {
     @Autowired
     CommentRepository commentRepository;
 
+    private boolean isProduction = true;
+
     private User getUserSafely(UserDetails userDetails) throws LawlessException {
         if (userRepository.existsByUsername(userDetails.getUsername())) {
             return userRepository.findByUsername(userDetails.getUsername());
@@ -48,13 +53,15 @@ public class CaffServiceImpl implements CaffService {
     }
 
     private static String OS = null;
-    public static String getOsName()
-    {
-        if(OS == null) { OS = System.getProperty("os.name"); }
+
+    public static String getOsName() {
+        if (OS == null) {
+            OS = System.getProperty("os.name");
+        }
         return OS;
     }
-    public static boolean isWindows()
-    {
+
+    public static boolean isWindows() {
         return getOsName().startsWith("Windows");
     }
 
@@ -261,27 +268,20 @@ public class CaffServiceImpl implements CaffService {
             e.printStackTrace();
         }
         return imageInByte;
-//        byte[] bytes = new byte[(int) file.length()];
-//
-//        try (FileInputStream fis = new FileInputStream(file)) {
-//
-//            //read file into bytes[]
-//            fis.read(bytes);
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return bytes;
     }
 
-    private void saveCafftoLocal(MultipartFile multipartFileCaff) throws LawlessException{
-        String rootDirectory=System.getProperty("user.dir");
-        String caffParserDirectory=rootDirectory+
-                            File.separator+"src"+
-                            File.separator+"main"+
-                            File.separator+"resources"+
-                            File.separator+"caffParser";
+    private void saveCafftoLocal(MultipartFile multipartFileCaff) throws LawlessException, IOException {
+        String caffParserDirectory = "";
+        if (isProduction) {
+            caffParserDirectory = System.getProperty("user.dir") + File.separator + "caffParser";
+        } else {
+            String rootDirectory = System.getProperty("user.dir");
+            caffParserDirectory = rootDirectory +
+                    File.separator + "src" +
+                    File.separator + "main" +
+                    File.separator + "resources" +
+                    File.separator + "caffParser";
+        }
 
         Path filepath = Paths.get(caffParserDirectory, multipartFileCaff.getOriginalFilename());
 
@@ -295,11 +295,16 @@ public class CaffServiceImpl implements CaffService {
 
     //WINDOWS dependency
     private void parseCaff(Caff caff, MultipartFile multipartFileCaff) throws LawlessException, IOException {
+        String rootDirectory = "";
+        String caffParserDirectory = "";
+        if (isProduction) {
+            caffParserDirectory = System.getProperty("user.dir") + File.separator + "caffParser";
+        } else {
+            rootDirectory = System.getProperty("user.dir");
+            caffParserDirectory = rootDirectory + "\\src\\main\\resources\\caffParser";
+        }
 
         if (isWindows()) {
-            String rootDirectory = System.getProperty("user.dir");
-            String caffParserDirectory = rootDirectory + "\\src\\main\\resources\\caffParser";
-            String caffParserRelativeRoute = caffParserDirectory + "\\caffparser.exe";
             String caffParserArgs = multipartFileCaff.getOriginalFilename() + " " +
                     multipartFileCaff.getOriginalFilename() + "_prev " +
                     multipartFileCaff.getOriginalFilename() + "_ciff";
