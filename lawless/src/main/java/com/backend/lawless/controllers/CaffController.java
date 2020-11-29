@@ -44,30 +44,10 @@ public class CaffController {
     @PostMapping(value = "/update")
     @ApiOperation(value = "Update caff ", response = UpdateCaffResponse.class, nickname = "update")
     public ResponseEntity<?> update(@AuthenticationPrincipal UserDetails userDetails,
-                                    @RequestBody String caffId,
-                                    @RequestBody String name,
-                                    @RequestBody String description,
-                                    @RequestBody double price
-     //                               ,@RequestBody(required = false) MultipartFile caffFile
-                                    ){
+                                    @RequestBody UpdateCaffRequest request){
 
         try {
-            UpdateCaffRequest updateCaffRequest = new UpdateCaffRequest();
-            updateCaffRequest.setCaffId(caffId);
-          //  if (caffFile != null) {
-          //      updateCaffRequest.setCaffFile(caffFile.getBytes());
-          //  }
-            if (name != null) {
-                updateCaffRequest.setName(name);
-            }
-            if (description != null) {
-                updateCaffRequest.setDescription(description);
-            }
-//            if (price != null) {
-                updateCaffRequest.setPrice(price);
-//            }
-
-            return ResponseEntity.ok(caffService.update(userDetails, updateCaffRequest));
+            return ResponseEntity.ok(caffService.update(userDetails, request));
         } catch (LawlessException e) {
             return ResponseEntity
                     .badRequest()
@@ -75,13 +55,13 @@ public class CaffController {
         }
     }
 
-    @PostMapping(value = "/delete")
+    @DeleteMapping(value = "/delete")
     @ApiOperation(value = "Delete caff ", response = DeleteCaffResponse.class, nickname = "delete")
     public ResponseEntity<?> delete(@AuthenticationPrincipal UserDetails userDetails,
-                                    @RequestBody DeleteCaffRequest deleteCaffRequest) {
+                                    @RequestParam("id") Long id) {
         try {
             return ResponseEntity.ok(
-                    caffService.delete(userDetails,deleteCaffRequest));
+                    caffService.delete(userDetails,id));
         } catch (LawlessException e) {
             return ResponseEntity
                     .badRequest()
@@ -91,10 +71,23 @@ public class CaffController {
 
     @GetMapping(value = "/details")
     @ApiOperation(value = "Details caff ", response = DetailsCaffResponse.class, nickname = "details")
-    public ResponseEntity<?> details(@RequestParam DetailsCaffRequest detailsCaffRequest) {
+    public ResponseEntity<?> details(@RequestParam("id") Long id) {
         try {
             return ResponseEntity.ok(
-                    caffService.details(detailsCaffRequest));
+                    caffService.details(id));
+        } catch (LawlessException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(e);
+        }
+    }
+
+    @GetMapping(value = "/picture")
+    @ApiOperation(value = "Get Caff preview picture", response = CaffPictureResponse.class, nickname = "picture")
+    public ResponseEntity<?> picture(@RequestParam("id") Long id) {
+        try {
+            return ResponseEntity.ok(
+                    caffService.getPicture(id));
         } catch (LawlessException e) {
             return ResponseEntity
                     .badRequest()
