@@ -111,19 +111,9 @@ public class CaffServiceImpl implements CaffService {
             if (user.getRoles().stream().anyMatch(role -> role.getName() == ERole.ROLE_ADMIN)
                     || user.getId().equals(caff.getUserId())) {
 
-                //   if (request.getCaffFile() != null) {
-                //       caff.setCaffFile(request.getCaffFile());
-                //   }
-                if (request.getName() != null) {
-                    caff.setName(request.getName());
-                }
-                if (request.getDescription() != null) {
-                    caff.setDescription(request.getDescription());
-                }
-                if (request.getPrice() != null) {
-                    caff.setPrice(request.getPrice());
-                }
-
+                caff.setName(request.getName());
+                caff.setDescription(request.getDescription());
+                caff.setPrice(request.getPrice());
                 caffRepository.save(caff);
 
                 return new UpdateCaffResponse("Update successful!");
