@@ -51,7 +51,7 @@ const AnimationDetail: React.FC<AnimationDetailProps> = ({ animation }) => {
                 </Typography>
               )}
             </Grid>
-            {user && (user.roles.includes(ADMIN) || user.userId === animation.userId) && (
+            {user && (user.roles.includes(ADMIN) || user.userId === animation.userId?.toString()) && (
               <Grid xs={6} item container spacing={2}>
                 <Grid item>
                   <EditCaffDialog animation={animation} />
